@@ -1,0 +1,127 @@
+# نبّهني (Nabbihni) - Social Countdown App
+
+## Project Overview
+Nabbihni is an Arabic-first social countdown app for iOS and Android built with React Native + Expo.
+
+## Tech Stack
+- **Framework:** React Native + Expo (managed workflow)
+- **Navigation:** expo-router
+- **Storage:** AsyncStorage (local)
+- **Animations:** react-native-reanimated
+- **Styling:** StyleSheet (dark theme, RTL)
+
+## Project Structure
+```
+nabbihni/
+├── app/                    # expo-router screens
+│   ├── (tabs)/
+│   │   ├── index.tsx       # Home (my countdowns)
+│   │   ├── explore.tsx     # Public countdowns
+│   │   └── settings.tsx    # Settings
+│   ├── countdown/
+│   │   ├── [id].tsx        # Countdown detail
+│   │   └── create.tsx      # Create countdown
+│   └── _layout.tsx         # Root layout
+├── components/             # Reusable UI components
+├── hooks/                  # Custom React hooks
+├── lib/                    # Utility functions
+├── constants/              # App constants (themes, events)
+└── types/                  # TypeScript type definitions
+```
+
+## Key Files
+- `hooks/useCountdown.ts` - Timer logic and formatting
+- `hooks/useCountdowns.ts` - CRUD operations for countdowns
+- `lib/storage.ts` - AsyncStorage helpers
+- `constants/themes.ts` - Visual themes (5 free)
+- `constants/publicEvents.ts` - Saudi Arabia events
+
+## Design System
+- **Primary Color:** Deep blue (#1a365d)
+- **Accent Color:** Gold (#f6ad55)
+- **Background:** Dark (#0f172a)
+- **Language:** Arabic (RTL enabled)
+
+## Commands
+```bash
+npm start          # Start Expo dev server
+npm run ios        # Run on iOS simulator
+npm run android    # Run on Android emulator
+npm run web        # Run on web browser
+```
+
+## Features
+1. Personal countdowns with themes
+2. Public Saudi events (Ramadan, Eid, National Day)
+3. Celebration animation when countdown ends
+4. Share countdowns via deep links
+5. Home screen widgets (iOS WidgetKit + Android)
+
+## Widgets
+- **Android**: `react-native-android-widget` — widgets in `widgets/` directory
+- **iOS**: `@bacons/apple-targets` + SwiftUI — widget in `targets/countdown-widget/`
+- **Data sync**: `lib/widgetData.ts` — syncs on every CRUD operation
+- **Sizes**: Small (single countdown) + Medium (top 3 countdowns)
+- **Note**: Widgets require `expo-dev-client` build, not Expo Go
+
+## Data Model
+```typescript
+interface Countdown {
+  id: string;
+  title: string;
+  targetDate: string;     // ISO date
+  icon: string;           // Emoji
+  theme: ThemeId;
+  isPublic: boolean;
+  createdAt: string;
+  participantCount?: number;
+}
+```
+
+## Launch Checklist (CRITICAL)
+
+### Before TestFlight/Production Build
+
+1. **RevenueCat Setup** (`contexts/SubscriptionContext.tsx`)
+   - [ ] Create account at https://revenuecat.com
+   - [ ] Get iOS API key (format: `appl_XXXXX`) → line 35
+   - [ ] Get Android API key (format: `goog_XXXXX`) → line 36
+   - [ ] Create products: `premium_monthly` (4.99 SAR) and `premium_lifetime` (49.99 SAR)
+   - [ ] Verify `DEV_FORCE_PREMIUM = false` (line 76)
+
+2. **AdMob Setup** (`components/AdBanner.tsx`, `app.json`)
+   - [ ] Create AdMob account at https://admob.google.com
+   - [ ] Create iOS and Android apps
+   - [ ] Get ad unit IDs and add to `AdBanner.tsx`
+   - [ ] Update `GADApplicationIdentifier` in `app.json`
+   - [ ] **Configure halal blocking** in AdMob Console:
+     - Block: Alcohol, Gambling, Dating, Music, Tobacco, Lottery
+     - Block: Loans, Crypto, Political, Religious (non-Islamic), Sexual
+   - [ ] Create `app-ads.txt` at nabbihni.com
+
+3. **Firebase Setup** (Android)
+   - [ ] Create Firebase project at console.firebase.google.com
+   - [ ] Add Android app with package `app.nabbihni.countdown`
+   - [ ] Download `google-services.json` and place in project root
+
+4. **App Store Setup** (`app/(tabs)/settings.tsx`)
+   - [ ] After App Store approval, add App Store ID to `handleRateApp`
+
+5. **EAS Setup** (`app.json`)
+   - [ ] Run `eas init` to get project ID
+   - [ ] Update `extra.eas.projectId`
+
+6. **Widget Setup** (`app.json`)
+   - [ ] Replace `REPLACE_WITH_APPLE_TEAM_ID` in `app.json` → `ios.appleTeamId`
+   - [ ] Widgets auto-register via config plugins (no additional setup needed)
+   - [ ] Test: `npx expo prebuild` then build with `eas build`
+
+### Pricing
+- Free: 5 countdowns + ads
+- Monthly: 4.99 SAR/month
+- Lifetime: 49.99 SAR (permanent, forever)
+
+## TODO
+- [ ] Supabase integration for social features
+- [x] Widget support (iOS + Android)
+- [ ] Error tracking (Sentry)

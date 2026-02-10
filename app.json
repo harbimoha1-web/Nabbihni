@@ -1,28 +1,73 @@
 {
   "expo": {
-    "name": "al-add",
-    "slug": "al-add",
+    "name": "نبّهني",
+    "slug": "nabbihni",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "aladd",
-    "userInterfaceStyle": "automatic",
+    "scheme": "nabbihni",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0f172a"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "app.nabbihni.countdown",
+      "appleTeamId": "A94DV992X6",
+      "entitlements": {
+        "com.apple.security.application-groups": [
+          "group.app.nabbihni.countdown"
+        ]
+      },
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true,
+        "CFBundleDevelopmentRegion": "ar",
+        "GADApplicationIdentifier": "ca-app-pub-7647210654588736~3019839871",
+        "SKAdNetworkItems": [
+          {
+            "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork"
+          }
+        ],
+        "NSUserTrackingUsageDescription": "يُستخدم هذا الإذن لتقديم إعلانات مخصصة لك"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#0f172a"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "app.nabbihni.countdown",
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-7647210654588736~2117821743"
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "nabbihni.com",
+              "pathPrefix": "/c"
+            },
+            {
+              "scheme": "https",
+              "host": "nabbihni.com",
+              "pathPrefix": "/s"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -30,10 +75,67 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "@react-native-community/datetimepicker",
+      "expo-notifications",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "يحتاج التطبيق للوصول إلى الصور لاختيار خلفية مخصصة للعد التنازلي."
+        }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-7647210654588736~2117821743",
+          "iosAppId": "ca-app-pub-7647210654588736~3019839871",
+          "delayAppMeasurementInit": false
+        }
+      ],
+      "@bacons/apple-targets",
+      [
+        "react-native-android-widget",
+        {
+          "fonts": [
+            "./assets/fonts/SpaceMono-Regular.ttf"
+          ],
+          "widgets": [
+            {
+              "name": "CountdownSmall",
+              "label": "عد تنازلي",
+              "description": "تابع أقرب عد تنازلي",
+              "minWidth": "110dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 2,
+              "targetCellHeight": 2,
+              "updatePeriodMillis": 1800000
+            },
+            {
+              "name": "CountdownMedium",
+              "label": "عداداتي",
+              "description": "تابع أهم العدادات",
+              "minWidth": "250dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 2,
+              "updatePeriodMillis": 1800000
+            }
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a9e98f50-3009-4527-9790-0e7d6a4d30d9"
+      }
+    },
+    "locales": {
+      "ar": "./locales/ar.json",
+      "en": "./locales/en.json"
+    },
+    "owner": "mosaad515"
   }
 }
