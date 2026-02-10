@@ -3,41 +3,395 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نبّهني - تطبيق العد التنازلي</title>
-  <meta name="description" content="نبّهني - تطبيق العد التنازلي الاجتماعي. تابع المناسبات والأعياد السعودية مع أصدقائك.">
-  <meta name="theme-color" content="#0F1419">
-  <meta property="og:title" content="نبّهني - تطبيق العد التنازلي">
-  <meta property="og:description" content="تابع المناسبات والأعياد السعودية مع أصدقائك">
+  <title>نبّهني - لا تفوّت أي لحظة مهمة</title>
+  <meta name="description" content="نبّهني - تطبيق العد التنازلي الاجتماعي الأول عربيًا. تابع رمضان، الأعياد، اليوم الوطني، وكل لحظة مهمة مع أحبابك.">
+  <meta name="theme-color" content="#0A0E13">
+  <meta property="og:title" content="نبّهني - لا تفوّت أي لحظة مهمة">
+  <meta property="og:description" content="تطبيق العد التنازلي الاجتماعي الأول عربيًا. تابع رمضان، الأعياد، واليوم الوطني.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://nabbihni.com">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" href="https://nabbihni.com/icon.png">
+  <link rel="icon" type="image/png" href="icon.png">
 </head>
 <body>
-  <main class="landing">
-    <img src="icon.png" alt="نبّهني" class="app-icon" onerror="this.style.display='none'">
-    <h1 class="app-name">نبّهني</h1>
-    <p class="app-tagline">تطبيق العد التنازلي الاجتماعي - تابع المناسبات والأعياد مع أصدقائك</p>
 
-    <div class="store-buttons">
-      <a href="#" class="store-btn" id="ios-btn">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-        App Store
+  <!-- Background Effects -->
+  <div class="bg-effects">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="grain"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo">
+        <img src="icon.png" alt="نبّهني" onerror="this.style.display='none'">
+        <span>نبّهني</span>
       </a>
-      <a href="#" class="store-btn" id="android-btn">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.523 2.226a.535.535 0 0 0-.742.1l-2.042 2.94A9.075 9.075 0 0 0 12 4.866a9.12 9.12 0 0 0-2.74.4L7.22 2.326a.535.535 0 1 0-.842.66l1.935 2.787A7.542 7.542 0 0 0 4.5 12h15a7.542 7.542 0 0 0-3.813-6.226l1.935-2.787a.535.535 0 0 0-.099-.761zM9 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm6 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2zM3.5 13A1.5 1.5 0 0 0 2 14.5v5A1.5 1.5 0 0 0 3.5 21 1.5 1.5 0 0 0 5 19.5v-5A1.5 1.5 0 0 0 3.5 13zm17 0a1.5 1.5 0 0 0-1.5 1.5v5a1.5 1.5 0 0 0 3 0v-5a1.5 1.5 0 0 0-1.5-1.5zM5 13v7.5a1.5 1.5 0 0 0 1.5 1.5h1V24a1.5 1.5 0 0 0 3 0v-2h3v2a1.5 1.5 0 0 0 3 0v-2h1a1.5 1.5 0 0 0 1.5-1.5V13H5z"/></svg>
-        Google Play
-      </a>
+      <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="القائمة">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="#features">المميزات</a>
+        <a href="#pricing">الباقات</a>
+        <a href="privacy.html">الخصوصية</a>
+        <a href="#download" class="nav-cta">حمّل الآن</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-content">
+
+    <!-- ========== HERO ========== -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-badge reveal">
+          <span class="pulse"></span>
+          تطبيق سعودي 100%
+        </div>
+
+        <img src="icon.png" alt="نبّهني" class="app-icon reveal reveal-delay-1" onerror="this.style.display='none'">
+
+        <h1 class="reveal reveal-delay-1">
+          لا تفوّت<br><span class="gradient-text">أي لحظة مهمة</span>
+        </h1>
+
+        <p class="subtitle reveal reveal-delay-2">
+          عد تنازلي لكل لحظة تنتظرها. رمضان، العيد، اليوم الوطني، الراتب، أو أي مناسبة خاصة. شاركها مع أحبابك بضغطة واحدة.
+        </p>
+
+        <div class="hero-buttons reveal reveal-delay-3">
+          <a href="#download" class="btn-primary">
+            <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            App Store
+          </a>
+          <a href="#download" class="btn-secondary">
+            <svg viewBox="0 0 24 24"><path d="M3.176 2.098a1.007 1.007 0 0 0-.176.57v18.664c0 .21.063.403.176.57L12.924 12 3.176 2.098zm.924-.822L14.558 7.85l-2.634 2.634L4.1 1.276zm0 21.448l7.824-9.208L14.558 16.15 4.1 22.724zM20.824 12c0-.37-.197-.712-.524-.898l-3.99-2.308-2.886 2.886 2.886 2.886 3.99-2.308c.327-.186.524-.528.524-.898v-.26z"/></svg>
+            Google Play
+          </a>
+        </div>
+
+        <div class="social-proof reveal reveal-delay-4">
+          <div class="proof-item">
+            <span class="number">📱</span>
+            <span>iOS + Android</span>
+          </div>
+          <div class="proof-divider"></div>
+          <div class="proof-item">
+            <span class="number">+50</span>
+            <span>مناسبة سعودية</span>
+          </div>
+          <div class="proof-divider"></div>
+          <div class="proof-item">
+            <span class="number">🇸🇦</span>
+            <span>عربي بالكامل</span>
+          </div>
+          <div class="proof-divider"></div>
+          <div class="proof-item">
+            <span class="number">🔓</span>
+            <span>بدون حساب</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== EVENTS TICKER ========== -->
+    <div class="events-ticker">
+      <div class="ticker-track">
+        <div class="ticker-item"><span class="emoji">🌙</span> <span class="event-name">رمضان ١٤٤٧</span></div>
+        <div class="ticker-item"><span class="emoji">🎉</span> <span class="event-name">عيد الفطر</span></div>
+        <div class="ticker-item"><span class="emoji">🕋</span> <span class="event-name">موسم الحج</span></div>
+        <div class="ticker-item"><span class="emoji">🐑</span> <span class="event-name">عيد الأضحى</span></div>
+        <div class="ticker-item"><span class="emoji">🇸🇦</span> <span class="event-name">اليوم الوطني</span></div>
+        <div class="ticker-item"><span class="emoji">🏴</span> <span class="event-name">يوم التأسيس</span></div>
+        <div class="ticker-item"><span class="emoji">💰</span> <span class="event-name">موعد الراتب</span></div>
+        <div class="ticker-item"><span class="emoji">📚</span> <span class="event-name">بداية الفصل</span></div>
+        <div class="ticker-item"><span class="emoji">🏖️</span> <span class="event-name">إجازة الصيف</span></div>
+        <div class="ticker-item"><span class="emoji">🎓</span> <span class="event-name">التخرج</span></div>
+        <!-- Duplicate for seamless scroll -->
+        <div class="ticker-item"><span class="emoji">🌙</span> <span class="event-name">رمضان ١٤٤٧</span></div>
+        <div class="ticker-item"><span class="emoji">🎉</span> <span class="event-name">عيد الفطر</span></div>
+        <div class="ticker-item"><span class="emoji">🕋</span> <span class="event-name">موسم الحج</span></div>
+        <div class="ticker-item"><span class="emoji">🐑</span> <span class="event-name">عيد الأضحى</span></div>
+        <div class="ticker-item"><span class="emoji">🇸🇦</span> <span class="event-name">اليوم الوطني</span></div>
+        <div class="ticker-item"><span class="emoji">🏴</span> <span class="event-name">يوم التأسيس</span></div>
+        <div class="ticker-item"><span class="emoji">💰</span> <span class="event-name">موعد الراتب</span></div>
+        <div class="ticker-item"><span class="emoji">📚</span> <span class="event-name">بداية الفصل</span></div>
+        <div class="ticker-item"><span class="emoji">🏖️</span> <span class="event-name">إجازة الصيف</span></div>
+        <div class="ticker-item"><span class="emoji">🎓</span> <span class="event-name">التخرج</span></div>
+      </div>
     </div>
 
-    <div class="links">
-      <a href="privacy">سياسة الخصوصية</a>
-      <a href="mailto:kam.baqi.sa@gmail.com">تواصل معنا</a>
-    </div>
-  </main>
+    <!-- ========== FEATURES ========== -->
+    <section id="features">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">المميزات</span>
+          <h2>كل ما تحتاجه في تطبيق واحد</h2>
+          <p>صُمم خصيصًا للمجتمع السعودي والعربي. عربي بالكامل، من اليمين لليسار.</p>
+        </div>
 
-  <footer class="footer">
-    &copy; 2025 نبّهني. جميع الحقوق محفوظة.
-  </footer>
+        <div class="features-grid">
+          <div class="feature-card reveal reveal-delay-1">
+            <span class="feature-icon">🎨</span>
+            <h3>ثيمات خلابة</h3>
+            <p>اختر من مجموعة ثيمات مذهلة لكل عد تنازلي. ألوان متدرجة تناسب كل مناسبة ومزاج.</p>
+          </div>
+
+          <div class="feature-card reveal reveal-delay-2">
+            <span class="feature-icon">🇸🇦</span>
+            <h3>المناسبات السعودية</h3>
+            <p>رمضان، العيدين، اليوم الوطني، يوم التأسيس، والمزيد. كل المناسبات جاهزة بضغطة.</p>
+          </div>
+
+          <div class="feature-card reveal reveal-delay-3">
+            <span class="feature-icon">🎊</span>
+            <h3>احتفال عند الصفر</h3>
+            <p>عندما يصل العد لصفر، استمتع بأنيميشن احتفالي مبهر. شاركه مع أحبابك!</p>
+          </div>
+
+          <div class="feature-card reveal reveal-delay-1">
+            <span class="feature-icon">🔗</span>
+            <h3>شارك بدون حساب</h3>
+            <p>أرسل عد تنازلي لأي شخص برابط ذكي. لا تحتاج حساب ولا تسجيل. خصوصيتك أولوية.</p>
+          </div>
+
+          <div class="feature-card reveal reveal-delay-2">
+            <span class="feature-icon">📱</span>
+            <h3>ويدجت الشاشة</h3>
+            <p>تابع عداداتك من الشاشة الرئيسية مباشرة. ويدجت أنيق لـ iOS و Android.</p>
+          </div>
+
+          <div class="feature-card reveal reveal-delay-3">
+            <span class="feature-icon">💰</span>
+            <h3>عداد الراتب</h3>
+            <p>حدد يوم الراتب ونبّهني يحسبلك الأيام تلقائيًا كل شهر. لا تنسى موعد الراتب أبدًا!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SHOWCASE ========== -->
+    <section class="showcase">
+      <div class="container">
+        <div class="showcase-grid">
+          <div class="showcase-content reveal">
+            <span class="section-label">التجربة</span>
+            <h2>عد تنازلي<br><span class="text-gradient">يستحق الانتظار</span></h2>
+            <p>واجهة مظلمة أنيقة، دعم كامل للعربية، وتجربة استخدام سلسة مصممة بعناية لتناسب ذوقك.</p>
+
+            <ul class="showcase-list">
+              <li>
+                <span class="check">&#10003;</span>
+                <span>دعم كامل للغة العربية (RTL) والإنجليزية</span>
+              </li>
+              <li>
+                <span class="check">&#10003;</span>
+                <span>حساب تلقائي للتقويم الهجري والميلادي</span>
+              </li>
+              <li>
+                <span class="check">&#10003;</span>
+                <span>تنبيهات ذكية قبل كل مناسبة</span>
+              </li>
+              <li>
+                <span class="check">&#10003;</span>
+                <span>يعمل بدون إنترنت - بياناتك على جهازك فقط</span>
+              </li>
+              <li>
+                <span class="check">&#10003;</span>
+                <span>خلفيات مخصصة من صورك الشخصية</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="phone-mockup reveal reveal-delay-2">
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-shine"></div>
+              <div class="phone-screen">
+                <span class="mock-label">العد التنازلي</span>
+                <span class="mock-emoji">🌙</span>
+                <span class="mock-title">رمضان ١٤٤٧</span>
+                <span class="mock-timer" id="mock-countdown">٧ أيام : ١٤ ساعة</span>
+                <span class="mock-label">شارك العد مع أصدقائك</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PRICING ========== -->
+    <section class="pricing" id="pricing">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">الباقات</span>
+          <h2>ابدأ مجانًا، طوّر متى ما حبيت</h2>
+          <p>استمتع بالتطبيق مجانًا أو افتح كل المميزات مع بريميوم</p>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- Free -->
+          <div class="price-card reveal reveal-delay-1">
+            <div class="plan-name">مجاني</div>
+            <div class="price">٠ ريال</div>
+            <div class="price-sub">للأبد</div>
+            <ul class="price-features">
+              <li><span class="icon">&#10003;</span> ٥ عدادات تنازلية</li>
+              <li><span class="icon">&#10003;</span> المناسبات السعودية</li>
+              <li><span class="icon">&#10003;</span> ٥ ثيمات مجانية</li>
+              <li><span class="icon">&#10003;</span> مشاركة الروابط</li>
+              <li><span class="icon">&#10003;</span> ويدجت الشاشة</li>
+            </ul>
+            <a href="#download" class="price-btn price-btn-secondary">حمّل مجانًا</a>
+          </div>
+
+          <!-- Lifetime (Featured) -->
+          <div class="price-card featured reveal reveal-delay-2">
+            <div class="price-badge">الأفضل قيمة</div>
+            <div class="plan-name">بريميوم مدى الحياة</div>
+            <div class="price">٤٩.٩٩ ريال</div>
+            <div class="price-sub">دفعة واحدة - للأبد</div>
+            <ul class="price-features">
+              <li><span class="icon">&#10003;</span> عدادات غير محدودة</li>
+              <li><span class="icon">&#10003;</span> جميع الثيمات الحصرية</li>
+              <li><span class="icon">&#10003;</span> بدون إعلانات نهائيًا</li>
+              <li><span class="icon">&#10003;</span> عداد الراتب التلقائي</li>
+              <li><span class="icon">&#10003;</span> خلفيات مخصصة</li>
+              <li><span class="icon">&#10003;</span> كل التحديثات المستقبلية</li>
+            </ul>
+            <a href="#download" class="price-btn price-btn-primary">احصل عليه الآن</a>
+          </div>
+
+          <!-- Monthly -->
+          <div class="price-card reveal reveal-delay-3">
+            <div class="plan-name">بريميوم شهري</div>
+            <div class="price">٤.٩٩ ريال</div>
+            <div class="price-sub">شهريًا</div>
+            <ul class="price-features">
+              <li><span class="icon">&#10003;</span> عدادات غير محدودة</li>
+              <li><span class="icon">&#10003;</span> جميع الثيمات الحصرية</li>
+              <li><span class="icon">&#10003;</span> بدون إعلانات نهائيًا</li>
+              <li><span class="icon">&#10003;</span> عداد الراتب التلقائي</li>
+              <li><span class="icon">&#10003;</span> خلفيات مخصصة</li>
+              <li><span class="icon">&#10003;</span> إلغاء في أي وقت</li>
+            </ul>
+            <a href="#download" class="price-btn price-btn-secondary">اشترك الآن</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TRUST ========== -->
+    <section>
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">خصوصيتك أولًا</span>
+          <h2>بياناتك ملكك وحدك</h2>
+          <p>صُمم نبّهني ليحترم خصوصيتك بالكامل. لا حسابات، لا تتبع، لا خوادم.</p>
+        </div>
+
+        <div class="trust-grid">
+          <div class="trust-card reveal reveal-delay-1">
+            <span class="trust-icon">🔒</span>
+            <h4>بدون حساب</h4>
+            <p>لا بريد إلكتروني، لا رقم جوال، لا تسجيل. حمّل واستخدم مباشرة.</p>
+          </div>
+          <div class="trust-card reveal reveal-delay-2">
+            <span class="trust-icon">📱</span>
+            <h4>تخزين محلي</h4>
+            <p>كل بياناتك على جهازك فقط. لا نرسل شيء لأي خادم.</p>
+          </div>
+          <div class="trust-card reveal reveal-delay-3">
+            <span class="trust-icon">🛡️</span>
+            <h4>متوافق مع PDPL</h4>
+            <p>نلتزم بنظام حماية البيانات الشخصية في المملكة العربية السعودية.</p>
+          </div>
+          <div class="trust-card reveal reveal-delay-4">
+            <span class="trust-icon">👨‍👩‍👧‍👦</span>
+            <h4>مناسب للعائلة</h4>
+            <p>محتوى نظيف وإعلانات محترمة. مناسب لجميع الأعمار.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CTA ========== -->
+    <section class="cta-section" id="download">
+      <div class="container">
+        <h2 class="reveal">حمّل <span class="text-gradient">نبّهني</span> الآن</h2>
+        <p class="reveal reveal-delay-1">ابدأ العد التنازلي لأهم لحظاتك - مجانًا وبدون حساب</p>
+
+        <div class="cta-buttons reveal reveal-delay-2">
+          <a href="#" class="btn-primary">
+            <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            App Store
+          </a>
+          <a href="#" class="btn-secondary">
+            <svg viewBox="0 0 24 24"><path d="M3.176 2.098a1.007 1.007 0 0 0-.176.57v18.664c0 .21.063.403.176.57L12.924 12 3.176 2.098zm.924-.822L14.558 7.85l-2.634 2.634L4.1 1.276zm0 21.448l7.824-9.208L14.558 16.15 4.1 22.724zM20.824 12c0-.37-.197-.712-.524-.898l-3.99-2.308-2.886 2.886 2.886 2.886 3.99-2.308c.327-.186.524-.528.524-.898v-.26z"/></svg>
+            Google Play
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="brand-name">نبّهني</div>
+            <p>تطبيق العد التنازلي الاجتماعي الأول عربيًا. صُنع بحب في السعودية.</p>
+          </div>
+
+          <div class="footer-links">
+            <div class="footer-col">
+              <h5>التطبيق</h5>
+              <a href="#features">المميزات</a>
+              <a href="#pricing">الباقات</a>
+              <a href="#download">تحميل</a>
+            </div>
+            <div class="footer-col">
+              <h5>قانوني</h5>
+              <a href="privacy.html">سياسة الخصوصية</a>
+              <a href="mailto:kam.baqi.sa@gmail.com">تواصل معنا</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <span>&copy; 2025 نبّهني. جميع الحقوق محفوظة.</span>
+          <span>صُنع بـ ❤️ في المملكة العربية السعودية</span>
+        </div>
+      </div>
+    </footer>
+
+  </div><!-- /page-content -->
+
+  <!-- Scroll Reveal Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+      // Close mobile menu when clicking a nav link
+      document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+          document.querySelector('.nav-links').classList.remove('open');
+        });
+      });
+    });
+  </script>
+
 </body>
 </html>
