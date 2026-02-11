@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "42668767277",
+    "project_id": "nabbihni",
+    "storage_bucket": "nabbihni.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:42668767277:android:066a136af2f99aeae320a4",
+        "android_client_info": {
+          "package_name": "app.nabbihni.countdown"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9BkA8CTqT88Y8PLTEH8MkXxlkSoE6kOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

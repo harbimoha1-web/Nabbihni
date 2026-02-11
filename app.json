@@ -16,9 +16,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.nabbihni.countdown",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "appleTeamId": "A94DV992X6",
       "entitlements": {
         "com.apple.security.application-groups": [
+          "group.app.nabbihni.countdown",
           "group.app.nabbihni.countdown"
         ]
       },
@@ -29,9 +31,13 @@
         "SKAdNetworkItems": [
           {
             "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork"
           }
         ],
-        "NSUserTrackingUsageDescription": "يُستخدم هذا الإذن لتقديم إعلانات مخصصة لك"
+        "NSUserTrackingUsageDescription": "يُستخدم هذا الإذن لتقديم إعلانات مخصصة لك",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -67,6 +73,9 @@
             "DEFAULT"
           ]
         }
+      ],
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -129,7 +138,24 @@
     },
     "extra": {
       "eas": {
-        "projectId": "a9e98f50-3009-4527-9790-0e7d6a4d30d9"
+        "projectId": "a9e98f50-3009-4527-9790-0e7d6a4d30d9",
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "bundleIdentifier": "app.nabbihni.countdown.widget",
+                  "targetName": "NabbihniWidget",
+                  "entitlements": {
+                    "com.apple.security.application-groups": [
+                      "group.app.nabbihni.countdown"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
       }
     },
     "locales": {
