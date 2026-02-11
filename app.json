@@ -20,7 +20,6 @@
       "appleTeamId": "A94DV992X6",
       "entitlements": {
         "com.apple.security.application-groups": [
-          "group.app.nabbihni.countdown",
           "group.app.nabbihni.countdown"
         ]
       },
@@ -29,9 +28,6 @@
         "CFBundleDevelopmentRegion": "ar",
         "GADApplicationIdentifier": "ca-app-pub-7647210654588736~3019839871",
         "SKAdNetworkItems": [
-          {
-            "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork"
-          },
           {
             "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork"
           }
