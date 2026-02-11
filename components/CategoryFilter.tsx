@@ -7,8 +7,9 @@ import {
   Pressable,
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import * as Haptics from 'expo-haptics';
-import { CATEGORIES } from './EmojiPicker';
+import { CATEGORY_KEYS } from './EmojiPicker';
 
 interface CategoryFilterProps {
   selectedCategory: string | null;
@@ -20,6 +21,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   onSelectCategory,
 }) => {
   const { colors } = useTheme();
+  const { t } = useLanguage();
 
   const handleSelect = (icon: string | null) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -54,12 +56,12 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
               },
             ]}
           >
-            الكل
+            {t.explore.all}
           </Text>
         </Pressable>
 
         {/* Category pills */}
-        {CATEGORIES.map((category) => {
+        {CATEGORY_KEYS.map((category) => {
           const isSelected = selectedCategory === category.icon;
           return (
             <Pressable

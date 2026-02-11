@@ -6,24 +6,26 @@ import {
   Pressable,
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import * as Haptics from 'expo-haptics';
 import AnimatedIcon from './AnimatedIcon';
 
 // Life categories - tap to select the icon
-export const CATEGORIES = [
-  { icon: '🎉', nameAr: 'احتفال' },
-  { icon: '❤️', nameAr: 'حب' },
-  { icon: '🏆', nameAr: 'إنجاز' },
-  { icon: '✈️', nameAr: 'سفر' },
-  { icon: '🌙', nameAr: 'روحاني' },
-  { icon: '💼', nameAr: 'عمل' },
-  { icon: '🎓', nameAr: 'دراسة' },
-  { icon: '⚽', nameAr: 'رياضة' },
-  { icon: '🎂', nameAr: 'مناسبة' },
-  { icon: '🏠', nameAr: 'عائلة' },
-  { icon: '💰', nameAr: 'مالي' },
-  { icon: '🌸', nameAr: 'طبيعة' },
-];
+// Keys map to translation keys in emojiPicker
+export const CATEGORY_KEYS = [
+  { icon: '🎉', key: 'celebration' },
+  { icon: '❤️', key: 'love' },
+  { icon: '🏆', key: 'achievement' },
+  { icon: '✈️', key: 'travel' },
+  { icon: '🌙', key: 'spiritual' },
+  { icon: '💼', key: 'work' },
+  { icon: '🎓', key: 'study' },
+  { icon: '⚽', key: 'sports' },
+  { icon: '🎂', key: 'occasion' },
+  { icon: '🏠', key: 'family' },
+  { icon: '💰', key: 'financial' },
+  { icon: '🌸', key: 'nature' },
+] as const;
 
 interface EmojiPickerProps {
   selectedEmoji: string;
@@ -35,6 +37,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
   onSelectEmoji,
 }) => {
   const { colors } = useTheme();
+  const { t } = useLanguage();
 
   const handleSelect = (icon: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -43,10 +46,10 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.text }]}>اختر الفئة</Text>
+      <Text style={[styles.label, { color: colors.text }]}>{t.emojiPicker.chooseCategory}</Text>
 
       <View style={styles.grid}>
-        {CATEGORIES.map((category) => (
+        {CATEGORY_KEYS.map((category) => (
           <Pressable
             key={category.icon}
             onPress={() => handleSelect(category.icon)}
@@ -72,7 +75,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
                 },
               ]}
             >
-              {category.nameAr}
+              {t.emojiPicker[category.key]}
             </Text>
           </Pressable>
         ))}

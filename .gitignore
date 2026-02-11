@@ -36,6 +36,20 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# sensitive keys
+google-services.json
+GoogleService-Info.plist
+play-store-key.json
+monetization-keys.txt
+.env
+
 # generated native folders
 /ios
 /android
+
+# build logs
+build-log*.txt
+
+# temp/accidental files
+nul
+UsersTECHTR*/

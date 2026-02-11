@@ -83,37 +83,38 @@ interface Countdown {
 ### Before TestFlight/Production Build
 
 1. **RevenueCat Setup** (`contexts/SubscriptionContext.tsx`)
-   - [ ] Create account at https://revenuecat.com
-   - [ ] Get iOS API key (format: `appl_XXXXX`) → line 35
-   - [ ] Get Android API key (format: `goog_XXXXX`) → line 36
-   - [ ] Create products: `premium_monthly` (4.99 SAR) and `premium_lifetime` (49.99 SAR)
-   - [ ] Verify `DEV_FORCE_PREMIUM = false` (line 76)
+   - [x] Create account at https://revenuecat.com
+   - [x] Get iOS API key (format: `appl_XXXXX`)
+   - [x] Get Android API key (format: `goog_XXXXX`)
+   - [ ] Verify products exist in RevenueCat Console: `premium_monthly` (4.99 SAR) and `premium_lifetime` (49.99 SAR)
+   - [x] Verify `DEV_FORCE_PREMIUM = false`
 
 2. **AdMob Setup** (`components/AdBanner.tsx`, `app.json`)
-   - [ ] Create AdMob account at https://admob.google.com
-   - [ ] Create iOS and Android apps
-   - [ ] Get ad unit IDs and add to `AdBanner.tsx`
-   - [ ] Update `GADApplicationIdentifier` in `app.json`
+   - [x] Create AdMob account at https://admob.google.com
+   - [x] Create iOS and Android apps
+   - [x] Get ad unit IDs and add to `AdBanner.tsx`
+   - [x] Update `GADApplicationIdentifier` in `app.json`
    - [ ] **Configure halal blocking** in AdMob Console:
      - Block: Alcohol, Gambling, Dating, Music, Tobacco, Lottery
      - Block: Loans, Crypto, Political, Religious (non-Islamic), Sexual
    - [ ] Create `app-ads.txt` at nabbihni.com
 
-3. **Firebase Setup** (Android)
-   - [ ] Create Firebase project at console.firebase.google.com
-   - [ ] Add Android app with package `app.nabbihni.countdown`
-   - [ ] Download `google-services.json` and place in project root
+3. **Firebase Setup** (iOS + Android)
+   - [x] Create Firebase project at console.firebase.google.com
+   - [x] Add Android app with package `app.nabbihni.countdown`
+   - [x] Download `google-services.json` and place in project root
+   - [x] Download `GoogleService-Info.plist` and place in project root
 
 4. **App Store Setup** (`app/(tabs)/settings.tsx`)
    - [ ] After App Store approval, add App Store ID to `handleRateApp`
 
 5. **EAS Setup** (`app.json`)
-   - [ ] Run `eas init` to get project ID
-   - [ ] Update `extra.eas.projectId`
+   - [x] Run `eas init` to get project ID
+   - [x] Update `extra.eas.projectId` (`a9e98f50-3009-4527-9790-0e7d6a4d30d9`)
 
 6. **Widget Setup** (`app.json`)
-   - [ ] Replace `REPLACE_WITH_APPLE_TEAM_ID` in `app.json` → `ios.appleTeamId`
-   - [ ] Widgets auto-register via config plugins (no additional setup needed)
+   - [x] Set `ios.appleTeamId` to `A94DV992X6`
+   - [x] Widgets auto-register via config plugins (no additional setup needed)
    - [ ] Test: `npx expo prebuild` then build with `eas build`
 
 ### Pricing

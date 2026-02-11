@@ -6,17 +6,22 @@ import {
   FlatList,
   Pressable,
   ActivityIndicator,
+  Alert,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { useCountdowns } from '@/hooks/useCountdowns';
 import CountdownCard from '@/components/CountdownCard';
+import CardActionSheet from '@/components/CardActionSheet';
 import AdBanner from '@/components/AdBanner';
 import CategoryFilter from '@/components/CategoryFilter';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { Countdown } from '@/types/countdown';
+import { governmentTemplates } from '@/constants/governmentTemplates';
 
 // Interval for showing ads between cards (every 5th item after processing pairs)
 const AD_INTERVAL = 5;
@@ -27,7 +32,8 @@ type ListItem =
 
 export default function HomeScreen() {
   const { colors } = useTheme();
-  const { countdowns, loading, error, refresh, toggleStar } = useCountdowns();
+  const { t, language } = useLanguage();
+  const { countdowns, loading, error, refresh, toggleStar, remove } = useCountdowns();
   const { checkAndPromptForUpgrade, isPremium, showPremiumFeaturePrompt, shouldShowAds } = useSubscription();
 
   // Separate state for pull-to-refresh (decoupled from loading state to fix flicker)
@@ -35,6 +41,10 @@ export default function HomeScreen() {
 
   // Category filter state (null = show all)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  // Action sheet state
+  const [selectedCountdown, setSelectedCountdown] = useState<Countdown | null>(null);
+  const [actionSheetVisible, setActionSheetVisible] = useState(false);
 
   // Filter countdowns by selected category
   const filteredCountdowns = useMemo(() => {
@@ -85,7 +95,41 @@ export default function HomeScreen() {
   };
 
   const handleCountdownLongPress = (countdown: Countdown) => {
-    toggleStar(countdown.id);
+    setSelectedCountdown(countdown);
+    setActionSheetVisible(true);
+  };
+
+  const handleActionSheetClose = () => {
+    setActionSheetVisible(false);
+    setSelectedCountdown(null);
+  };
+
+  const handleStarAction = () => {
+    if (selectedCountdown) {
+      toggleStar(selectedCountdown.id);
+    }
+  };
+
+  const handleDeleteAction = () => {
+    if (selectedCountdown) {
+      Alert.alert(
+        t.home.deleteConfirmTitle,
+        t.home.deleteConfirmMessage.replace('{title}', selectedCountdown.title),
+        [
+          {
+            text: t.cancel,
+            style: 'cancel',
+          },
+          {
+            text: t.delete,
+            style: 'destructive',
+            onPress: () => {
+              remove(selectedCountdown.id);
+            },
+          },
+        ]
+      );
+    }
   };
 
   const handleSalaryPress = () => {
@@ -96,6 +140,10 @@ export default function HomeScreen() {
     router.push('/countdown/create-salary');
   };
 
+  const handleTemplatePress = (templateId: string) => {
+    router.push(`/countdown/create-template?templateId=${templateId}`);
+  };
+
   // Handle pull-to-refresh with separate state (prevents FlatList flicker)
   const handlePullToRefresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -104,11 +152,11 @@ export default function HomeScreen() {
   }, [refresh]);
 
   const renderEmptyState = () => (
-    <View style={styles.emptyState}>
+    <ScrollView contentContainerStyle={styles.emptyState}>
       <Ionicons name="timer-outline" size={64} color={colors.textSecondary} />
-      <Text style={[styles.emptyTitle, { color: colors.text }]}>لا يوجد عد تنازلي</Text>
+      <Text style={[styles.emptyTitle, { color: colors.text }]}>{t.home.noCountdowns}</Text>
       <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
-        أنشئ أول عد تنازلي لحدث مهم!
+        {t.home.createFirst}
       </Text>
       <View style={styles.emptyButtons}>
         <Pressable
@@ -116,14 +164,14 @@ export default function HomeScreen() {
           style={[styles.createButtonLarge, { backgroundColor: colors.accent }]}
         >
           <Ionicons name="add" size={24} color={colors.background} />
-          <Text style={[styles.createButtonLargeText, { color: colors.background }]}>إنشاء عد تنازلي</Text>
+          <Text style={[styles.createButtonLargeText, { color: colors.background }]}>{t.home.createCountdown}</Text>
         </Pressable>
         <Pressable
           onPress={handleSalaryPress}
           style={[styles.salaryButtonLarge, { backgroundColor: colors.surface, borderColor: colors.accent }]}
         >
           <Text style={styles.salaryIcon}>💰</Text>
-          <Text style={[styles.salaryButtonText, { color: colors.accent }]}>إضافة موعد راتب</Text>
+          <Text style={[styles.salaryButtonText, { color: colors.accent }]}>{t.home.addSalary}</Text>
           {!isPremium && (
             <View style={styles.proBadge}>
               <Text style={styles.proBadgeText}>⭐ PRO</Text>
@@ -131,7 +179,28 @@ export default function HomeScreen() {
           )}
         </Pressable>
       </View>
-    </View>
+
+      {/* Document Templates Section */}
+      <View style={styles.templatesSection}>
+        <Text style={[styles.templatesSectionTitle, { color: colors.text }]}>
+          {t.templates.title}
+        </Text>
+        <View style={styles.templatesGrid}>
+          {governmentTemplates.slice(0, 4).map((template) => (
+            <Pressable
+              key={template.id}
+              onPress={() => handleTemplatePress(template.id)}
+              style={[styles.templateButton, { backgroundColor: colors.surface }]}
+            >
+              <Text style={styles.templateIcon}>{template.icon}</Text>
+              <Text style={[styles.templateTitle, { color: colors.text }]} numberOfLines={1}>
+                {language === 'ar' ? template.titleAr : template.titleEn}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </View>
+    </ScrollView>
   );
 
   const renderContent = () => {
@@ -149,7 +218,7 @@ export default function HomeScreen() {
         <View style={styles.errorContainer}>
           <Text style={[styles.errorText, { color: colors.error }]}>{error}</Text>
           <Pressable onPress={refresh} style={[styles.retryButton, { backgroundColor: colors.surface }]}>
-            <Text style={[styles.retryButtonText, { color: colors.text }]}>إعادة المحاولة</Text>
+            <Text style={[styles.retryButtonText, { color: colors.text }]}>{t.retry}</Text>
           </Pressable>
         </View>
       );
@@ -170,13 +239,13 @@ export default function HomeScreen() {
           <View style={styles.emptyFilterState}>
             <Text style={styles.emptyFilterEmoji}>{selectedCategory}</Text>
             <Text style={[styles.emptyFilterText, { color: colors.textSecondary }]}>
-              لا يوجد عد تنازلي في هذه الفئة
+              {t.home.noCategoryResults}
             </Text>
             <Pressable
               onPress={() => setSelectedCategory(null)}
               style={[styles.showAllButton, { backgroundColor: colors.surface, borderColor: colors.accent }]}
             >
-              <Text style={[styles.showAllButtonText, { color: colors.accent }]}>عرض الكل</Text>
+              <Text style={[styles.showAllButtonText, { color: colors.accent }]}>{t.showAll}</Text>
             </Pressable>
           </View>
         </>
@@ -224,10 +293,36 @@ export default function HomeScreen() {
         onRefresh={handlePullToRefresh}
         refreshing={isRefreshing}
         ListHeaderComponent={
-          <CategoryFilter
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-          />
+          <>
+            <CategoryFilter
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
+            />
+            {/* Document Templates Quick Access */}
+            <View style={styles.templatesHeader}>
+              <Text style={[styles.templatesHeaderTitle, { color: colors.textSecondary }]}>
+                {t.templates.title}
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.templatesHeaderScroll}
+              >
+                {governmentTemplates.map((template) => (
+                  <Pressable
+                    key={template.id}
+                    onPress={() => handleTemplatePress(template.id)}
+                    style={[styles.templateChip, { backgroundColor: colors.surface }]}
+                  >
+                    <Text style={styles.templateChipIcon}>{template.icon}</Text>
+                    <Text style={[styles.templateChipText, { color: colors.text }]} numberOfLines={1}>
+                      {language === 'ar' ? template.titleAr : template.titleEn}
+                    </Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
+          </>
         }
         ListFooterComponent={
           shouldShowAds && filteredCountdowns.length > 0 ? (
@@ -254,7 +349,7 @@ export default function HomeScreen() {
               <Text style={styles.proBadgeTextFab}>⭐ PRO</Text>
             </View>
           )}
-          <Text style={[styles.fabSalaryText, { color: colors.accent }]}>موعد الراتب</Text>
+          <Text style={[styles.fabSalaryText, { color: colors.accent }]}>{t.home.salaryDate}</Text>
           <Text style={styles.fabSalaryIcon}>💰</Text>
         </Pressable>
         <Pressable
@@ -264,6 +359,14 @@ export default function HomeScreen() {
           <Ionicons name="add" size={28} color={colors.background} />
         </Pressable>
       </View>
+
+      <CardActionSheet
+        visible={actionSheetVisible}
+        countdown={selectedCountdown}
+        onClose={handleActionSheetClose}
+        onStar={handleStarAction}
+        onDelete={handleDeleteAction}
+      />
     </SafeAreaView>
   );
 }
@@ -454,5 +557,64 @@ const styles = StyleSheet.create({
   showAllButtonText: {
     fontSize: 16,
     fontWeight: '600',
+  },
+  templatesSection: {
+    marginTop: 32,
+    width: '100%',
+    paddingHorizontal: 8,
+  },
+  templatesSectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  templatesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  templateButton: {
+    width: '45%',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    gap: 8,
+  },
+  templateIcon: {
+    fontSize: 32,
+  },
+  templateTitle: {
+    fontSize: 12,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  templatesHeader: {
+    marginBottom: 16,
+  },
+  templatesHeaderTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 8,
+    paddingHorizontal: 4,
+  },
+  templatesHeaderScroll: {
+    gap: 8,
+  },
+  templateChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  templateChipIcon: {
+    fontSize: 16,
+  },
+  templateChipText: {
+    fontSize: 12,
+    fontWeight: '500',
   },
 });

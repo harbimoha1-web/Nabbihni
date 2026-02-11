@@ -1,0 +1,164 @@
+{
+  "name": "Nabbihni Daily Tweet",
+  "description": "Posts daily countdown tweets to X/Twitter for Nabbihni app",
+  "version": 1,
+  "scheduling": {
+    "type": "daily",
+    "time": "09:00",
+    "timezone": "Asia/Riyadh"
+  },
+  "modules": [
+    {
+      "id": 1,
+      "name": "Schedule",
+      "type": "schedule",
+      "config": {
+        "interval": "1 day",
+        "time": "09:00",
+        "timezone": "Asia/Riyadh"
+      },
+      "output": {
+        "executionTime": "{{now}}"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Google Sheets - Get Events",
+      "type": "google-sheets-search-rows",
+      "config": {
+        "spreadsheetId": "YOUR_SPREADSHEET_ID",
+        "sheetName": "Events",
+        "filter": {}
+      },
+      "output": {
+        "events": "{{rows}}"
+      }
+    },
+    {
+      "id": 3,
+      "name": "Set Variable - Calculate Nearest Event",
+      "type": "tools-set-variable",
+      "config": {
+        "variableName": "nearestEvent",
+        "variableValue": "{{calculated_nearest_event}}"
+      },
+      "logic": {
+        "description": "Calculate days until each event, select the nearest one with positive days",
+        "pseudoCode": [
+          "today = new Date()",
+          "for each event in events:",
+          "  daysUntil = floor((event.date - today) / (1000 * 60 * 60 * 24))",
+          "  if daysUntil > 0 and daysUntil < 60:",
+          "    candidates.push({event, daysUntil})",
+          "nearestEvent = candidates.sort(by daysUntil)[0]"
+        ]
+      },
+      "output": {
+        "nearestEvent": {
+          "event_ar": "{{event_ar}}",
+          "emoji": "{{emoji}}",
+          "hashtag": "{{hashtag}}",
+          "daysUntil": "{{daysUntil}}"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "name": "Google Sheets - Get Random Fact",
+      "type": "google-sheets-search-rows",
+      "config": {
+        "spreadsheetId": "YOUR_SPREADSHEET_ID",
+        "sheetName": "Facts",
+        "filter": {
+          "event_ar": "{{3.nearestEvent.event_ar}}",
+          "used": "No"
+        },
+        "limit": 1,
+        "sortOrder": "random"
+      },
+      "output": {
+        "fact": {
+          "id": "{{id}}",
+          "fact_ar": "{{fact_ar}}",
+          "rowNumber": "{{__ROW_NUMBER__}}"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "name": "Set Variable - Build Tweet",
+      "type": "tools-set-variable",
+      "config": {
+        "variableName": "tweetText",
+        "variableValue": "{{3.nearestEvent.emoji}} نبّهني على {{3.nearestEvent.event_ar}}؟\n\n{{3.nearestEvent.daysUntil}} يوم\n\n💡 هل تعلم؟\n{{4.fact.fact_ar}}\n\n📲 حمّل تطبيق \"نبّهني\"\n🔗 https://onelink.to/nabbihni\n\n{{3.nearestEvent.hashtag}} #نبهني"
+      },
+      "output": {
+        "tweetText": "{{tweetText}}"
+      }
+    },
+    {
+      "id": 6,
+      "name": "Twitter - Create Tweet",
+      "type": "twitter-create-tweet",
+      "config": {
+        "connection": "YOUR_TWITTER_CONNECTION",
+        "text": "{{5.tweetText}}"
+      },
+      "output": {
+        "tweetId": "{{id}}",
+        "tweetUrl": "{{url}}"
+      }
+    },
+    {
+      "id": 7,
+      "name": "Google Sheets - Mark Fact Used",
+      "type": "google-sheets-update-row",
+      "config": {
+        "spreadsheetId": "YOUR_SPREADSHEET_ID",
+        "sheetName": "Facts",
+        "rowNumber": "{{4.fact.rowNumber}}",
+        "values": {
+          "used": "Yes",
+          "used_date": "{{formatDate(now; 'YYYY-MM-DD')}}"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "name": "Google Sheets - Log Post",
+      "type": "google-sheets-add-row",
+      "config": {
+        "spreadsheetId": "YOUR_SPREADSHEET_ID",
+        "sheetName": "Log",
+        "values": {
+          "timestamp": "{{formatDate(now; 'YYYY-MM-DD HH:mm:ss')}}",
+          "event": "{{3.nearestEvent.event_ar}}",
+          "fact_id": "{{4.fact.id}}",
+          "tweet_text": "{{5.tweetText}}",
+          "tweet_url": "{{6.tweetUrl}}"
+        }
+      }
+    }
+  ],
+  "error_handling": {
+    "type": "ignore",
+    "notifications": {
+      "email": true
+    }
+  },
+  "notes": {
+    "setup_steps": [
+      "1. Create Google Sheet with Events, Facts, and Log tabs",
+      "2. Import fun_facts_database.csv into Facts tab",
+      "3. Add events to Events tab with future dates",
+      "4. Connect Google account in Make.com",
+      "5. Connect Twitter account in Make.com",
+      "6. Replace YOUR_SPREADSHEET_ID with actual ID",
+      "7. Test with 'Run once' before activating"
+    ],
+    "placeholders_to_replace": [
+      "YOUR_SPREADSHEET_ID",
+      "YOUR_TWITTER_CONNECTION"
+    ]
+  }
+}
