@@ -54,7 +54,6 @@ export interface Countdown {
   isPublic: boolean;
   createdAt: string;
   sharedWith?: string[]; // User IDs (if social)
-  participantCount?: number; // For shared countdowns
   recurrence?: RecurrenceSettings;  // For recurring countdowns
   isRecurring?: boolean;            // Flag for recurring countdowns
   isStarred?: boolean;              // Pin/star countdown to top
@@ -121,7 +120,6 @@ export interface PublicEvent {
   targetDate: string;
   icon: string;
   theme: ThemeId;
-  participantCount: number;
   category: EventCategory;
   dateConfidence?: DateConfidence;
   dateSource?: string;  // e.g., "Royal Decree", "Ministry of Education"

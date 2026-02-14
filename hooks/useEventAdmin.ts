@@ -26,7 +26,7 @@ interface UseEventAdminResult {
   getOverrideForEvent: (eventId: string) => EventOverride | undefined;
 
   // Custom event operations (for new admin-created events)
-  addEvent: (eventData: Omit<PublicEvent, 'id' | 'baseId' | 'participantCount'> & { participantCount?: number }) => Promise<CustomEvent | null>;
+  addEvent: (eventData: Omit<PublicEvent, 'id' | 'baseId'>) => Promise<CustomEvent | null>;
   updateEvent: (eventId: string, changes: Partial<Omit<CustomEvent, 'id' | 'baseId' | 'isCustom' | 'createdAt'>>) => Promise<CustomEvent | null>;
   deleteEvent: (eventId: string) => Promise<boolean>;
 
@@ -99,7 +99,7 @@ export const useEventAdmin = (): UseEventAdminResult => {
 
   // Add new custom event
   const addEvent = useCallback(async (
-    eventData: Omit<PublicEvent, 'id' | 'baseId' | 'participantCount'> & { participantCount?: number }
+    eventData: Omit<PublicEvent, 'id' | 'baseId'>
   ): Promise<CustomEvent | null> => {
     setSaving(true);
     try {

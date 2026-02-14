@@ -144,7 +144,7 @@ export default function SettingsScreen() {
     // TODO: Replace with actual App Store ID after app approval
     // Get the ID from App Store Connect URL: https://apps.apple.com/app/idXXXXXXXXXX
     // Example: If URL is https://apps.apple.com/app/id1234567890, use '1234567890'
-    const APP_STORE_ID = ''; // TODO: Add App Store ID (numeric only, e.g., '1234567890')
+    const APP_STORE_ID = '6759000350';
 
     if (!APP_STORE_ID) {
       Alert.alert(t.settings.comingSoon, t.settings.rateNotAvailable);

@@ -59,7 +59,6 @@ interface FormData {
   backgroundImage?: string;
   category: EventCategory;
   note: string;
-  participantCount: string;
   dateConfidence: DateConfidence;
 }
 
@@ -93,7 +92,6 @@ export default function EventEditorScreen() {
     backgroundImage: undefined,
     category: 'entertainment' as EventCategory,
     note: '',
-    participantCount: '0',
     dateConfidence: 'confirmed' as DateConfidence,
   });
 
@@ -120,7 +118,6 @@ export default function EventEditorScreen() {
           backgroundImage: undefined,
           category: 'entertainment',
           note: '',
-          participantCount: '0',
           dateConfidence: 'confirmed',
         });
         setLoading(false);
@@ -147,7 +144,6 @@ export default function EventEditorScreen() {
             backgroundImage: customEvent.backgroundImage,
             category: customEvent.category,
             note: customEvent.note || '',
-            participantCount: String(customEvent.participantCount || 0),
             dateConfidence: customEvent.dateConfidence || 'confirmed',
           });
         } else {
@@ -176,7 +172,6 @@ export default function EventEditorScreen() {
             backgroundImage: mergedData.backgroundImage,
             category: mergedData.category,
             note: mergedData.note || '',
-            participantCount: String(mergedData.participantCount || 0),
             dateConfidence: mergedData.dateConfidence || 'confirmed',
           });
         } else {
@@ -216,7 +211,6 @@ export default function EventEditorScreen() {
       backgroundImage: form.backgroundImage,
       category: form.category,
       note: form.note.trim() || undefined,
-      participantCount: parseInt(form.participantCount, 10) || 0,
       dateConfidence: form.dateConfidence,
     };
 
@@ -234,7 +228,6 @@ export default function EventEditorScreen() {
         backgroundImage: eventData.backgroundImage,
         category: eventData.category!,
         note: eventData.note,
-        participantCount: eventData.participantCount,
         dateConfidence: eventData.dateConfidence,
       });
       success = result !== null;
@@ -600,29 +593,6 @@ export default function EventEditorScreen() {
                   color: colors.text,
                   borderColor: colors.border,
                   textAlign: 'right',
-                },
-              ]}
-            />
-          </View>
-
-          {/* Participant Count */}
-          <View style={styles.inputGroup}>
-            <Text style={[styles.label, { color: colors.text }]}>
-              عدد المشاركين (للعرض)
-            </Text>
-            <TextInput
-              value={form.participantCount}
-              onChangeText={(text) => setForm(f => ({ ...f, participantCount: text.replace(/[^0-9]/g, '') }))}
-              placeholder="0"
-              placeholderTextColor={colors.textSecondary}
-              keyboardType="numeric"
-              style={[
-                styles.textInput,
-                {
-                  backgroundColor: colors.surface,
-                  color: colors.text,
-                  borderColor: colors.border,
-                  textAlign: 'center',
                 },
               ]}
             />

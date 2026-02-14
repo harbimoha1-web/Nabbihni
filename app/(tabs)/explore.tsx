@@ -116,7 +116,6 @@ export default function ExploreScreen() {
         theme: event.theme,
         isPublic: true,
         createdAt: event.targetDate, // Stable proxy instead of new Date().toISOString()
-        participantCount: event.participantCount,
         backgroundImage: event.backgroundImage,
       });
     }

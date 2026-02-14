@@ -128,7 +128,7 @@ export const getCustomEvents = async (): Promise<CustomEvent[]> => {
  * Add a new custom event
  */
 export const addCustomEvent = async (
-  eventData: Omit<PublicEvent, 'id' | 'baseId' | 'participantCount'> & { participantCount?: number }
+  eventData: Omit<PublicEvent, 'id' | 'baseId'>
 ): Promise<CustomEvent | null> => {
   try {
     const events = await getCustomEvents();
@@ -138,7 +138,6 @@ export const addCustomEvent = async (
       ...eventData,
       id,
       baseId: id,
-      participantCount: eventData.participantCount || 0,
       isCustom: true,
       createdAt: new Date().toISOString(),
       recurrenceType: eventData.recurrenceType || 'one-time',

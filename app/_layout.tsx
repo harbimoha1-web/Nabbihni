@@ -6,7 +6,7 @@ import { Stack, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Linking from 'expo-linking';
 import { useEffect, useRef, useState } from 'react';
-import { I18nManager, StatusBar, Platform, View, Text, ActivityIndicator } from 'react-native';
+import { I18nManager, StatusBar, Platform, View, Text } from 'react-native';
 
 // Register Android widget task handler (must be at top level)
 if (Platform.OS === 'android') {
@@ -156,12 +156,11 @@ export default function RootLayout() {
     return () => subscription.remove();
   }, []);
 
-  // Show loading while fonts load
+  // Show loading while fonts load — solid color to match splash screen
   if ((!fontsLoaded && !fontError) || !isReady) {
     return (
       <View style={{ flex: 1, backgroundColor: '#0f172a', alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color="#f6ad55" />
-        <Text style={{ color: '#f6ad55', marginTop: 16, fontFamily: 'System' }}>جارٍ التحميل...</Text>
+        <Text style={{ color: '#f6ad55', fontSize: 36, fontWeight: '700' }}>نبّهني</Text>
       </View>
     );
   }

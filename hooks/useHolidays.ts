@@ -76,7 +76,6 @@ export const useHolidays = (): UseHolidaysResult => {
             targetDate: ce.targetDate,
             icon: ce.icon,
             theme: ce.theme,
-            participantCount: ce.participantCount,
             category: ce.category,
             dateConfidence: ce.dateConfidence,
             dateSource: ce.dateSource,

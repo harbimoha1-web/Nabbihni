@@ -113,7 +113,6 @@ export const fetchSaudiHolidays = async (
         targetDate: `${holiday.date.iso}T00:00:00`,
         icon: getHolidayIcon(holiday.name, holiday.type),
         theme: 'default' as const,
-        participantCount: 0,
         category: mapHolidayCategory(holiday.type, holiday.primary_type),
         dateConfidence: getDateConfidence(holiday.type),
         dateSource: 'Calendarific API',

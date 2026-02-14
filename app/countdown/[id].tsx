@@ -49,7 +49,6 @@ const publicEventToCountdown = (event: PublicEvent): Countdown => ({
   theme: event.theme,
   isPublic: true,
   createdAt: new Date().toISOString(),
-  participantCount: event.participantCount,
 });
 
 export default function CountdownDetailScreen() {
@@ -295,19 +294,6 @@ export default function CountdownDetailScreen() {
         <Text style={[styles.title, { color: theme.colors.text }]}>
           {countdown.title}
         </Text>
-
-        {countdown.participantCount && countdown.participantCount > 0 && (
-          <View style={styles.participantsContainer}>
-            <Ionicons
-              name="people-outline"
-              size={18}
-              color={theme.colors.textSecondary}
-            />
-            <Text style={[styles.participantsText, { color: theme.colors.textSecondary }]}>
-              {countdown.participantCount.toLocaleString(language === 'ar' ? 'ar-SA' : 'en-US')} {t.countdown.countingWith}
-            </Text>
-          </View>
-        )}
 
         <View style={styles.timerContainer}>
           <CountdownTimer
@@ -664,15 +650,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 12,
-  },
-  participantsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 32,
-  },
-  participantsText: {
-    fontSize: 14,
   },
   timerContainer: {
     marginVertical: 32,

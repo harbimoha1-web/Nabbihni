@@ -23,7 +23,6 @@ export const translations = {
       noCategoryResults: 'لا يوجد عد تنازلي في هذه الفئة',
       addToFavorites: 'أضف للمفضلة',
       removeFromFavorites: 'إزالة من المفضلة',
-      countingWithYou: 'يعدون معك',
     },
 
     // Salary Screen
@@ -58,7 +57,6 @@ export const translations = {
       notFound: 'العد التنازلي غير موجود',
       timeUp: 'حان الوقت!',
       shareMoment: 'شارك اللحظة',
-      countingWith: 'يعدون معك',
       recurringCountdown: 'عد تنازلي متكرر',
       dayOfMonth: 'يوم الشهر:',
       calendar: 'التقويم:',
@@ -437,7 +435,6 @@ export const translations = {
       noCategoryResults: 'No countdowns in this category',
       addToFavorites: 'Add to Favorites',
       removeFromFavorites: 'Remove from Favorites',
-      countingWithYou: 'counting with you',
     },
 
     // Salary Screen
@@ -472,7 +469,6 @@ export const translations = {
       notFound: 'Countdown not found',
       timeUp: "Time's up!",
       shareMoment: 'Share the moment',
-      countingWith: 'counting with you',
       recurringCountdown: 'Recurring Countdown',
       dayOfMonth: 'Day of month:',
       calendar: 'Calendar:',
