@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -33,8 +33,24 @@ export default function CreateTemplateCountdownScreen() {
     return getTemplateById(templateId || 'id-card') || governmentTemplates[0];
   }, [templateId]);
 
-  const [title, setTitle] = useState(language === 'ar' ? template.titleAr : template.titleEn);
+  const isBirthday = templateId === 'birthday';
+  const defaultTitle = language === 'ar' ? template.titleAr : template.titleEn;
+  const [title, setTitle] = useState(defaultTitle);
+  const [personName, setPersonName] = useState('');
   const [icon, setIcon] = useState(template.icon);
+
+  // Auto-compose title when person name changes (birthday only)
+  useEffect(() => {
+    if (!isBirthday) return;
+    if (personName.trim()) {
+      const composed = language === 'ar'
+        ? `عيد ميلاد ${personName.trim()}`
+        : `${personName.trim()}'s Birthday`;
+      setTitle(composed);
+    } else {
+      setTitle(defaultTitle);
+    }
+  }, [personName, isBirthday, language, defaultTitle]);
   const [theme, setTheme] = useState<ThemeId>(template.theme);
   // Initialize to tomorrow to pass future date validation
   const [expiryDate, setExpiryDate] = useState(() => {
@@ -216,6 +232,23 @@ export default function CreateTemplateCountdownScreen() {
               {language === 'ar' ? template.descriptionAr : template.descriptionEn}
             </Text>
           </View>
+
+          {/* Birthday Person Name (birthday template only) */}
+          {isBirthday && (
+            <View style={[styles.section, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                {t.templates.birthdayPersonName}
+              </Text>
+              <TextInput
+                style={[styles.nameInput, { backgroundColor: colors.background, color: colors.text, borderColor: colors.border }]}
+                value={personName}
+                onChangeText={setPersonName}
+                placeholder={t.templates.birthdayNamePlaceholder}
+                placeholderTextColor={colors.textSecondary}
+                textAlign={language === 'ar' ? 'right' : 'left'}
+              />
+            </View>
+          )}
 
           {/* Date Picker Section */}
           <View style={[styles.section, { backgroundColor: colors.surface }]}>
@@ -476,6 +509,13 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     marginBottom: 16,
+  },
+  nameInput: {
+    height: 50,
+    borderRadius: 12,
+    borderWidth: 1,
+    paddingHorizontal: 16,
+    fontSize: 16,
   },
   sectionTitle: {
     fontSize: 16,

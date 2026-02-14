@@ -86,7 +86,17 @@ interface Countdown {
    - [x] Create account at https://revenuecat.com
    - [x] Get iOS API key (format: `appl_XXXXX`)
    - [x] Get Android API key (format: `goog_XXXXX`)
-   - [ ] Verify products exist in RevenueCat Console: `premium_monthly` (4.99 SAR) and `premium_lifetime` (49.99 SAR)
+   - [ ] Set up products with correct SAR pricing:
+     1. **App Store Connect** → Subscriptions & In-App Purchases:
+        - Create `premium_monthly` — pick price tier closest to **4.99 SAR/mo** (auto-renewable)
+        - Create `premium_lifetime` — pick price tier closest to **79.99 SAR** (non-consumable)
+     2. **Google Play Console** → Monetization → Products:
+        - Create `premium_monthly` — set price directly to **4.99 SAR/mo**
+        - Create `premium_lifetime` — set price directly to **79.99 SAR**
+     3. **RevenueCat** → [Product Catalog](https://app.revenuecat.com/projects/9ea89f17/product-catalog/products):
+        - Add both products (RevenueCat pulls SAR prices from the stores automatically)
+        - Create a **default Offering** with only these 2 packages (remove any extras)
+     4. Verify offerings load in the app (no more "empty offerings" error)
    - [x] Verify `DEV_FORCE_PREMIUM = false`
 
 2. **AdMob Setup** (`components/AdBanner.tsx`, `app.json`)
@@ -120,7 +130,30 @@ interface Countdown {
 ### Pricing
 - Free: 5 countdowns + ads
 - Monthly: 4.99 SAR/month
-- Lifetime: 49.99 SAR (permanent, forever)
+- Lifetime: 79.99 SAR (permanent, forever)
+
+## Lessons Learned
+
+### Black Screen on iOS Dev Build (2026-02-12)
+
+**Symptom:** App shows black screen immediately on launch in iOS dev client.
+
+**Root causes (3 issues compounding):**
+
+1. **`metro.config.js` — Native module stubbing is required for dev.**
+   Native-only modules (`react-native-purchases`, `react-native-google-mobile-ads`, `react-native-android-widget`, `react-native-shared-group-preferences`) must be stubbed (returned as `{ type: 'empty' }`) during local development. They crash during initialization because dev builds don't always have the native code linked. The fix: stub by default, skip stubbing only in EAS builds (`process.env.EAS_BUILD`). Never flip this to "opt-in stubbing" — dev is the common case.
+
+2. **`I18nManager.forceRTL()` + `Updates.reloadAsync()` = infinite loop.**
+   `forceRTL()` only takes effect after a **native** restart. `Updates.reloadAsync()` does a **JS** reload. So the RTL mismatch is still there after reload → triggers another reload → infinite loop. Never call `reloadAsync()` to apply RTL changes. Just call `forceRTL()` and let it take effect on the next natural app restart.
+
+3. **`useFonts` error goes unhandled → stuck loading screen.**
+   `useFonts()` returns `[loaded, error]`. If fonts fail, `loaded` stays `false` forever. If the render gate only checks `!fontsLoaded`, the app hangs on the loading view (which looks like a black screen if splash already hid). Fix: `(!fontsLoaded && !fontError)` — treat error as "done loading."
+
+**Key rules for this project:**
+- `metro.config.js`: Default = stub native modules. `EAS_BUILD` env var = don't stub.
+- `newArchEnabled`: Keep `false` until all native deps officially support New Architecture.
+- Never auto-reload for RTL changes. Prompt the user to restart manually.
+- Always handle both the success AND error states from `useFonts`.
 
 ## TODO
 - [ ] Supabase integration for social features

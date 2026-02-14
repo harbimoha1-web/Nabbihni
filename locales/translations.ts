@@ -194,6 +194,8 @@ export const translations = {
       drivingLicense: 'رخصة القيادة',
       rent: 'موعد الإيجار',
       birthday: 'يوم ميلاد',
+      birthdayPersonName: 'اسم صاحب عيد الميلاد',
+      birthdayNamePlaceholder: 'مثال: سارة',
       expiryDate: 'تاريخ الانتهاء',
       createReminder: 'إنشاء تذكير',
       creating: 'جارٍ الإنشاء...',
@@ -350,8 +352,8 @@ export const translations = {
       lifetime: 'مدى الحياة',
       bestValue: 'أفضل قيمة',
       payOnceOwn: 'ادفع مرة، امتلك للأبد',
-      savePercent: 'وفّر أكثر من 70%',
-      monthlyEquivalent: 'فقط ٤ ر.س/شهر للأبد',
+      savePercent: 'وفّر أكثر من 50%',
+      monthlyEquivalent: 'فقط ٧ ر.س/شهر للأبد',
 
       // CTA
       unlockForever: 'افتح للأبد',
@@ -361,6 +363,13 @@ export const translations = {
       // States
       purchasing: 'جارٍ الشراء...',
       success: 'تم بنجاح!',
+
+      // Legal text (Apple requirement)
+      legalAutoRenew: 'الاشتراك يتجدد تلقائياً ما لم يتم إلغاؤه قبل ٢٤ ساعة على الأقل من نهاية الفترة الحالية. يتم خصم المبلغ من حساب iTunes عند تأكيد الشراء.',
+      legalLifetime: 'شراء لمرة واحدة. يتم خصم المبلغ من حساب iTunes عند تأكيد الشراء.',
+      legalCancel: 'يمكنك إدارة اشتراكك وإلغاء التجديد التلقائي من إعدادات حسابك في App Store بعد الشراء.',
+      privacyPolicy: 'سياسة الخصوصية',
+      termsOfUse: 'شروط الاستخدام',
     },
 
     // Errors
@@ -597,6 +606,8 @@ export const translations = {
       drivingLicense: 'Driving License',
       rent: 'Rent Payment',
       birthday: 'Birthday',
+      birthdayPersonName: "Birthday person's name",
+      birthdayNamePlaceholder: 'e.g. Sarah',
       expiryDate: 'Expiry Date',
       createReminder: 'Create Reminder',
       creating: 'Creating...',
@@ -753,8 +764,8 @@ export const translations = {
       lifetime: 'Lifetime',
       bestValue: 'BEST VALUE',
       payOnceOwn: 'Pay once, own forever',
-      savePercent: 'Save over 70%',
-      monthlyEquivalent: 'Just 4 SAR/month forever',
+      savePercent: 'Save over 50%',
+      monthlyEquivalent: 'Just 7 SAR/month forever',
 
       // CTA
       unlockForever: 'Unlock Forever',
@@ -764,6 +775,13 @@ export const translations = {
       // States
       purchasing: 'Purchasing...',
       success: 'Success!',
+
+      // Legal text (Apple requirement)
+      legalAutoRenew: 'Subscription automatically renews unless canceled at least 24 hours before the end of the current period. Payment is charged to your iTunes account upon confirmation of purchase.',
+      legalLifetime: 'One-time purchase. Payment is charged to your iTunes account upon confirmation of purchase.',
+      legalCancel: 'You can manage your subscription and turn off auto-renewal from your App Store account settings after purchase.',
+      privacyPolicy: 'Privacy Policy',
+      termsOfUse: 'Terms of Use',
     },
 
     // Errors

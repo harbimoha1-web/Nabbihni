@@ -1,8 +1,29 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { TimeRemaining, Theme } from '@/types/countdown';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+// Module-level constants — avoid recreating per render per TimeUnit
+const FONT_SIZES = {
+  compact: { value: 12, label: 7 },
+  small: { value: 22, label: 10 },
+  medium: { value: 28, label: 11 },
+  large: { value: 36, label: 13 },
+} as const;
+
+const CONTAINER_SIZES = {
+  compact: { minWidth: 32, height: 32, paddingVertical: 3, paddingHorizontal: 4 },
+  small: { minWidth: 52, height: 56, paddingVertical: 6, paddingHorizontal: 6 },
+  medium: { minWidth: 68, height: 72, paddingVertical: 8, paddingHorizontal: 8 },
+  large: { minWidth: 70, height: 88, paddingVertical: 10, paddingHorizontal: 6 },
+} as const;
+
+const CONTAINER_GAP = {
+  compact: 4,
+  small: 8,
+  medium: 10,
+  large: 12,
+} as const;
 
 interface TimeUnitProps {
   value: number;
@@ -47,37 +68,22 @@ const getDaysWidth = (days: number, size: 'compact' | 'small' | 'medium' | 'larg
   return baseWidths[size] + extraDigits * widthPerDigit[size];
 };
 
-const TimeUnit: React.FC<TimeUnitProps> = ({ value, label, theme, size = 'medium', isDays = false }) => {
-  // Removed scale animation - was causing blur on every tick
-  // Clean, static rendering is better for readability
-
-  const sizes = {
-    compact: { value: 12, label: 7 },
-    small: { value: 22, label: 10 },
-    medium: { value: 28, label: 11 },
-    large: { value: 36, label: 13 },
-  };
-
-  const containerSizes = {
-    compact: { minWidth: 32, height: 32, paddingVertical: 3, paddingHorizontal: 4 },
-    small: { minWidth: 52, height: 56, paddingVertical: 6, paddingHorizontal: 6 },
-    medium: { minWidth: 68, height: 72, paddingVertical: 8, paddingHorizontal: 8 },
-    large: { minWidth: 70, height: 88, paddingVertical: 10, paddingHorizontal: 6 },
-  };
-
+const TimeUnit: React.FC<TimeUnitProps> = memo(({ value, label, theme, size = 'medium', isDays = false }) => {
   // For 3+ digit numbers, don't pad with zeros
   const displayValue = value >= 100 ? String(value) : String(value).padStart(2, '0');
 
   // Use theme's glass color with adjusted opacity for better visibility
   const glassBackground = 'rgba(245, 243, 240, 0.12)';
 
+  const container = CONTAINER_SIZES[size];
+
   // Calculate dynamic width for days unit
   const unitMinWidth = isDays
     ? getDaysWidth(value, size)
-    : containerSizes[size].minWidth;
+    : container.minWidth;
 
   // Calculate dynamic font size for days (scales down for 3-4+ digit numbers)
-  const baseFontSize = sizes[size].value;
+  const baseFontSize = FONT_SIZES[size].value;
   const actualFontSize = isDays ? getDaysFontSize(value, baseFontSize) : baseFontSize;
 
   return (
@@ -87,9 +93,9 @@ const TimeUnit: React.FC<TimeUnitProps> = ({ value, label, theme, size = 'medium
         {
           backgroundColor: glassBackground,
           minWidth: unitMinWidth,
-          height: containerSizes[size].height,
-          paddingVertical: containerSizes[size].paddingVertical,
-          paddingHorizontal: containerSizes[size].paddingHorizontal,
+          height: container.height,
+          paddingVertical: container.paddingVertical,
+          paddingHorizontal: container.paddingHorizontal,
         },
       ]}
     >
@@ -110,7 +116,7 @@ const TimeUnit: React.FC<TimeUnitProps> = ({ value, label, theme, size = 'medium
           styles.unitLabel,
           {
             color: theme.colors.textSecondary,
-            fontSize: sizes[size].label,
+            fontSize: FONT_SIZES[size].label,
             marginTop: size === 'compact' ? 1 : size === 'small' ? 2 : 4,
           },
         ]}
@@ -119,7 +125,7 @@ const TimeUnit: React.FC<TimeUnitProps> = ({ value, label, theme, size = 'medium
       </Text>
     </View>
   );
-};
+});
 
 interface CountdownTimerProps {
   timeRemaining: TimeRemaining;
@@ -153,16 +159,8 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
   // Hide separators for compact mode to save space
   const showSeparators = size !== 'compact';
 
-  // Gap between time units - need proper spacing even in compact mode
-  const containerGap = {
-    compact: 4,
-    small: 8,
-    medium: 10,
-    large: 12,
-  }[size];
-
   return (
-    <View style={[styles.container, { gap: containerGap }]}>
+    <View style={[styles.container, { gap: CONTAINER_GAP[size] }]}>
       {showingDays && (
         <>
           <TimeUnit value={days} label={t.timeUnits.days} theme={theme} size={size} isDays />

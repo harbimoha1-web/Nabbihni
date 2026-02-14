@@ -81,10 +81,18 @@ export default function RootLayout() {
 
   // Hide splash when ready
   useEffect(() => {
-    if (fontsLoaded && isReady) {
+    if ((fontsLoaded || fontError) && isReady) {
       SplashScreen.hideAsync().catch(() => {});
     }
-  }, [fontsLoaded, isReady]);
+  }, [fontsLoaded, fontError, isReady]);
+
+  // Safety timeout: force-hide splash after 5s to prevent permanent black screen
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      SplashScreen.hideAsync().catch(() => {});
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   // Setup notifications (non-blocking)
   useEffect(() => {
@@ -149,7 +157,7 @@ export default function RootLayout() {
   }, []);
 
   // Show loading while fonts load
-  if (!fontsLoaded || !isReady) {
+  if ((!fontsLoaded && !fontError) || !isReady) {
     return (
       <View style={{ flex: 1, backgroundColor: '#0f172a', alignItems: 'center', justifyContent: 'center' }}>
         <ActivityIndicator size="large" color="#f6ad55" />

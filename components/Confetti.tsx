@@ -79,18 +79,7 @@ const ConfettiPiece: React.FC<ConfettiPieceProps> = ({ index, onComplete }) => {
         }
       })
     );
-  }, [
-    delay,
-    duration,
-    horizontalDrift,
-    index,
-    onComplete,
-    opacity,
-    rotate,
-    scale,
-    translateX,
-    translateY,
-  ]);
+  }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [

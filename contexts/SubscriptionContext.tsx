@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
 import { Platform, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -39,7 +39,7 @@ try {
 }
 
 // RevenueCat Configuration (Production keys — configured 2026-02)
-// Products: com.nabbihni.premium.monthly (4.99 SAR), com.nabbihni.premium.lifetime (49.99 SAR)
+// Products: com.nabbihni.premium.monthly (4.99 SAR), com.nabbihni.premium.lifetime (79.99 SAR)
 // Entitlement: "premium"
 const REVENUECAT_IOS_API_KEY = 'appl_bapASHjWolpHWzEdmLqgzBOcwFy';
 const REVENUECAT_ANDROID_API_KEY = 'goog_FXMvptjwLkbiOCyxjoFKnjVEfOS';
@@ -93,7 +93,7 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
   const [isLoading, setIsLoading] = useState(false); // Start false - don't block UI
   const [monthlyPrice, setMonthlyPrice] = useState<string>('4.99 SAR');
   const [monthlyPackage, setMonthlyPackage] = useState<PurchasesPackage | null>(null);
-  const [lifetimePrice, setLifetimePrice] = useState<string>('49.99 SAR');
+  const [lifetimePrice, setLifetimePrice] = useState<string>('79.99 SAR');
   const [lifetimePackage, setLifetimePackage] = useState<PurchasesPackage | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -392,21 +392,23 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
     };
   }, [isInitialized]);
 
+  const value = useMemo(() => ({
+    isPremium,
+    isLoading,
+    monthlyPrice,
+    monthlyPackage,
+    lifetimePrice,
+    lifetimePackage,
+    purchaseMonthly,
+    purchaseLifetime,
+    restorePurchases,
+    refreshCustomerInfo,
+  }), [isPremium, isLoading, monthlyPrice, monthlyPackage,
+       lifetimePrice, lifetimePackage, purchaseMonthly,
+       purchaseLifetime, restorePurchases, refreshCustomerInfo]);
+
   return (
-    <SubscriptionContext.Provider
-      value={{
-        isPremium,
-        isLoading,
-        monthlyPrice,
-        monthlyPackage,
-        lifetimePrice,
-        lifetimePackage,
-        purchaseMonthly,
-        purchaseLifetime,
-        restorePurchases,
-        refreshCustomerInfo,
-      }}
-    >
+    <SubscriptionContext.Provider value={value}>
       {children}
     </SubscriptionContext.Provider>
   );

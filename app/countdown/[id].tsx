@@ -35,6 +35,7 @@ import TaskList from '@/components/TaskList';
 import { getTheme } from '@/constants/themes';
 import { useTheme } from '@/contexts/ThemeContext';
 import { publicEvents } from '@/constants/publicEvents';
+import { processEventsWithRecurrence } from '@/lib/eventRecurrenceEngine';
 import { Countdown, PublicEvent } from '@/types/countdown';
 import { shareImage } from '@/lib/captureShare';
 
@@ -54,13 +55,32 @@ const publicEventToCountdown = (event: PublicEvent): Countdown => ({
 export default function CountdownDetailScreen() {
   const { colors } = useTheme();
   const { t, language } = useLanguage();
-  const { id } = useLocalSearchParams<{ id: string; public?: string }>();
-  const searchParams = useLocalSearchParams();
+  const searchParams = useLocalSearchParams<{ id: string; public?: string; eventData?: string }>();
   const isPublicEvent = searchParams.public === 'true';
+  const id = searchParams.id;
 
-  // For public events, get from constants
+  // For public events, first try event data passed from explore page,
+  // then fall back to static lookup (for deep links)
   const publicEvent = isPublicEvent
-    ? publicEvents.find((e) => e.id === id)
+    ? (() => {
+        // First: use event data passed from explore page
+        if (searchParams.eventData) {
+          try { return JSON.parse(searchParams.eventData) as PublicEvent; } catch {}
+        }
+        // Fallback: static lookup (for deep links)
+        return publicEvents.find((e) => e.id === id)
+          || (() => {
+              const baseId = id?.replace(/-\d{4}$/, '');
+              const sourceEvent = publicEvents.find(
+                (e) => e.baseId === baseId || e.id.replace(/-\d{4}$/, '') === baseId
+              );
+              if (sourceEvent) {
+                const processed = processEventsWithRecurrence([sourceEvent]);
+                return processed[0] || null;
+              }
+              return null;
+            })();
+      })()
     : null;
 
   // For personal countdowns, get from storage

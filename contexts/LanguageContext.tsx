@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { I18nManager, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { translations, Language, TranslationKeys } from '@/locales/translations';
@@ -13,6 +13,10 @@ try {
 
 const LANGUAGE_STORAGE_KEY = '@nabbihni/language';
 
+const getDeviceLanguage = (): Language => {
+  return I18nManager.isRTL ? 'ar' : 'en';
+};
+
 interface LanguageContextType {
   language: Language;
   isRTL: boolean;
@@ -23,16 +27,25 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>('ar');
+  const [language, setLanguageState] = useState<Language>(getDeviceLanguage());
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load saved language preference
+  // Load saved language preference and sync RTL state
   useEffect(() => {
     const loadLanguage = async () => {
       try {
         const saved = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
-        if (saved && (saved === 'ar' || saved === 'en')) {
-          setLanguageState(saved as Language);
+        const lang: Language = (saved === 'ar' || saved === 'en') ? saved : getDeviceLanguage();
+        setLanguageState(lang);
+
+        // Sync native RTL with saved language (takes effect on next native restart)
+        const shouldBeRTL = lang === 'ar';
+        if (I18nManager.isRTL !== shouldBeRTL) {
+          I18nManager.allowRTL(shouldBeRTL);
+          I18nManager.forceRTL(shouldBeRTL);
+          // Don't call Updates.reloadAsync() here — forceRTL only takes effect
+          // after a native restart, not a JS reload. Calling reloadAsync() would
+          // cause an infinite reload loop since isRTL never changes during JS reloads.
         }
       } catch (e) {
         console.error('Failed to load language:', e);
@@ -100,10 +113,14 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   const isRTL = language === 'ar';
   const t = translations[language];
 
+  const value = useMemo(() => ({
+    language, isRTL, t, setLanguage,
+  }), [language, isRTL, t, setLanguage]);
+
   // Always render provider - loading state handled by parent
   // This prevents the blocking null chain that causes startup freeze
   return (
-    <LanguageContext.Provider value={{ language, isRTL, t, setLanguage }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );

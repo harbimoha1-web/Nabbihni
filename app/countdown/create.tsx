@@ -26,10 +26,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useSubscription } from '@/hooks/useSubscription';
-import { ThemeId, RecurrenceType, RecurrenceSettings, ReminderOption, ReminderTiming } from '@/types/countdown';
-
-// Available recurrence types for general recurring (excluding salary which has its own screen)
-const AVAILABLE_RECURRENCE_TYPES: RecurrenceType[] = ['daily', 'weekly', 'monthly', 'yearly'];
+import { ThemeId, RecurrenceSettings, ReminderOption, ReminderTiming } from '@/types/countdown';
 
 export default function CreateCountdownScreen() {
   const { colors } = useTheme();
@@ -43,26 +40,6 @@ export default function CreateCountdownScreen() {
   const isEditMode = mode === 'edit' && !!id;
   const { countdown: existingCountdown, loading: loadingExisting } = useSingleCountdown(isEditMode ? id : '');
 
-  // Recurrence type labels based on current language
-  const recurrenceTypeLabels: Record<RecurrenceType, string> = {
-    salary: t.recurrence.salary,
-    daily: t.recurrence.daily,
-    weekly: t.recurrence.weekly,
-    monthly: t.recurrence.monthly,
-    yearly: t.recurrence.yearly,
-  };
-
-  // Weekday labels based on current language
-  const weekdayLabels: Record<number, string> = {
-    0: t.weekdays.sun,
-    1: t.weekdays.mon,
-    2: t.weekdays.tue,
-    3: t.weekdays.wed,
-    4: t.weekdays.thu,
-    5: t.weekdays.fri,
-    6: t.weekdays.sat,
-  };
-
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
   const [targetDate, setTargetDate] = useState(new Date(Date.now() + 86400000)); // Tomorrow
@@ -75,8 +52,6 @@ export default function CreateCountdownScreen() {
 
   // Recurring countdown settings (premium only)
   const [isRecurring, setIsRecurring] = useState(false);
-  const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>('weekly');
-  const [selectedDayOfWeek, setSelectedDayOfWeek] = useState(0); // Sunday
   const [isFormInitialized, setIsFormInitialized] = useState(!isEditMode);
 
   // Reminder settings - ALL options selected by default
@@ -161,12 +136,6 @@ export default function CreateCountdownScreen() {
       setTheme(existingCountdown.theme);
       setBackgroundImage(existingCountdown.backgroundImage);
       setIsRecurring(existingCountdown.isRecurring || false);
-      if (existingCountdown.recurrence) {
-        setRecurrenceType(existingCountdown.recurrence.type);
-        if (existingCountdown.recurrence.dayOfWeek !== undefined) {
-          setSelectedDayOfWeek(existingCountdown.recurrence.dayOfWeek);
-        }
-      }
       // Load existing reminder timings
       if (existingCountdown.reminderTiming && Array.isArray(existingCountdown.reminderTiming)) {
         // Standard reminders (strings)
@@ -196,13 +165,12 @@ export default function CreateCountdownScreen() {
     if (!isRecurring) return undefined;
 
     return {
-      type: recurrenceType,
+      type: 'yearly',
       calendarType: 'gregorian',
       dayOfMonth: targetDate.getDate(),
       adjustmentRule: 'smart',
-      dayOfWeek: recurrenceType === 'weekly' ? selectedDayOfWeek : undefined,
     };
-  }, [isRecurring, recurrenceType, targetDate, selectedDayOfWeek]);
+  }, [isRecurring, targetDate]);
 
   const handleRecurringToggle = (value: boolean) => {
     if (value && !isPremium) {
@@ -661,71 +629,11 @@ export default function CreateCountdownScreen() {
             </View>
 
             {isRecurring && (
-              <View style={[styles.recurrenceOptions, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-                <Text style={[styles.recurrenceLabel, { color: colors.text, textAlign: isRTL ? 'right' : 'left' }]}>
-                  {t.create.recurrenceType}
+              <View style={[styles.recurrenceInfo, { backgroundColor: colors.accent + '10', marginTop: 12 }]}>
+                <Ionicons name="repeat-outline" size={18} color={colors.accent} />
+                <Text style={[styles.recurrenceInfoText, { color: colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>
+                  {t.create.recurringInfo}
                 </Text>
-                <View style={styles.recurrenceTypes}>
-                  {AVAILABLE_RECURRENCE_TYPES.map((type) => (
-                    <Pressable
-                      key={type}
-                      onPress={() => setRecurrenceType(type)}
-                      style={[
-                        styles.recurrenceTypeButton,
-                        { backgroundColor: colors.surfaceSecondary, borderColor: colors.border },
-                        recurrenceType === type && { borderColor: colors.accent, backgroundColor: colors.accent + '20' },
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.recurrenceTypeText,
-                          { color: recurrenceType === type ? colors.accent : colors.textSecondary },
-                        ]}
-                      >
-                        {recurrenceTypeLabels[type]}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
-
-                {recurrenceType === 'weekly' && (
-                  <View style={styles.weekdayPicker}>
-                    <Text style={[styles.recurrenceLabel, { color: colors.text, textAlign: isRTL ? 'right' : 'left' }]}>
-                      {t.create.dayOfWeek}
-                    </Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.weekdayScroll}>
-                      <View style={styles.weekdayRow}>
-                        {[0, 1, 2, 3, 4, 5, 6].map((day) => (
-                          <Pressable
-                            key={day}
-                            onPress={() => setSelectedDayOfWeek(day)}
-                            style={[
-                              styles.weekdayButton,
-                              { backgroundColor: colors.surfaceSecondary, borderColor: colors.border },
-                              selectedDayOfWeek === day && { borderColor: colors.accent, backgroundColor: colors.accent + '20' },
-                            ]}
-                          >
-                            <Text
-                              style={[
-                                styles.weekdayText,
-                                { color: selectedDayOfWeek === day ? colors.accent : colors.textSecondary },
-                              ]}
-                            >
-                              {weekdayLabels[day]}
-                            </Text>
-                          </Pressable>
-                        ))}
-                      </View>
-                    </ScrollView>
-                  </View>
-                )}
-
-                <View style={[styles.recurrenceInfo, { backgroundColor: colors.accent + '10' }]}>
-                  <Ionicons name="repeat-outline" size={18} color={colors.accent} />
-                  <Text style={[styles.recurrenceInfoText, { color: colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>
-                    {t.create.recurringInfo}
-                  </Text>
-                </View>
               </View>
             )}
           </View>
@@ -884,53 +792,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     color: '#000',
-  },
-  recurrenceOptions: {
-    marginTop: 12,
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  recurrenceLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 12,
-  },
-  recurrenceTypes: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  recurrenceTypeButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 10,
-    borderWidth: 1.5,
-  },
-  recurrenceTypeText: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  weekdayPicker: {
-    marginTop: 16,
-  },
-  weekdayScroll: {
-    marginHorizontal: -16,
-    paddingHorizontal: 16,
-  },
-  weekdayRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  weekdayButton: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 10,
-    borderWidth: 1.5,
-  },
-  weekdayText: {
-    fontSize: 12,
-    fontWeight: '500',
   },
   recurrenceInfo: {
     flexDirection: 'row',

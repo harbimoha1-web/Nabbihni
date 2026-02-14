@@ -66,7 +66,7 @@ function prepareWidgetData(countdowns: Countdown[]): WidgetData {
       // Then by nearest date
       return aTime - bTime;
     })
-    .slice(0, 3); // Top 3 for widget display
+    .slice(0, 5); // Top 5 for widget display
 
   const widgetCountdowns: WidgetCountdown[] = sorted.map((c) => {
     const theme = getTheme(c.theme);
@@ -125,9 +125,10 @@ export async function syncWidgetData(): Promise<void> {
 async function syncAndroidWidget(): Promise<void> {
   try {
     const { requestWidgetUpdate } = require('react-native-android-widget');
-    // Update both small and medium widgets
+    // Update small, medium, and large widgets
     await requestWidgetUpdate({ widgetName: 'CountdownSmall' }).catch(() => {});
     await requestWidgetUpdate({ widgetName: 'CountdownMedium' }).catch(() => {});
+    await requestWidgetUpdate({ widgetName: 'CountdownLarge' }).catch(() => {});
   } catch {
     // Module not available (Expo Go or web)
   }

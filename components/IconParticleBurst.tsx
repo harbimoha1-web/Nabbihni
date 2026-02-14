@@ -1611,87 +1611,87 @@ export const IconParticleBurst: React.FC<IconParticleBurstProps> = memo(({
 }) => {
   const config = useMemo(() => getParticleConfig(emoji), [emoji]);
 
-  const renderParticles = () => {
+  const particles = useMemo(() => {
     // Return nothing for 'none' type - no particles for unmatched emojis
     if (config.type === 'none') {
       return [];
     }
 
-    const particles = [];
+    const result = [];
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const color = config.colors[i % config.colors.length];
 
       switch (config.type) {
         case 'hearts':
-          particles.push(
+          result.push(
             <HeartParticle key={i} index={i} color={color} containerSize={size} glow={config.glow} />
           );
           break;
         case 'confetti':
-          particles.push(
+          result.push(
             <ConfettiParticle key={i} index={i} total={PARTICLE_COUNT} color={color} />
           );
           break;
         case 'stars':
-          particles.push(
+          result.push(
             <StarParticle key={i} index={i} total={PARTICLE_COUNT} color={color} glow={config.glow} />
           );
           break;
         case 'trail':
-          particles.push(
+          result.push(
             <TrailParticle key={i} index={i} color={color} glow={config.glow} />
           );
           break;
         case 'petals':
-          particles.push(
+          result.push(
             <PetalParticle key={i} index={i} color={color} containerSize={size} />
           );
           break;
         case 'motion':
-          particles.push(
+          result.push(
             <MotionParticle key={i} index={i} color={color} />
           );
           break;
         case 'coins':
-          particles.push(
+          result.push(
             <CoinParticle key={i} index={i} total={PARTICLE_COUNT} color={color} glow={config.glow} />
           );
           break;
         case 'crescents':
-          particles.push(
+          result.push(
             <CrescentParticle key={i} index={i} total={PARTICLE_COUNT} color={color} glow={config.glow} />
           );
           break;
         case 'wisps':
-          particles.push(
+          result.push(
             <WispParticle key={i} index={i} color={color} />
           );
           break;
         case 'glow':
-          particles.push(
+          result.push(
             <GlowParticle key={i} index={i} total={PARTICLE_COUNT} color={color} glow={config.glow} />
           );
           break;
         case 'spotlights':
-          particles.push(
+          result.push(
             <SpotlightParticle key={i} index={i} total={PARTICLE_COUNT} color={color} glow={config.glow} />
           );
           break;
         case 'shimmer':
-          particles.push(
+          result.push(
             <ShimmerParticle key={i} index={i} total={PARTICLE_COUNT} color={color} />
           );
           break;
       }
     }
 
-    return particles;
-  };
+    return result;
+  }, [config, size]);
 
   return (
     <View style={[styles.container, { width: size, height: size }]} pointerEvents="none">
-      {renderParticles()}
+      {particles}
     </View>
   );
 });

@@ -34,16 +34,33 @@ const calculateTimeRemaining = (targetDate: string): TimeRemaining => {
   };
 };
 
+/**
+ * Shared tick hook — runs ONE setInterval for the entire list screen.
+ * Pass the returned `tick` value to each card's useCountdown via `externalTick`.
+ */
+export const useCountdownTick = (intervalMs = 1000): number => {
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), intervalMs);
+    return () => clearInterval(id);
+  }, [intervalMs]);
+
+  return tick;
+};
+
 interface UseCountdownOptions {
   targetDate: string;
   onComplete?: () => void;
   updateInterval?: number; // in ms, default 1000
+  externalTick?: number; // when provided, skip own interval
 }
 
 export const useCountdown = ({
   targetDate,
   onComplete,
   updateInterval = 1000,
+  externalTick,
 }: UseCountdownOptions) => {
   const { t } = useLanguage();
   const [timeRemaining, setTimeRemaining] = useState<TimeRemaining>(() =>
@@ -51,6 +68,8 @@ export const useCountdown = ({
   );
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const hasCompletedRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   const updateTime = useCallback(() => {
     const remaining = calculateTimeRemaining(targetDate);
@@ -58,12 +77,20 @@ export const useCountdown = ({
 
     if (remaining.isComplete && !hasCompletedRef.current) {
       hasCompletedRef.current = true;
-      onComplete?.();
+      onCompleteRef.current?.();
     }
-  }, [targetDate, onComplete]);
+  }, [targetDate]);
 
+  // When driven by externalTick, recalculate on each tick (no own interval)
   useEffect(() => {
-    // Reset completion tracking when target date changes
+    if (externalTick === undefined) return;
+    hasCompletedRef.current = false;
+    updateTime();
+  }, [externalTick, updateTime]);
+
+  // Self-managed interval only when no externalTick is provided
+  useEffect(() => {
+    if (externalTick !== undefined) return;
     hasCompletedRef.current = false;
     updateTime();
 
@@ -74,7 +101,7 @@ export const useCountdown = ({
         clearInterval(intervalRef.current);
       }
     };
-  }, [updateTime, updateInterval]);
+  }, [updateTime, updateInterval, externalTick]);
 
   const formatTime = useCallback(
     (compact = false): string => {

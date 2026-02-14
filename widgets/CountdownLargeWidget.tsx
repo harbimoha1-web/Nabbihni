@@ -43,7 +43,7 @@ function EmptyWidget() {
   );
 }
 
-export function CountdownMediumWidget({ countdowns }: Props) {
+export function CountdownLargeWidget({ countdowns }: Props) {
   if (!countdowns || countdowns.length === 0) return <EmptyWidget />;
 
   return (

@@ -327,6 +327,105 @@ struct MediumCountdownView: View {
     }
 }
 
+// MARK: - Large Widget View
+
+struct LargeCountdownView: View {
+    let entry: CountdownTimelineEntry
+
+    var body: some View {
+        if entry.countdowns.isEmpty {
+            emptyView
+        } else {
+            ZStack {
+                Color(hex: "#0F1419")
+
+                VStack(spacing: 6) {
+                    // Header
+                    HStack {
+                        Text("⏳ نبّهني")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(Color(hex: "#F59E0B"))
+                        Spacer()
+                        Text("\(entry.countdowns.count) عدادات")
+                            .font(.system(size: 11))
+                            .foregroundColor(.white.opacity(0.48))
+                    }
+                    .padding(.horizontal, 4)
+                    .padding(.bottom, 4)
+
+                    // Countdown rows (up to 5)
+                    ForEach(entry.countdowns.prefix(5)) { countdown in
+                        countdownRow(countdown)
+                    }
+
+                    Spacer(minLength: 0)
+                }
+                .padding(14)
+            }
+        }
+    }
+
+    private func countdownRow(_ countdown: WidgetCountdown) -> some View {
+        HStack(spacing: 10) {
+            // Emoji badge
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(.white.opacity(0.08))
+                    .frame(width: 36, height: 36)
+                Text(countdown.icon)
+                    .font(.system(size: 18))
+            }
+
+            // Title
+            Text(countdown.title)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(.white)
+                .lineLimit(1)
+
+            Spacer()
+
+            // Time badge
+            Text(timeString(countdown))
+                .font(.system(size: 12, weight: .bold))
+                .foregroundColor(countdown.isComplete ? Color(hex: "#34D399") : Color(hex: "#F59E0B"))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 4)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(countdown.isComplete
+                              ? Color(hex: "#34D399").opacity(0.15)
+                              : Color(hex: "#F59E0B").opacity(0.15))
+                )
+        }
+        .padding(10)
+        .background(
+            RoundedRectangle(cornerRadius: 14)
+                .fill(.white.opacity(0.06))
+        )
+    }
+
+    private func timeString(_ c: WidgetCountdown) -> String {
+        if c.isComplete { return "حان الوقت! 🎉" }
+        if c.daysRemaining > 0 { return "\(c.daysRemaining) يوم" }
+        if c.hoursRemaining > 0 { return "\(c.hoursRemaining) ساعة" }
+        return "\(c.minutesRemaining) دقيقة"
+    }
+
+    private var emptyView: some View {
+        ZStack {
+            Color(hex: "#0F1419")
+            VStack(spacing: 6) {
+                Text("⏳ نبّهني")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(.white)
+                Text("أضف عدادات لتظهر هنا")
+                    .font(.system(size: 13))
+                    .foregroundColor(.white.opacity(0.48))
+            }
+        }
+    }
+}
+
 // MARK: - Widget Configuration
 
 struct NabbihniSmallWidget: Widget {
@@ -361,10 +460,27 @@ struct NabbihniMediumWidget: Widget {
     }
 }
 
+struct NabbihniLargeWidget: Widget {
+    let kind: String = "NabbihniLargeWidget"
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: CountdownTimelineProvider()) { entry in
+            LargeCountdownView(entry: entry)
+                .containerBackground(for: .widget) {
+                    Color(hex: "#0F1419")
+                }
+        }
+        .configurationDisplayName("كل عداداتي")
+        .description("تابع جميع العدادات")
+        .supportedFamilies([.systemLarge])
+    }
+}
+
 @main
 struct NabbihniWidgetBundle: WidgetBundle {
     var body: some Widget {
         NabbihniSmallWidget()
         NabbihniMediumWidget()
+        NabbihniLargeWidget()
     }
 }

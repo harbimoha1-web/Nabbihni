@@ -20,6 +20,7 @@ import CategoryFilter from '@/components/CategoryFilter';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useCountdownTick } from '@/hooks/useCountdown';
 import { Countdown } from '@/types/countdown';
 import { governmentTemplates } from '@/constants/governmentTemplates';
 
@@ -30,11 +31,52 @@ type ListItem =
   | { type: 'countdown-pair'; data: [Countdown, Countdown | null] }
   | { type: 'ad'; id: string };
 
+// Memoized row component — stabilizes per-card callbacks
+const CountdownPairRow = React.memo(({
+  pair,
+  onPress,
+  onLongPress,
+  tick,
+}: {
+  pair: [Countdown, Countdown | null];
+  onPress: (countdown: Countdown) => void;
+  onLongPress: (countdown: Countdown) => void;
+  tick: number;
+}) => {
+  const [first, second] = pair;
+  const handlePressFirst = useCallback(() => onPress(first), [onPress, first]);
+  const handleLongPressFirst = useCallback(() => onLongPress(first), [onLongPress, first]);
+  const handlePressSecond = useCallback(() => second && onPress(second), [onPress, second]);
+  const handleLongPressSecond = useCallback(() => second && onLongPress(second), [onLongPress, second]);
+
+  return (
+    <View style={styles.row}>
+      <CountdownCard
+        countdown={first}
+        onPress={handlePressFirst}
+        onLongPress={handleLongPressFirst}
+        tick={tick}
+      />
+      {second ? (
+        <CountdownCard
+          countdown={second}
+          onPress={handlePressSecond}
+          onLongPress={handleLongPressSecond}
+          tick={tick}
+        />
+      ) : (
+        <View style={styles.emptyCard} />
+      )}
+    </View>
+  );
+});
+
 export default function HomeScreen() {
   const { colors } = useTheme();
   const { t, language } = useLanguage();
   const { countdowns, loading, error, refresh, toggleStar, remove } = useCountdowns();
   const { checkAndPromptForUpgrade, isPremium, showPremiumFeaturePrompt, shouldShowAds } = useSubscription();
+  const tick = useCountdownTick();
 
   // Separate state for pull-to-refresh (decoupled from loading state to fix flicker)
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -90,14 +132,14 @@ export default function HomeScreen() {
     }, [])
   );
 
-  const handleCountdownPress = (countdown: Countdown) => {
+  const handleCountdownPress = useCallback((countdown: Countdown) => {
     router.push(`/countdown/${countdown.id}`);
-  };
+  }, []);
 
-  const handleCountdownLongPress = (countdown: Countdown) => {
+  const handleCountdownLongPress = useCallback((countdown: Countdown) => {
     setSelectedCountdown(countdown);
     setActionSheetVisible(true);
-  };
+  }, []);
 
   const handleActionSheetClose = () => {
     setActionSheetVisible(false);
@@ -150,6 +192,25 @@ export default function HomeScreen() {
     await refresh();
     setIsRefreshing(false);
   }, [refresh]);
+
+  const renderListItem = useCallback(({ item }: { item: ListItem }) => {
+    if (item.type === 'ad') {
+      return (
+        <View style={styles.adContainer}>
+          <AdBanner size="banner" />
+        </View>
+      );
+    }
+
+    return (
+      <CountdownPairRow
+        pair={item.data}
+        onPress={handleCountdownPress}
+        onLongPress={handleCountdownLongPress}
+        tick={tick}
+      />
+    );
+  }, [handleCountdownPress, handleCountdownLongPress, tick]);
 
   const renderEmptyState = () => (
     <ScrollView contentContainerStyle={styles.emptyState}>
@@ -252,35 +313,6 @@ export default function HomeScreen() {
       );
     }
 
-    const renderListItem = ({ item }: { item: ListItem }) => {
-      if (item.type === 'ad') {
-        return (
-          <View style={styles.adContainer}>
-            <AdBanner size="banner" />
-          </View>
-        );
-      }
-
-      const [first, second] = item.data;
-      return (
-        <View style={styles.row}>
-          <CountdownCard
-            countdown={first}
-            onPress={() => handleCountdownPress(first)}
-            onLongPress={() => handleCountdownLongPress(first)}
-          />
-          {second && (
-            <CountdownCard
-              countdown={second}
-              onPress={() => handleCountdownPress(second)}
-              onLongPress={() => handleCountdownLongPress(second)}
-            />
-          )}
-          {!second && <View style={styles.emptyCard} />}
-        </View>
-      );
-    };
-
     return (
       <FlatList
         data={listData}
@@ -292,6 +324,9 @@ export default function HomeScreen() {
         renderItem={renderListItem}
         onRefresh={handlePullToRefresh}
         refreshing={isRefreshing}
+        initialNumToRender={6}
+        maxToRenderPerBatch={4}
+        windowSize={5}
         ListHeaderComponent={
           <>
             <CategoryFilter

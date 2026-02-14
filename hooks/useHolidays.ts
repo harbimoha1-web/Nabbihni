@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { PublicEvent } from '@/types/countdown';
 import { publicEvents } from '@/constants/publicEvents';
 import { educationEvents, getUpcomingEducationEvents } from '@/constants/educationCalendar';
@@ -22,9 +22,11 @@ export const useHolidays = (): UseHolidaysResult => {
   const [holidays, setHolidays] = useState<PublicEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Track whether we have data via ref to avoid destabilizing refresh callback
+  const hasDataRef = useRef(false);
 
-  const loadHolidays = useCallback(async () => {
-    setLoading(true);
+  const loadHolidays = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     setError(null);
 
     try {
@@ -44,11 +46,17 @@ export const useHolidays = (): UseHolidaysResult => {
 
       // Apply admin overrides to existing events
       try {
-        const overrides = await getEventOverrides();
+        const [overrides, customEvents] = await Promise.all([
+          getEventOverrides(),
+          getCustomEvents(),
+        ]);
+
         if (overrides.length > 0) {
+          // O(n+m) lookup via Map instead of O(n*m) via .find()
+          const overrideMap = new Map(overrides.map(o => [o.eventId, o]));
           allHolidays = allHolidays.map(event => {
             const eventBaseId = event.baseId || event.id;
-            const override = overrides.find(o => o.eventId === eventBaseId);
+            const override = overrideMap.get(eventBaseId);
             if (override) {
               return { ...event, ...override.changes };
             }
@@ -57,7 +65,6 @@ export const useHolidays = (): UseHolidaysResult => {
         }
 
         // Add custom admin events
-        const customEvents = await getCustomEvents();
         if (customEvents.length > 0) {
           // Cast custom events to PublicEvent (they have all required fields)
           const customAsPublicEvents: PublicEvent[] = customEvents.map(ce => ({
@@ -103,17 +110,26 @@ export const useHolidays = (): UseHolidaysResult => {
         }
       }
 
+      // Pre-compute timestamps for sort + filter (avoid repeated Date construction)
+      const nowTs = Date.now();
+      const timestampCache = new Map<string, number>();
+      for (const h of allHolidays) {
+        if (!timestampCache.has(h.targetDate)) {
+          timestampCache.set(h.targetDate, new Date(h.targetDate).getTime());
+        }
+      }
+
       // Sort by date (ascending - nearest first)
       allHolidays.sort((a, b) =>
-        new Date(a.targetDate).getTime() - new Date(b.targetDate).getTime()
+        timestampCache.get(a.targetDate)! - timestampCache.get(b.targetDate)!
       );
 
-      // Filter to only upcoming events (redundant safety check)
-      const now = new Date();
+      // Filter to only upcoming events
       const upcomingHolidays = allHolidays.filter(
-        h => new Date(h.targetDate) > now
+        h => timestampCache.get(h.targetDate)! > nowTs
       );
 
+      hasDataRef.current = upcomingHolidays.length > 0;
       setHolidays(upcomingHolidays);
     } catch (err) {
       console.error('Failed to load holidays:', err);
@@ -121,6 +137,7 @@ export const useHolidays = (): UseHolidaysResult => {
 
       // Fallback to processed events on error
       const fallbackHolidays = processEventsWithRecurrence(publicEvents);
+      hasDataRef.current = fallbackHolidays.length > 0;
       setHolidays(fallbackHolidays);
     } finally {
       setLoading(false);
@@ -129,7 +146,8 @@ export const useHolidays = (): UseHolidaysResult => {
 
   const refresh = useCallback(async () => {
     await clearHolidayCache();
-    await loadHolidays();
+    // Silent refresh (no spinner) if we already have data
+    await loadHolidays(hasDataRef.current);
   }, [loadHolidays]);
 
   const clearCache = useCallback(async () => {

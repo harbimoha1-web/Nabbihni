@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useColorScheme, Appearance, Platform } from 'react-native';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
+import { useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type ThemeMode = 'light' | 'dark' | 'system';
@@ -133,15 +133,8 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     loadTheme();
   }, []);
 
-  // Listen for system theme changes
-  useEffect(() => {
-    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-      setSystemTheme(colorScheme === 'dark' ? 'dark' : 'light');
-    });
-    return () => subscription.remove();
-  }, []);
-
-  // Update systemTheme when hook value changes
+  // Update systemTheme when useColorScheme() hook value changes
+  // (no need for a separate Appearance.addChangeListener — the hook already handles it)
   useEffect(() => {
     if (systemColorScheme) {
       setSystemTheme(systemColorScheme === 'dark' ? 'dark' : 'light');
@@ -149,14 +142,14 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, [systemColorScheme]);
 
   // Save theme preference
-  const setMode = async (newMode: ThemeMode) => {
+  const setMode = useCallback(async (newMode: ThemeMode) => {
     setModeState(newMode);
     try {
       await AsyncStorage.setItem(THEME_STORAGE_KEY, newMode);
     } catch (e) {
       console.error('Failed to save theme:', e);
     }
-  };
+  }, []);
 
   // Determine if dark mode - use systemTheme state for reactive updates
   const isDark = mode === 'system'
@@ -165,10 +158,14 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const colors = isDark ? darkColors : lightColors;
 
+  const value = useMemo(() => ({
+    mode, isDark, colors, setMode,
+  }), [mode, isDark, colors, setMode]);
+
   // Always render provider - splash screen handles loading state
   // This prevents the blocking null chain that causes startup freeze
   return (
-    <ThemeContext.Provider value={{ mode, isDark, colors, setMode }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );

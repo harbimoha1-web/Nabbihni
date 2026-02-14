@@ -29,7 +29,7 @@
 - [ ] Create account at https://revenuecat.com
 - [ ] Get iOS API key (`appl_XXXXX`)
 - [ ] Get Android API key (`goog_XXXXX`)
-- [ ] Create products: `premium_monthly` (4.99 SAR), `premium_lifetime` (49.99 SAR)
+- [ ] Create products: `premium_monthly` (4.99 SAR), `premium_lifetime` (79.99 SAR)
 - [ ] Update `contexts/SubscriptionContext.tsx` with keys
 
 ### AdMob Setup

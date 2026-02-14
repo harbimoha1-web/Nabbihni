@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -52,19 +52,27 @@ interface CountdownCardProps {
   onPress?: () => void;
   onLongPress?: () => void;
   size?: 'small' | 'large';
+  tick?: number;
 }
 
-export const CountdownCard: React.FC<CountdownCardProps> = ({
+const CountdownCardInner: React.FC<CountdownCardProps> = ({
   countdown,
   onPress,
   onLongPress,
   size = 'small',
+  tick,
 }) => {
   const { t, language } = useLanguage();
-  const theme = getTheme(countdown.theme);
+  const theme = useMemo(() => getTheme(countdown.theme), [countdown.theme]);
   const { timeRemaining } = useCountdown({
     targetDate: countdown.targetDate,
+    externalTick: tick,
   });
+
+  const dates = useMemo(
+    () => formatEventDate(countdown.targetDate, language),
+    [countdown.targetDate, language]
+  );
 
   const opacity = useSharedValue(1);
 
@@ -126,10 +134,10 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
       {/* Dates */}
       <View style={styles.datesContainer}>
         <Text style={[styles.eventDate, { color: theme.colors.textSecondary }]}>
-          {formatEventDate(countdown.targetDate, language).gregorian}
+          {dates.gregorian}
         </Text>
         <Text style={[styles.eventDateHijri, { color: theme.colors.textSecondary }]}>
-          {formatEventDate(countdown.targetDate, language).hijri}
+          {dates.hijri}
         </Text>
       </View>
     </View>
@@ -249,6 +257,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     opacity: 0.8,
   },
+});
+
+export const CountdownCard = React.memo(CountdownCardInner, (prev, next) => {
+  return (
+    prev.countdown.id === next.countdown.id &&
+    prev.countdown.title === next.countdown.title &&
+    prev.countdown.targetDate === next.countdown.targetDate &&
+    prev.countdown.icon === next.countdown.icon &&
+    prev.countdown.theme === next.countdown.theme &&
+    prev.countdown.isStarred === next.countdown.isStarred &&
+    prev.countdown.isRecurring === next.countdown.isRecurring &&
+    prev.countdown.backgroundImage === next.countdown.backgroundImage &&
+    prev.size === next.size &&
+    prev.tick === next.tick &&
+    prev.onPress === next.onPress &&
+    prev.onLongPress === next.onLongPress
+  );
 });
 
 export default CountdownCard;

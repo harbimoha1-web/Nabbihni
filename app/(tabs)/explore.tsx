@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -15,25 +15,85 @@ import DateConfidenceBadge from '@/components/DateConfidenceBadge';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useHolidays } from '@/hooks/useHolidays';
+import { useCountdownTick } from '@/hooks/useCountdown';
 import { PublicEvent, Countdown, EventCategory } from '@/types/countdown';
 
 type CategoryFilter = 'all' | EventCategory;
+
+// Stable keyExtractor at module level
+const keyExtractor = (item: PublicEvent) => item.id;
+
+// Card height (230) + marginBottom (16) for getItemLayout
+const ITEM_HEIGHT = 230 + 16;
+
+// Memoized card wrapper to stabilize per-item onPress
+const ExploreCard = React.memo(({
+  countdown,
+  event,
+  onPress,
+  tick,
+}: {
+  countdown: Countdown;
+  event: PublicEvent;
+  onPress: (event: PublicEvent) => void;
+  tick: number;
+}) => {
+  const { colors } = useTheme();
+  const handlePress = useCallback(() => onPress(event), [onPress, event]);
+
+  return (
+    <View style={styles.cardContainer}>
+      <View style={styles.cardWrapper}>
+        <CountdownCard
+          countdown={countdown}
+          onPress={handlePress}
+          size="large"
+          tick={tick}
+        />
+        {event.dateConfidence && (
+          <View style={styles.badgeOverlay}>
+            <DateConfidenceBadge
+              confidence={event.dateConfidence}
+              isHijriDerived={event.isHijriDerived}
+              showLabel={true}
+              size="small"
+            />
+          </View>
+        )}
+      </View>
+      {event.note && (
+        <View style={[styles.noteContainer, { backgroundColor: colors.surface }]}>
+          <Text style={[styles.noteText, { color: colors.textSecondary }]}>
+            {event.note}
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+});
 
 export default function ExploreScreen() {
   const { colors } = useTheme();
   const { t, language } = useLanguage();
   const { holidays, loading, refresh } = useHolidays();
+  const tick = useCountdownTick();
 
-  // Refresh data when screen gains focus (picks up admin changes)
+  // Only reload on focus if data is stale (> 5 minutes old)
+  const lastLoadRef = useRef<number>(0);
+
   useFocusEffect(
     useCallback(() => {
-      refresh();
+      const now = Date.now();
+      if (now - lastLoadRef.current > 5 * 60 * 1000) {
+        lastLoadRef.current = now;
+        refresh();
+      }
     }, [refresh])
   );
   const [filter, setFilter] = useState<CategoryFilter>('all');
 
   // Category labels based on current language
-  const categoryLabels: Record<CategoryFilter, string> = {
+  const categoryLabels: Record<CategoryFilter, string> = useMemo(() => ({
     all: t.explore.all,
     religious: t.explore.religious,
     national: t.explore.national,
@@ -42,36 +102,62 @@ export default function ExploreScreen() {
     milestone: t.explore.milestone,
     education: t.explore.education,
     international: t.explore.international,
-  };
+  }), [t]);
 
-  // Convert public event to countdown format, using correct language title
-  const publicEventToCountdown = (event: PublicEvent): Countdown & { _event: PublicEvent } => ({
-    id: event.id,
-    title: language === 'en' ? event.title : event.titleAr,
-    targetDate: event.targetDate,
-    icon: event.icon,
-    theme: event.theme,
-    isPublic: true,
-    createdAt: new Date().toISOString(),
-    participantCount: event.participantCount,
-    backgroundImage: event.backgroundImage,
-    _event: event, // Store original event for confidence badge
-  });
+  // Pre-compute the mapped list with stable objects (no new Date() per render)
+  const countdownMap = useMemo(() => {
+    const map = new Map<string, Countdown>();
+    for (const event of holidays) {
+      map.set(event.id, {
+        id: event.id,
+        title: language === 'en' ? event.title : event.titleAr,
+        targetDate: event.targetDate,
+        icon: event.icon,
+        theme: event.theme,
+        isPublic: true,
+        createdAt: event.targetDate, // Stable proxy instead of new Date().toISOString()
+        participantCount: event.participantCount,
+        backgroundImage: event.backgroundImage,
+      });
+    }
+    return map;
+  }, [holidays, language]);
 
   const filteredEvents = useMemo(() => {
     if (filter === 'all') return holidays;
     return holidays.filter((event) => event.category === filter);
   }, [holidays, filter]);
 
-  const handleEventPress = (event: PublicEvent) => {
-    router.push(`/countdown/${event.id}?public=true`);
-  };
+  const handleEventPress = useCallback((event: PublicEvent) => {
+    router.push({
+      pathname: '/countdown/[id]',
+      params: { id: event.id, public: 'true', eventData: JSON.stringify(event) },
+    });
+  }, []);
 
   // Get categories that have events
   const availableCategories = useMemo(() => {
     const categories = new Set(holidays.map(h => h.category));
     return ['all', ...Array.from(categories)] as CategoryFilter[];
   }, [holidays]);
+
+  const getItemLayout = useCallback((_: any, index: number) => ({
+    length: ITEM_HEIGHT,
+    offset: ITEM_HEIGHT * index,
+    index,
+  }), []);
+
+  const renderItem = useCallback(({ item }: { item: PublicEvent }) => {
+    const countdown = countdownMap.get(item.id)!;
+    return (
+      <ExploreCard
+        countdown={countdown}
+        event={item}
+        onPress={handleEventPress}
+        tick={tick}
+      />
+    );
+  }, [countdownMap, handleEventPress, tick]);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['bottom']}>
@@ -115,43 +201,15 @@ export default function ExploreScreen() {
       ) : (
         <FlatList
           data={filteredEvents}
-          keyExtractor={(item) => item.id}
+          keyExtractor={keyExtractor}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => {
-            const countdownWithEvent = publicEventToCountdown(item);
-            return (
-              <View style={styles.cardContainer}>
-                {/* Card with badge overlay - badge relative to card only */}
-                <View style={styles.cardWrapper}>
-                  <CountdownCard
-                    countdown={countdownWithEvent}
-                    onPress={() => handleEventPress(item)}
-                    size="large"
-                  />
-                  {/* Show confidence badge only for events with dateConfidence */}
-                  {item.dateConfidence && (
-                    <View style={styles.badgeOverlay}>
-                      <DateConfidenceBadge
-                        confidence={item.dateConfidence}
-                        isHijriDerived={item.isHijriDerived}
-                        showLabel={true}
-                        size="small"
-                      />
-                    </View>
-                  )}
-                </View>
-                {/* Note shown below the card, not overlapping badge */}
-                {item.note && (
-                  <View style={[styles.noteContainer, { backgroundColor: colors.surface }]}>
-                    <Text style={[styles.noteText, { color: colors.textSecondary }]}>
-                      {item.note}
-                    </Text>
-                  </View>
-                )}
-              </View>
-            );
-          }}
+          renderItem={renderItem}
+          getItemLayout={getItemLayout}
+          removeClippedSubviews={true}
+          initialNumToRender={5}
+          maxToRenderPerBatch={3}
+          windowSize={5}
           ListEmptyComponent={
             <View style={styles.emptyState}>
               <Text style={[styles.emptyText, { color: colors.textSecondary }]}>

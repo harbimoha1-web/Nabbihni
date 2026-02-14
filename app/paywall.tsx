@@ -7,6 +7,7 @@ import {
   Pressable,
   ActivityIndicator,
   I18nManager,
+  Linking,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -307,6 +308,27 @@ export default function PaywallScreen() {
             <Text style={styles.restoreText}>{t.paywall.restorePurchases}</Text>
           </Pressable>
 
+          {/* Apple-required subscription legal text */}
+          <View style={styles.legalContainer}>
+            <Text style={[styles.legalText, { textAlign: isRTL ? 'right' : 'left' }]}>
+              {selectedPlan === 'monthly'
+                ? t.paywall.legalAutoRenew
+                : t.paywall.legalLifetime}
+            </Text>
+            <Text style={[styles.legalText, { textAlign: isRTL ? 'right' : 'left' }]}>
+              {t.paywall.legalCancel}
+            </Text>
+            <View style={[styles.legalLinks, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+              <Pressable onPress={() => Linking.openURL('https://nabbihni.com/privacy.html')}>
+                <Text style={styles.legalLinkText}>{t.paywall.privacyPolicy}</Text>
+              </Pressable>
+              <Text style={styles.legalSeparator}>|</Text>
+              <Pressable onPress={() => Linking.openURL('https://nabbihni.com/terms.html')}>
+                <Text style={styles.legalLinkText}>{t.paywall.termsOfUse}</Text>
+              </Pressable>
+            </View>
+          </View>
+
           {/* Bottom spacing */}
           <View style={{ height: 24 }} />
         </ScrollView>
@@ -581,6 +603,34 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: COLORS.textMuted,
     textDecorationLine: 'underline',
+  },
+
+  // Legal Text
+  legalContainer: {
+    paddingHorizontal: 8,
+    paddingTop: 4,
+    paddingBottom: 8,
+    gap: 6,
+  },
+  legalText: {
+    fontSize: 11,
+    color: COLORS.textMuted,
+    lineHeight: 16,
+  },
+  legalLinks: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 2,
+  },
+  legalLinkText: {
+    fontSize: 11,
+    color: COLORS.textSecondary,
+    textDecorationLine: 'underline',
+  },
+  legalSeparator: {
+    fontSize: 11,
+    color: COLORS.textMuted,
   },
 
   // Success

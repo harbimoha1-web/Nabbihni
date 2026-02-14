@@ -16,6 +16,17 @@ import {
   AnimationConfig,
 } from './iconAnimations';
 
+// Module-level accessibility cache — one bridge call per app lifetime
+let _reduceMotionCached: boolean | null = null;
+
+AccessibilityInfo.isReduceMotionEnabled().then((value) => {
+  _reduceMotionCached = value;
+});
+
+AccessibilityInfo.addEventListener('reduceMotionChanged', (value: boolean) => {
+  _reduceMotionCached = value;
+});
+
 interface AnimatedIconProps {
   emoji: string;
   size: number;
@@ -42,11 +53,9 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = memo(({
   useEffect(() => {
     let isMounted = true;
 
-    const startAnimation = async () => {
-      // Check for reduce motion accessibility setting
-      const reduceMotion = await AccessibilityInfo.isReduceMotionEnabled();
-
-      if (disabled || reduceMotion || !isMounted) {
+    const startAnimation = () => {
+      // Use cached value (synchronous) — no async bridge call delay
+      if (disabled || _reduceMotionCached || !isMounted) {
         return;
       }
 
