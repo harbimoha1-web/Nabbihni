@@ -74,7 +74,6 @@ interface Countdown {
   theme: ThemeId;
   isPublic: boolean;
   createdAt: string;
-  participantCount?: number;
 }
 ```
 
@@ -116,7 +115,7 @@ interface Countdown {
    - [x] Download `GoogleService-Info.plist` and place in project root
 
 4. **App Store Setup** (`app/(tabs)/settings.tsx`)
-   - [ ] After App Store approval, add App Store ID to `handleRateApp`
+   - [x] After App Store approval, add App Store ID to `handleRateApp`
 
 5. **EAS Setup** (`app.json`)
    - [x] Run `eas init` to get project ID
@@ -151,7 +150,7 @@ interface Countdown {
 
 **Key rules for this project:**
 - `metro.config.js`: Default = stub native modules. `EAS_BUILD` env var = don't stub.
-- `newArchEnabled`: Keep `false` until all native deps officially support New Architecture.
+- `newArchEnabled`: Set to `true` — required by react-native-reanimated 4.x (RN 0.81+).
 - Never auto-reload for RTL changes. Prompt the user to restart manually.
 - Always handle both the success AND error states from `useFonts`.
 
