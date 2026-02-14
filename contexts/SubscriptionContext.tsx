@@ -110,10 +110,20 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
   // Load cached premium status
   const loadCachedPremiumStatus = async (): Promise<boolean | null> => {
     try {
-      // Check for admin session first - admin always gets PRO
+      // Check for admin session first - admin gets PRO if session hasn't expired
       const adminSession = await AsyncStorage.getItem(ADMIN_SESSION_KEY);
-      if (adminSession === 'active') {
-        return true;
+      if (adminSession) {
+        try {
+          const { expiry } = JSON.parse(adminSession);
+          if (expiry && Date.now() < expiry) {
+            return true;
+          }
+          // Expired — clean up
+          await AsyncStorage.removeItem(ADMIN_SESSION_KEY);
+        } catch {
+          // Legacy 'active' value or corrupt data — clean up
+          await AsyncStorage.removeItem(ADMIN_SESSION_KEY);
+        }
       }
 
       const cached = await AsyncStorage.getItem(PREMIUM_CACHE_KEY);
@@ -224,12 +234,22 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
 
   // Refresh customer info
   const refreshCustomerInfo = useCallback(async () => {
-    // Check for admin session first - admin always gets PRO
+    // Check for admin session first - admin gets PRO if session hasn't expired
     try {
       const adminSession = await AsyncStorage.getItem(ADMIN_SESSION_KEY);
-      if (adminSession === 'active') {
-        setIsPremium(true);
-        return;
+      if (adminSession) {
+        try {
+          const { expiry } = JSON.parse(adminSession);
+          if (expiry && Date.now() < expiry) {
+            setIsPremium(true);
+            return;
+          }
+          // Expired — clean up
+          await AsyncStorage.removeItem(ADMIN_SESSION_KEY);
+        } catch {
+          // Legacy 'active' value or corrupt data — clean up
+          await AsyncStorage.removeItem(ADMIN_SESSION_KEY);
+        }
       }
     } catch (e) {
       // Continue with normal check

@@ -74,8 +74,9 @@ export default function SettingsScreen() {
       setPinInput('');
       setPinError(false);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      // Set admin session flag for PRO bypass
-      await AsyncStorage.setItem('@nabbihni/admin-session', 'active');
+      // Set admin session flag for PRO bypass (expires in 24 hours)
+      const expiry = Date.now() + 24 * 60 * 60 * 1000;
+      await AsyncStorage.setItem('@nabbihni/admin-session', JSON.stringify({ expiry }));
       // Show admin options
       Alert.alert(
         'Admin',

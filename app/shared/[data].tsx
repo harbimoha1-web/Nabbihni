@@ -17,6 +17,7 @@ import { useCountdown } from '@/hooks/useCountdown';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCountdowns as useCountdownsList } from '@/hooks/useCountdowns';
+import { useSubscription } from '@/hooks/useSubscription';
 import { createCountdown } from '@/lib/storage';
 import CountdownTimer from '@/components/CountdownTimer';
 import AnimatedIcon from '@/components/AnimatedIcon';
@@ -28,7 +29,8 @@ export default function SharedCountdownScreen() {
   const { colors } = useTheme();
   const { t, language } = useLanguage();
   const { data } = useLocalSearchParams<{ data: string }>();
-  const { refresh } = useCountdownsList();
+  const { countdowns, refresh } = useCountdownsList();
+  const { checkAndPromptForUpgrade } = useSubscription();
   const [isAdding, setIsAdding] = useState(false);
 
   // Decode the shared countdown data
@@ -45,6 +47,11 @@ export default function SharedCountdownScreen() {
 
   const handleAddToMine = async () => {
     if (!sharedData || isAdding) return;
+
+    // Check free tier limit before adding
+    if (!checkAndPromptForUpgrade(countdowns.length)) {
+      return;
+    }
 
     setIsAdding(true);
     try {
@@ -66,25 +73,18 @@ export default function SharedCountdownScreen() {
 
       // Show success and go to home
       Alert.alert(
-        language === 'ar' ? 'تمت الإضافة!' : 'Added!',
-        language === 'ar'
-          ? 'تمت إضافة العد التنازلي إلى قائمتك'
-          : 'Countdown added to your list',
+        t.share.added,
+        t.share.addedMessage,
         [
           {
-            text: language === 'ar' ? 'حسناً' : 'OK',
+            text: t.ok,
             onPress: () => router.replace('/'),
           },
         ]
       );
     } catch (error) {
       console.error('Error adding countdown:', error);
-      Alert.alert(
-        language === 'ar' ? 'خطأ' : 'Error',
-        language === 'ar'
-          ? 'فشل في إضافة العد التنازلي'
-          : 'Failed to add countdown'
-      );
+      Alert.alert(t.error, t.share.invalidLinkMessage);
     } finally {
       setIsAdding(false);
     }
@@ -106,19 +106,17 @@ export default function SharedCountdownScreen() {
         <View style={styles.errorContainer}>
           <Ionicons name="warning-outline" size={64} color={colors.textSecondary} />
           <Text style={[styles.errorTitle, { color: colors.text }]}>
-            {language === 'ar' ? 'رابط غير صالح' : 'Invalid Link'}
+            {t.share.invalidLink}
           </Text>
           <Text style={[styles.errorMessage, { color: colors.textSecondary }]}>
-            {language === 'ar'
-              ? 'هذا الرابط غير صالح أو انتهت صلاحيته'
-              : 'This link is invalid or has expired'}
+            {t.share.invalidLinkMessage}
           </Text>
           <Pressable
             style={[styles.button, { backgroundColor: colors.accent }]}
             onPress={handleClose}
           >
             <Text style={[styles.buttonText, { color: colors.background }]}>
-              {language === 'ar' ? 'العودة للرئيسية' : 'Go to Home'}
+              {t.share.goToHome}
             </Text>
           </Pressable>
         </View>
@@ -127,12 +125,8 @@ export default function SharedCountdownScreen() {
   }
 
   const fromPersonText = sharedData.sharerName
-    ? language === 'ar'
-      ? `عد تنازلي من ${sharedData.sharerName}`
-      : `Countdown from ${sharedData.sharerName}`
-    : language === 'ar'
-      ? 'عد تنازلي مشترك'
-      : 'Shared Countdown';
+    ? t.share.fromPerson.replace('{name}', sharedData.sharerName)
+    : t.share.sharedCountdown;
 
   return (
     <>
@@ -229,9 +223,7 @@ export default function SharedCountdownScreen() {
                 color={colors.background}
               />
               <Text style={[styles.addButtonText, { color: colors.background }]}>
-                {isAdding
-                  ? language === 'ar' ? 'جارٍ الإضافة...' : 'Adding...'
-                  : language === 'ar' ? 'أضف لعداداتي' : 'Add to My Countdowns'}
+                {isAdding ? t.loading : t.share.addToMine}
               </Text>
             </Pressable>
           </View>

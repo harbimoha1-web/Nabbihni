@@ -8,14 +8,12 @@ const SETTINGS_KEY = '@nabbihni/settings';
 export const HOLIDAY_OVERRIDES_KEY = '@nabbihni/holiday-overrides';
 
 export interface AppSettings {
-  isPremium: boolean;
   purchasedThemes: ThemeId[];
   notificationsEnabled: boolean;
   hapticEnabled: boolean;
 }
 
 const defaultSettings: AppSettings = {
-  isPremium: false,
   purchasedThemes: [],
   notificationsEnabled: true,
   hapticEnabled: true,
@@ -131,14 +129,3 @@ export const updateSettings = async (
   }
 };
 
-// Premium check
-export const canUseTheme = async (themeId: ThemeId): Promise<boolean> => {
-  const settings = await getSettings();
-  const freeThemes: ThemeId[] = ['default', 'sunset', 'night', 'gold', 'ramadan'];
-
-  if (freeThemes.includes(themeId)) return true;
-  if (settings.isPremium) return true;
-  if (settings.purchasedThemes.includes(themeId)) return true;
-
-  return false;
-};

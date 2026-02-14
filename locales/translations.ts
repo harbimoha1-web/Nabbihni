@@ -8,6 +8,7 @@ export const translations = {
     save: 'حفظ',
     retry: 'إعادة المحاولة',
     showAll: 'عرض الكل',
+    ok: 'حسناً',
     back: 'العودة',
 
     // Home Screen
@@ -228,18 +229,19 @@ export const translations = {
 
     // Reminders
     reminders: {
-      atCompletion: 'عند انتهاء العد',
-      oneHour: 'قبل ساعة واحدة',
-      oneDay: 'قبل يوم واحد',
-      oneWeek: 'قبل أسبوع',
+      atCompletion: 'عند الموعد',
+      oneHour: 'باقي ساعة',
+      oneDay: 'باقي يوم',
+      oneWeek: 'باقي أسبوع',
       custom: 'مخصص',
-      beforeMinutes: 'قبل {minutes} دقيقة',
+      beforeMinutes: 'باقي {minutes} دقيقة',
       addCustom: 'إضافة تذكير مخصص',
       customReminderTitle: 'تذكير مخصص',
       days: 'أيام',
       hours: 'ساعات',
       minutes: 'دقائق',
-      before: 'قبل',
+      before: 'باقي',
+      customFormat: 'باقي {time}',
       add: 'إضافة',
     },
 
@@ -398,9 +400,9 @@ export const translations = {
 
     // Notifications
     notifications: {
-      channelName: 'تذكيرات العد التنازلي',
-      reminderTitle: 'تذكير: {title}',
-      countdownEnded: 'انتهى العد التنازلي!',
+      channelName: 'تنبيهات نبّهني',
+      reminderTitle: 'تنبيه: {title}',
+      countdownEnded: 'حان الموعد!',
     },
 
     // Tasks
@@ -420,6 +422,7 @@ export const translations = {
     save: 'Save',
     retry: 'Retry',
     showAll: 'Show All',
+    ok: 'OK',
     back: 'Back',
 
     // Home Screen
@@ -640,18 +643,19 @@ export const translations = {
 
     // Reminders
     reminders: {
-      atCompletion: 'At completion',
-      oneHour: '1 hour before',
-      oneDay: '1 day before',
-      oneWeek: '1 week before',
+      atCompletion: "It's time",
+      oneHour: '1 hour left',
+      oneDay: '1 day left',
+      oneWeek: '1 week left',
       custom: 'Custom',
-      beforeMinutes: '{minutes} minutes before',
+      beforeMinutes: '{minutes} minutes left',
       addCustom: 'Add custom reminder',
       customReminderTitle: 'Custom Reminder',
       days: 'Days',
       hours: 'Hours',
       minutes: 'Minutes',
-      before: 'before',
+      before: 'left',
+      customFormat: '{time} left',
       add: 'Add',
     },
 
@@ -810,9 +814,9 @@ export const translations = {
 
     // Notifications
     notifications: {
-      channelName: 'Countdown Reminders',
-      reminderTitle: 'Reminder: {title}',
-      countdownEnded: 'Countdown has ended!',
+      channelName: 'Nabbihni Alerts',
+      reminderTitle: 'Alert: {title}',
+      countdownEnded: "Time's up!",
     },
 
     // Tasks

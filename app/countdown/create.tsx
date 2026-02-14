@@ -87,9 +87,9 @@ export default function CreateCountdownScreen() {
   };
 
   const handleAddCustomReminder = () => {
-    const days = parseInt(customDays) || 0;
-    const hours = parseInt(customHours) || 0;
-    const minutes = parseInt(customMinutes) || 0;
+    const days = Math.min(parseInt(customDays) || 0, 365);
+    const hours = Math.min(parseInt(customHours) || 0, 23);
+    const minutes = Math.min(parseInt(customMinutes) || 0, 59);
 
     const totalMinutes = (days * 24 * 60) + (hours * 60) + minutes;
 
@@ -123,7 +123,7 @@ export default function CreateCountdownScreen() {
     if (hours > 0) parts.push(`${hours} ${t.reminders.hours}`);
     if (mins > 0) parts.push(`${mins} ${t.reminders.minutes}`);
 
-    return `${parts.join(' ')} ${t.reminders.before}`;
+    return t.reminders.customFormat.replace('{time}', parts.join(' '));
   };
 
   // Pre-populate form when editing

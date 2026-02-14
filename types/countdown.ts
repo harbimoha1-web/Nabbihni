@@ -10,10 +10,10 @@ export type AdjustmentRule = 'smart' | 'none';
 
 // Reminder timing options
 export type ReminderOption =
-  | 'at_completion'  // عند انتهاء العد
-  | '1_hour'         // قبل ساعة واحدة
-  | '1_day'          // قبل يوم واحد
-  | '1_week'         // قبل أسبوع
+  | 'at_completion'  // عند الموعد
+  | '1_hour'         // باقي ساعة
+  | '1_day'          // باقي يوم
+  | '1_week'         // باقي أسبوع
   | 'custom';        // مخصص
 
 export interface CustomReminderTiming {

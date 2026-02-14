@@ -86,7 +86,7 @@ interface Countdown {
    - [x] Create account at https://revenuecat.com
    - [x] Get iOS API key (format: `appl_XXXXX`)
    - [x] Get Android API key (format: `goog_XXXXX`)
-   - [ ] Set up products with correct SAR pricing:
+   - [x] Set up products with correct SAR pricing:
      1. **App Store Connect** → Subscriptions & In-App Purchases:
         - Create `premium_monthly` — pick price tier closest to **4.99 SAR/mo** (auto-renewable)
         - Create `premium_lifetime` — pick price tier closest to **79.99 SAR** (non-consumable)
@@ -104,10 +104,10 @@ interface Countdown {
    - [x] Create iOS and Android apps
    - [x] Get ad unit IDs and add to `AdBanner.tsx`
    - [x] Update `GADApplicationIdentifier` in `app.json`
-   - [ ] **Configure halal blocking** in AdMob Console:
+   - [x] **Configure halal blocking** in AdMob Console:
      - Block: Alcohol, Gambling, Dating, Music, Tobacco, Lottery
      - Block: Loans, Crypto, Political, Religious (non-Islamic), Sexual
-   - [ ] Create `app-ads.txt` at nabbihni.com
+   - [x] Create `app-ads.txt` at nabbihni.com
 
 3. **Firebase Setup** (iOS + Android)
    - [x] Create Firebase project at console.firebase.google.com
@@ -125,7 +125,7 @@ interface Countdown {
 6. **Widget Setup** (`app.json`)
    - [x] Set `ios.appleTeamId` to `A94DV992X6`
    - [x] Widgets auto-register via config plugins (no additional setup needed)
-   - [ ] Test: `npx expo prebuild` then build with `eas build`
+   - [x] Test: `npx expo prebuild` then build with `eas build`
 
 ### Pricing
 - Free: 5 countdowns + ads
