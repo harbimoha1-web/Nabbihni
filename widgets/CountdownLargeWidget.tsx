@@ -57,7 +57,7 @@ export function CountdownLargeWidget({ countdowns }: Props) {
         padding: 14,
       }}
     >
-      {/* Header */}
+      {/* Header (RTL: count left, title right) */}
       <FlexWidget
         style={{
           width: 'match_parent',
@@ -69,18 +69,18 @@ export function CountdownLargeWidget({ countdowns }: Props) {
         }}
       >
         <TextWidget
+          text={`${countdowns.length} عدادات`}
+          style={{
+            fontSize: 11,
+            color: 'rgba(245, 243, 240, 0.48)',
+          }}
+        />
+        <TextWidget
           text="⏳ نبّهني"
           style={{
             fontSize: 14,
             fontWeight: '700',
             color: '#F59E0B',
-          }}
-        />
-        <TextWidget
-          text={`${countdowns.length} عدادات`}
-          style={{
-            fontSize: 11,
-            color: 'rgba(245, 243, 240, 0.48)',
           }}
         />
       </FlexWidget>

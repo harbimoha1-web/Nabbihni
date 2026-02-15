@@ -16,6 +16,7 @@ export interface WidgetCountdown {
   bgColor2: `#${string}`;
   accentColor: `#${string}`;
   isComplete: boolean;
+  isStarred: boolean;
   daysRemaining: number;
   hoursRemaining: number;
   minutesRemaining: number;
@@ -50,19 +51,18 @@ function getTimeRemaining(targetDate: string) {
  * Prepare widget data from countdowns
  */
 function prepareWidgetData(countdowns: Countdown[]): WidgetData {
-  // Sort by nearest target date, exclude completed ones first
+  // Sort to match app: starred first, then active before completed, then nearest date
   const now = Date.now();
   const sorted = [...countdowns]
     .sort((a, b) => {
+      // Starred countdowns come first
+      if (a.isStarred !== b.isStarred) return a.isStarred ? -1 : 1;
+      // Active (upcoming) before completed
       const aTime = new Date(a.targetDate).getTime();
       const bTime = new Date(b.targetDate).getTime();
       const aComplete = aTime <= now;
       const bComplete = bTime <= now;
-
-      // Active countdowns first
       if (aComplete !== bComplete) return aComplete ? 1 : -1;
-      // Starred first among active
-      if (!aComplete && a.isStarred !== b.isStarred) return a.isStarred ? -1 : 1;
       // Then by nearest date
       return aTime - bTime;
     })
@@ -81,6 +81,7 @@ function prepareWidgetData(countdowns: Countdown[]): WidgetData {
       bgColor2: theme.colors.background[1] as `#${string}`,
       accentColor: theme.colors.accent as `#${string}`,
       isComplete: remaining.isComplete,
+      isStarred: !!c.isStarred,
       daysRemaining: remaining.days,
       hoursRemaining: remaining.hours,
       minutesRemaining: remaining.minutes,

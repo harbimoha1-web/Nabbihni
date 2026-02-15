@@ -13,6 +13,8 @@ export function CountdownRow({ countdown }: { countdown: WidgetCountdown }) {
     ? `${countdown.hoursRemaining} ساعة`
     : `${countdown.minutesRemaining} دقيقة`;
 
+  const titleText = countdown.isStarred ? `${countdown.title} ⭐` : countdown.title;
+
   return (
     <FlexWidget
       style={{
@@ -27,44 +29,7 @@ export function CountdownRow({ countdown }: { countdown: WidgetCountdown }) {
       clickAction="OPEN_APP"
       clickActionData={{ countdownId: countdown.id }}
     >
-      {/* Emoji */}
-      <FlexWidget
-        style={{
-          width: 36,
-          height: 36,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgba(255, 255, 255, 0.08)',
-          borderRadius: 10,
-        }}
-      >
-        <TextWidget
-          text={countdown.icon}
-          style={{ fontSize: 18 }}
-        />
-      </FlexWidget>
-
-      {/* Title */}
-      <FlexWidget
-        style={{
-          flex: 1,
-          marginLeft: 10,
-          marginRight: 10,
-        }}
-      >
-        <TextWidget
-          text={countdown.title}
-          style={{
-            fontSize: 13,
-            fontWeight: '600',
-            color: '#F5F3F0',
-          }}
-          maxLines={1}
-          truncate="END"
-        />
-      </FlexWidget>
-
-      {/* Time Badge */}
+      {/* Time Badge (left side for RTL) */}
       <FlexWidget
         style={{
           paddingHorizontal: 10,
@@ -82,6 +47,43 @@ export function CountdownRow({ countdown }: { countdown: WidgetCountdown }) {
             fontWeight: '700',
             color: countdown.isComplete ? '#34D399' : '#F59E0B',
           }}
+        />
+      </FlexWidget>
+
+      {/* Title (center) */}
+      <FlexWidget
+        style={{
+          flex: 1,
+          marginLeft: 10,
+          marginRight: 10,
+        }}
+      >
+        <TextWidget
+          text={titleText}
+          style={{
+            fontSize: 13,
+            fontWeight: '600',
+            color: '#F5F3F0',
+          }}
+          maxLines={1}
+          truncate="END"
+        />
+      </FlexWidget>
+
+      {/* Emoji (right side for RTL) */}
+      <FlexWidget
+        style={{
+          width: 36,
+          height: 36,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(255, 255, 255, 0.08)',
+          borderRadius: 10,
+        }}
+      >
+        <TextWidget
+          text={countdown.icon}
+          style={{ fontSize: 18 }}
         />
       </FlexWidget>
     </FlexWidget>

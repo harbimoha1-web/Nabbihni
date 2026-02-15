@@ -12,6 +12,7 @@ struct WidgetCountdown: Codable, Identifiable {
     let bgColor2: String
     let accentColor: String
     let isComplete: Bool
+    let isStarred: Bool?
     let daysRemaining: Int
     let hoursRemaining: Int
     let minutesRemaining: Int
@@ -48,6 +49,7 @@ struct CountdownDataProvider {
                     bgColor2: countdown.bgColor2,
                     accentColor: countdown.accentColor,
                     isComplete: remaining.isComplete,
+                    isStarred: countdown.isStarred,
                     daysRemaining: remaining.days,
                     hoursRemaining: remaining.hours,
                     minutesRemaining: remaining.minutes
@@ -277,8 +279,8 @@ struct MediumCountdownView: View {
                     .font(.system(size: 18))
             }
 
-            // Title
-            Text(countdown.title)
+            // Title with star indicator
+            Text(countdown.isStarred == true ? "\(countdown.title) ⭐" : countdown.title)
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundColor(.white)
                 .lineLimit(1)
@@ -376,8 +378,8 @@ struct LargeCountdownView: View {
                     .font(.system(size: 18))
             }
 
-            // Title
-            Text(countdown.title)
+            // Title with star indicator
+            Text(countdown.isStarred == true ? "\(countdown.title) ⭐" : countdown.title)
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundColor(.white)
                 .lineLimit(1)
@@ -434,6 +436,7 @@ struct NabbihniSmallWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: CountdownTimelineProvider()) { entry in
             SmallCountdownView(entry: entry)
+                .environment(\.layoutDirection, .rightToLeft)
                 .containerBackground(for: .widget) {
                     Color(hex: "#0F1419")
                 }
@@ -450,6 +453,7 @@ struct NabbihniMediumWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: CountdownTimelineProvider()) { entry in
             MediumCountdownView(entry: entry)
+                .environment(\.layoutDirection, .rightToLeft)
                 .containerBackground(for: .widget) {
                     Color(hex: "#0F1419")
                 }
@@ -466,6 +470,7 @@ struct NabbihniLargeWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: CountdownTimelineProvider()) { entry in
             LargeCountdownView(entry: entry)
+                .environment(\.layoutDirection, .rightToLeft)
                 .containerBackground(for: .widget) {
                     Color(hex: "#0F1419")
                 }

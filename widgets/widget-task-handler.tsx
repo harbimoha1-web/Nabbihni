@@ -54,10 +54,18 @@ export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
         break;
 
       case 'WIDGET_CLICK': {
-        const clickData = props.clickActionData;
-        if (clickData?.countdownId) {
-          // Deep link to countdown detail
-          props.renderWidget(<CountdownSmallWidget countdown={null} />);
+        // Re-render with fresh data instead of flashing an empty widget
+        const data = await loadWidgetData();
+
+        if (widgetName === 'CountdownSmall') {
+          const first = data?.countdowns?.[0] ?? null;
+          props.renderWidget(<CountdownSmallWidget countdown={first} />);
+        } else if (widgetName === 'CountdownMedium') {
+          const countdowns = data?.countdowns ?? [];
+          props.renderWidget(<CountdownMediumWidget countdowns={countdowns} />);
+        } else if (widgetName === 'CountdownLarge') {
+          const countdowns = data?.countdowns ?? [];
+          props.renderWidget(<CountdownLargeWidget countdowns={countdowns} />);
         }
         break;
       }
@@ -68,6 +76,12 @@ export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
   } catch (error) {
     console.error('Widget task handler error:', error);
     // Render fallback empty widget so it doesn't silently break
-    props.renderWidget(<CountdownSmallWidget countdown={null} />);
+    if (widgetName === 'CountdownMedium') {
+      props.renderWidget(<CountdownMediumWidget countdowns={[]} />);
+    } else if (widgetName === 'CountdownLarge') {
+      props.renderWidget(<CountdownLargeWidget countdowns={[]} />);
+    } else {
+      props.renderWidget(<CountdownSmallWidget countdown={null} />);
+    }
   }
 }
