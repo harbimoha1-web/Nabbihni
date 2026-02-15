@@ -6,7 +6,6 @@ import {
   TextInput,
   ScrollView,
   Pressable,
-  Platform,
   Alert,
   Switch,
   Modal,
@@ -14,13 +13,11 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
 import { ThemePicker } from '@/components/ThemePicker';
 import { EmojiPicker } from '@/components/EmojiPicker';
 import { DatePickerModal } from '@/components/DatePickerModal';
+import { TimePickerModal } from '@/components/TimePickerModal';
 import { useCountdowns, useSingleCountdown } from '@/hooks/useCountdowns';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -188,16 +185,11 @@ export default function CreateCountdownScreen() {
     setShowDatePicker(false);
   };
 
-  const handleTimeChange = (
-    event: DateTimePickerEvent,
-    selectedTime?: Date
-  ) => {
+  const handleTimeConfirm = (selectedTime: Date) => {
+    const newDate = new Date(targetDate);
+    newDate.setHours(selectedTime.getHours(), selectedTime.getMinutes());
+    setTargetDate(newDate);
     setShowTimePicker(false);
-    if (selectedTime) {
-      const newDate = new Date(targetDate);
-      newDate.setHours(selectedTime.getHours(), selectedTime.getMinutes());
-      setTargetDate(newDate);
-    }
   };
 
   const handleCreate = async () => {
@@ -667,14 +659,12 @@ export default function CreateCountdownScreen() {
         />
 
         {/* Time Picker Modal */}
-        {showTimePicker && (
-          <DateTimePicker
-            value={targetDate}
-            mode="time"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={handleTimeChange}
-          />
-        )}
+        <TimePickerModal
+          visible={showTimePicker}
+          date={targetDate}
+          onClose={() => setShowTimePicker(false)}
+          onConfirm={handleTimeConfirm}
+        />
       </SafeAreaView>
     </>
   );
