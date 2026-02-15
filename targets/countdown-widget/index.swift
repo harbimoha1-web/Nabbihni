@@ -98,6 +98,7 @@ struct CountdownTimelineProvider: TimelineProvider {
                     bgColor2: "#302b63",
                     accentColor: "#a78bfa",
                     isComplete: false,
+                    isStarred: nil,
                     daysRemaining: 42,
                     hoursRemaining: 8,
                     minutesRemaining: 30
