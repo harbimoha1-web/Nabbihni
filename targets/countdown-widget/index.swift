@@ -445,6 +445,7 @@ struct NabbihniSmallWidget: Widget {
         .configurationDisplayName("عد تنازلي")
         .description("تابع أقرب عد تنازلي")
         .supportedFamilies([.systemSmall])
+        .contentMarginsDisabled()
     }
 }
 
@@ -462,6 +463,7 @@ struct NabbihniMediumWidget: Widget {
         .configurationDisplayName("عداداتي")
         .description("تابع أهم العدادات")
         .supportedFamilies([.systemMedium])
+        .contentMarginsDisabled()
     }
 }
 
@@ -479,6 +481,7 @@ struct NabbihniLargeWidget: Widget {
         .configurationDisplayName("كل عداداتي")
         .description("تابع جميع العدادات")
         .supportedFamilies([.systemLarge])
+        .contentMarginsDisabled()
     }
 }
 
