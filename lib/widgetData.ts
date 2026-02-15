@@ -12,9 +12,9 @@ export interface WidgetCountdown {
   title: string;
   icon: string;
   targetDate: string;
-  bgColor1: string;
-  bgColor2: string;
-  accentColor: string;
+  bgColor1: `#${string}`;
+  bgColor2: `#${string}`;
+  accentColor: `#${string}`;
   isComplete: boolean;
   daysRemaining: number;
   hoursRemaining: number;
@@ -77,9 +77,9 @@ function prepareWidgetData(countdowns: Countdown[]): WidgetData {
       title: c.title,
       icon: c.icon,
       targetDate: c.targetDate,
-      bgColor1: theme.colors.background[0],
-      bgColor2: theme.colors.background[1],
-      accentColor: theme.colors.accent,
+      bgColor1: theme.colors.background[0] as `#${string}`,
+      bgColor2: theme.colors.background[1] as `#${string}`,
+      accentColor: theme.colors.accent as `#${string}`,
       isComplete: remaining.isComplete,
       daysRemaining: remaining.days,
       hoursRemaining: remaining.hours,

@@ -48,8 +48,8 @@ export function CountdownRow({ countdown }: { countdown: WidgetCountdown }) {
       <FlexWidget
         style={{
           flex: 1,
-          marginStart: 10,
-          marginEnd: 10,
+          marginLeft: 10,
+          marginRight: 10,
         }}
       >
         <TextWidget

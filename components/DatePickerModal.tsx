@@ -139,7 +139,7 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
   }, [items, selectedValue, onValueChange]);
 
   return (
-    <View style={[styles.wheelContainer, { width }]}>
+    <View style={[styles.wheelContainer, { width }, Platform.OS === 'web' && { overflow: 'visible', cursor: 'grab' } as any]}>
       {/* Selection highlight */}
       <View style={styles.selectionHighlight} pointerEvents="none" />
 
@@ -523,10 +523,6 @@ const styles = StyleSheet.create({
   wheelContainer: {
     height: PICKER_HEIGHT,
     overflow: 'hidden',
-    ...(Platform.OS === 'web' && {
-      overflow: 'visible',
-      cursor: 'grab',
-    }),
   },
   selectionHighlight: {
     position: 'absolute',

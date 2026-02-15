@@ -35,7 +35,9 @@ export function getSubscriptionErrorMessage(error: PurchasesError, lang: Languag
     };
   }
 
-  switch (error.code) {
+  // Cast to any: error.code is number, PURCHASES_ERROR_CODE values are a numeric enum.
+  // The conditional require() prevents TypeScript from resolving the comparison statically.
+  switch (error.code as any) {
     case PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR:
       return {
         title: t.purchaseCancelled,
@@ -105,5 +107,5 @@ export function getSubscriptionErrorMessage(error: PurchasesError, lang: Languag
  */
 export function isUserCancellation(error: PurchasesError): boolean {
   if (!PURCHASES_ERROR_CODE) return false;
-  return error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+  return (error.code as any) === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
 }

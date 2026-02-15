@@ -156,7 +156,7 @@ export default function AdBanner({ size = 'banner' }: AdBannerProps) {
         onAdLoaded={() => {
           if (__DEV__) console.log('Ad loaded');
         }}
-        onAdFailedToLoad={(error) => {
+        onAdFailedToLoad={(error: any) => {
           if (__DEV__) console.error('Ad failed to load:', error);
         }}
       />

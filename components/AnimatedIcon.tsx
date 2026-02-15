@@ -10,6 +10,7 @@ import Animated, {
   Easing,
   cancelAnimation,
 } from 'react-native-reanimated';
+import type { EasingFunction } from 'react-native-reanimated';
 import {
   getAnimationConfig,
   getIntensity,
@@ -123,7 +124,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = memo(({
     const applyShakeAnimation = (
       config: AnimationConfig,
       intensity: number,
-      easing: Easing.EasingFn
+      easing: EasingFunction
     ) => {
       const rot = (config.rotation || 8) * intensity;
       const dur = config.duration;
@@ -180,7 +181,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = memo(({
     const applyShineAnimation = (
       config: AnimationConfig,
       intensity: number,
-      easing: Easing.EasingFn
+      easing: EasingFunction
     ) => {
       const { duration, scaleMax = 1.05, opacityMin = 0.9 } = config;
       const maxScaled = 1 + (scaleMax - 1) * intensity;
@@ -209,7 +210,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = memo(({
     const applyFloatAnimation = (
       config: AnimationConfig,
       intensity: number,
-      easing: Easing.EasingFn
+      easing: EasingFunction
     ) => {
       const { duration, translateX: tx = 4, translateY: ty = -6, rotation: rot = 5 } = config;
       const txScaled = tx * intensity;
@@ -248,7 +249,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = memo(({
     const applyGlowAnimation = (
       config: AnimationConfig,
       intensity: number,
-      easing: Easing.EasingFn
+      easing: EasingFunction
     ) => {
       const {
         duration,
@@ -285,7 +286,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = memo(({
     const applyBreatheAnimation = (
       config: AnimationConfig,
       intensity: number,
-      easing: Easing.EasingFn
+      easing: EasingFunction
     ) => {
       const { duration, scaleMin = 0.98, scaleMax = 1.02 } = config;
       const minScaled = 1 - (1 - scaleMin) * intensity;
@@ -305,7 +306,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = memo(({
     const applySwingAnimation = (
       config: AnimationConfig,
       intensity: number,
-      easing: Easing.EasingFn
+      easing: EasingFunction
     ) => {
       const { duration, rotation: rot = 3 } = config;
       const rotScaled = rot * intensity;
@@ -357,7 +358,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = memo(({
     const applySwayAnimation = (
       config: AnimationConfig,
       intensity: number,
-      easing: Easing.EasingFn
+      easing: EasingFunction
     ) => {
       const { duration, rotation: rot = 4, scaleMin, scaleMax } = config;
       const rotScaled = rot * intensity;
@@ -390,7 +391,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = memo(({
     const applyTwinkleAnimation = (
       config: AnimationConfig,
       intensity: number,
-      easing: Easing.EasingFn
+      easing: EasingFunction
     ) => {
       const {
         duration,
@@ -429,7 +430,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = memo(({
     const applyWaveAnimation = (
       config: AnimationConfig,
       intensity: number,
-      easing: Easing.EasingFn
+      easing: EasingFunction
     ) => {
       const { duration, rotation: rot = 3, scaleMin, scaleMax } = config;
       const rotScaled = rot * intensity;
@@ -494,7 +495,7 @@ export const AnimatedIcon: React.FC<AnimatedIconProps> = memo(({
     const applyNodAnimation = (
       config: AnimationConfig,
       intensity: number,
-      easing: Easing.EasingFn
+      easing: EasingFunction
     ) => {
       const { duration, translateY: ty = 2, rotation: rot = 2 } = config;
       const tyScaled = ty * intensity;
