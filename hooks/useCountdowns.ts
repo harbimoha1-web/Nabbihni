@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Countdown, Task } from '@/types/countdown';
 import {
@@ -162,6 +162,13 @@ export const useSingleCountdown = (id: string) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const countdownRef = useRef<Countdown | null>(null);
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    countdownRef.current = countdown;
+  }, [countdown]);
+
   const loadCountdown = useCallback(async (showLoading = true) => {
     if (!id) {
       setCountdown(null);
@@ -173,7 +180,11 @@ export const useSingleCountdown = (id: string) => {
       if (showLoading) setLoading(true);
       setError(null);
       const data = await getCountdown(id);
-      setCountdown(data);
+      // Only update state if data actually changed to prevent unnecessary re-renders
+      const current = countdownRef.current;
+      if (!current || !data || JSON.stringify(current) !== JSON.stringify(data)) {
+        setCountdown(data);
+      }
     } catch (err) {
       setError('فشل في تحميل العد التنازلي');
       if (__DEV__) console.error('Error loading countdown:', err);

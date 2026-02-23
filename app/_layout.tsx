@@ -220,6 +220,14 @@ function RootLayoutNav() {
           options={{ headerShown: true, title: t.admin.manageEvents }}
         />
         <Stack.Screen
+          name="admin/events"
+          options={{ headerShown: true, title: t.admin.manageEvents }}
+        />
+        <Stack.Screen
+          name="admin/event-editor"
+          options={{ headerShown: true, title: t.admin.manageEvents }}
+        />
+        <Stack.Screen
           name="paywall"
           options={{
             presentation: 'modal',

@@ -176,15 +176,17 @@ export const DatePickerModal: React.FC<DatePickerModalProps> = ({
   const { t } = useLanguage();
   const [calendarType, setCalendarType] = useState<CalendarType>('gregorian');
   const [tempDate, setTempDate] = useState(date);
+  const [hijriOverride, setHijriOverride] = useState<{year: number; month: number; day: number} | null>(null);
 
   // Reset temp date when modal opens
   React.useEffect(() => {
     if (visible) {
       setTempDate(date);
+      setHijriOverride(null);
     }
   }, [visible, date]);
 
-  const hijriDate = gregorianToHijri(tempDate);
+  const hijriDate = hijriOverride ?? gregorianToHijri(tempDate);
   const gregorianDate = {
     year: tempDate.getFullYear(),
     month: tempDate.getMonth() + 1,
@@ -266,7 +268,9 @@ export const DatePickerModal: React.FC<DatePickerModalProps> = ({
         day = minDate.day;
       }
 
-      newDate = hijriToGregorian(year, month, Math.min(day, 30));
+      day = Math.min(day, 30);
+      setHijriOverride({ year, month, day });
+      newDate = hijriToGregorian(year, month, day);
     } else {
       let month = currentDate.month;
       let day = currentDate.day;
@@ -294,7 +298,9 @@ export const DatePickerModal: React.FC<DatePickerModalProps> = ({
         day = minDate.day;
       }
 
-      newDate = hijriToGregorian(currentDate.year, month, Math.min(day, 30));
+      day = Math.min(day, 30);
+      setHijriOverride({ year: currentDate.year, month, day });
+      newDate = hijriToGregorian(currentDate.year, month, day);
     } else {
       let day = currentDate.day;
 
@@ -311,6 +317,7 @@ export const DatePickerModal: React.FC<DatePickerModalProps> = ({
   const handleDayChange = (day: number) => {
     let newDate: Date;
     if (calendarType === 'hijri') {
+      setHijriOverride({ year: currentDate.year, month: currentDate.month, day });
       newDate = hijriToGregorian(currentDate.year, currentDate.month, day);
     } else {
       newDate = new Date(currentDate.year, currentDate.month - 1, day);
@@ -319,17 +326,24 @@ export const DatePickerModal: React.FC<DatePickerModalProps> = ({
   };
 
   const handleConfirm = () => {
+    let finalDate = tempDate;
+    // If in Hijri mode with override, do a fresh conversion for accuracy
+    if (calendarType === 'hijri' && hijriOverride) {
+      finalDate = hijriToGregorian(hijriOverride.year, hijriOverride.month, hijriOverride.day);
+    }
     // Check minimum date
-    if (minimumDate && tempDate < minimumDate) {
+    if (minimumDate && finalDate < minimumDate) {
       setTempDate(minimumDate);
+      setHijriOverride(null);
       return;
     }
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    onConfirm(tempDate);
+    onConfirm(finalDate);
   };
 
   const toggleCalendar = () => {
     Haptics.selectionAsync();
+    setHijriOverride(null);
     setCalendarType(prev => prev === 'hijri' ? 'gregorian' : 'hijri');
   };
 
