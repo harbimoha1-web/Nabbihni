@@ -141,16 +141,18 @@ export default function SettingsScreen() {
   };
 
   const handleRateApp = async () => {
-    // TODO: Replace with actual App Store ID after app approval
-    // Get the ID from App Store Connect URL: https://apps.apple.com/app/idXXXXXXXXXX
-    // Example: If URL is https://apps.apple.com/app/id1234567890, use '1234567890'
+    // Try native in-app review first
+    try {
+      const StoreReview = require('expo-store-review');
+      const isAvailable = await StoreReview.isAvailableAsync();
+      if (isAvailable) {
+        await StoreReview.requestReview();
+        return;
+      }
+    } catch {}
+
+    // Fallback: open App Store directly
     const APP_STORE_ID = '6759000350';
-
-    if (!APP_STORE_ID) {
-      Alert.alert(t.settings.comingSoon, t.settings.rateNotAvailable);
-      return;
-    }
-
     const storeUrl = `https://apps.apple.com/app/id${APP_STORE_ID}`;
     try {
       await Linking.openURL(storeUrl);

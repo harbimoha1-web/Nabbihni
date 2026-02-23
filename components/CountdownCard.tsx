@@ -27,8 +27,9 @@ const formatEventDate = (dateString: string, language: 'ar' | 'en') => {
   const date = new Date(dateString);
   const locale = language === 'ar' ? 'ar-SA' : 'en-US';
 
-  // Gregorian format (explicitly specify Gregorian calendar)
+  // Gregorian format with day name (explicitly specify Gregorian calendar)
   const gregorian = date.toLocaleDateString(`${locale}-u-ca-gregory`, {
+    weekday: 'long',
     day: 'numeric',
     month: 'long',
     year: 'numeric',

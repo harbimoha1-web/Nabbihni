@@ -127,7 +127,6 @@ export default function CountdownDetailScreen() {
 
   const { timeRemaining, formatTime } = useCountdown({
     targetDate: stableTargetDate,
-    onComplete: handleComplete,
   });
 
   const theme = countdown ? getTheme(countdown.theme) : getTheme('default');
@@ -249,7 +248,7 @@ export default function CountdownDetailScreen() {
   }
 
   const renderContent = () => (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       {/* Header */}
       <View style={styles.header}>
         <Pressable onPress={() => router.back()} style={[styles.headerButton, { backgroundColor: colors.glass }]}>
@@ -303,14 +302,22 @@ export default function CountdownDetailScreen() {
           />
         </View>
 
-        {timeRemaining.isComplete && (
+        {timeRemaining.isComplete && !showConfetti && !showCelebrationShare && (
           <View style={styles.celebrationContainer}>
             <Text style={[styles.celebrationText, { color: theme.colors.accent }]}>
               🎉 {t.countdown.timeUp} 🎉
             </Text>
-            <Pressable onPress={handleShare} style={[styles.shareButton, { backgroundColor: colors.accent }]}>
-              <Ionicons name="share-social" size={20} color={colors.background} />
-              <Text style={[styles.shareButtonText, { color: colors.background }]}>{t.countdown.shareMoment}</Text>
+            <Pressable
+              onPress={handleComplete}
+              style={[styles.completeButton, { backgroundColor: colors.accent }]}
+            >
+              <Text style={[styles.completeButtonText, { color: colors.background }]}>
+                {t.countdown.completeButton}
+              </Text>
+            </Pressable>
+            <Pressable onPress={handleShare} style={[styles.shareButton, { backgroundColor: colors.glass }]}>
+              <Ionicons name="share-social" size={20} color={theme.colors.text} />
+              <Text style={[styles.shareButtonText, { color: theme.colors.text }]}>{t.countdown.shareMoment}</Text>
             </Pressable>
           </View>
         )}
@@ -682,6 +689,22 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     marginBottom: 20,
+  },
+  completeButton: {
+    paddingHorizontal: 48,
+    paddingVertical: 18,
+    borderRadius: 28,
+    marginBottom: 16,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  completeButtonText: {
+    fontSize: 22,
+    fontWeight: '700',
+    textAlign: 'center',
   },
   shareButton: {
     flexDirection: 'row',

@@ -68,6 +68,13 @@ export const useCountdowns = () => {
       try {
         const newCountdown = await createCountdown(data);
         setCountdowns((prev) => sortCountdowns([newCountdown, ...prev]));
+
+        // Smart review prompt after creating a countdown
+        try {
+          const { maybeRequestReview } = require('@/lib/reviewPrompt');
+          setTimeout(() => maybeRequestReview('countdown_created'), 1500);
+        } catch {}
+
         return newCountdown;
       } catch (err) {
         setError('فشل في إنشاء العد التنازلي');
@@ -155,7 +162,7 @@ export const useSingleCountdown = (id: string) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadCountdown = useCallback(async () => {
+  const loadCountdown = useCallback(async (showLoading = true) => {
     if (!id) {
       setCountdown(null);
       setLoading(false);
@@ -163,7 +170,7 @@ export const useSingleCountdown = (id: string) => {
     }
 
     try {
-      setLoading(true);
+      if (showLoading) setLoading(true);
       setError(null);
       const data = await getCountdown(id);
       setCountdown(data);
@@ -317,7 +324,7 @@ export const useSingleCountdown = (id: string) => {
     error,
     update,
     remove,
-    refresh: loadCountdown,
+    refresh: useCallback(() => loadCountdown(false), [loadCountdown]),
     addTask,
     toggleTask,
     deleteTask,

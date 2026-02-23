@@ -13,6 +13,10 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import {
+  gregorianToHijri as serviceGregorianToHijri,
+  hijriToGregorian as serviceHijriToGregorian,
+} from '@/lib/hijriService';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ITEM_HEIGHT = 50;
@@ -61,36 +65,14 @@ const GREGORIAN_MONTHS = [
   'ديسمبر',
 ];
 
-// Simple Hijri conversion (approximate - for display purposes)
-// For production, use a proper library like hijri-converter
+// Accurate Hijri conversion using hijri-converter library via hijriService
 function gregorianToHijri(date: Date): { year: number; month: number; day: number } {
-  const jd = Math.floor((date.getTime() / 86400000) + 2440587.5);
-  const l = jd - 1948440 + 10632;
-  const n = Math.floor((l - 1) / 10631);
-  const l2 = l - 10631 * n + 354;
-  const j = Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) + Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
-  const l3 = l2 - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) - Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
-  const month = Math.floor((24 * l3) / 709);
-  const day = l3 - Math.floor((709 * month) / 24);
-  const year = 30 * n + j - 30;
-
-  return { year, month, day };
+  return serviceGregorianToHijri(date);
 }
 
 function hijriToGregorian(year: number, month: number, day: number): Date {
-  const jd = Math.floor((11 * year + 3) / 30) + 354 * year + 30 * month - Math.floor((month - 1) / 2) + day + 1948440 - 385;
-  const l = jd + 68569;
-  const n = Math.floor((4 * l) / 146097);
-  const l2 = l - Math.floor((146097 * n + 3) / 4);
-  const i = Math.floor((4000 * (l2 + 1)) / 1461001);
-  const l3 = l2 - Math.floor((1461 * i) / 4) + 31;
-  const j = Math.floor((80 * l3) / 2447);
-  const gDay = l3 - Math.floor((2447 * j) / 80);
-  const l4 = Math.floor(j / 11);
-  const gMonth = j + 2 - 12 * l4;
-  const gYear = 100 * (n - 49) + i + l4;
-
-  return new Date(gYear, gMonth - 1, gDay);
+  const dateStr = serviceHijriToGregorian(year, month, day);
+  return new Date(dateStr);
 }
 
 interface WheelPickerProps {
@@ -169,8 +151,8 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
               <Text
                 style={[
                   styles.wheelItemText,
-                  { color: colors.textSecondary },
-                  isSelected && [styles.wheelItemTextSelected, { color: colors.text }],
+                  { color: colors.text, opacity: 0.5 },
+                  isSelected && [styles.wheelItemTextSelected, { color: colors.text, opacity: 1 }],
                 ]}
               >
                 {item.label}
@@ -192,7 +174,7 @@ export const DatePickerModal: React.FC<DatePickerModalProps> = ({
 }) => {
   const { colors } = useTheme();
   const { t } = useLanguage();
-  const [calendarType, setCalendarType] = useState<CalendarType>('hijri');
+  const [calendarType, setCalendarType] = useState<CalendarType>('gregorian');
   const [tempDate, setTempDate] = useState(date);
 
   // Reset temp date when modal opens
@@ -530,7 +512,7 @@ const styles = StyleSheet.create({
     left: 4,
     right: 4,
     height: ITEM_HEIGHT,
-    backgroundColor: 'rgba(246, 173, 85, 0.15)',
+    backgroundColor: 'rgba(246, 173, 85, 0.25)',
     borderRadius: 8,
     zIndex: 1,
   },

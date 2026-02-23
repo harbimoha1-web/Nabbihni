@@ -70,6 +70,16 @@ export default function RootLayout() {
         await new Promise(resolve => setTimeout(resolve, 100));
         // Sync widget data on app launch (non-blocking)
         syncWidgetData().catch(() => {});
+
+        // Smart review prompt on app open (delayed, non-blocking)
+        if (Platform.OS !== 'web') {
+          setTimeout(async () => {
+            try {
+              const { maybeRequestReview } = require('@/lib/reviewPrompt');
+              await maybeRequestReview('app_open');
+            } catch {}
+          }, 3000);
+        }
       } catch (e) {
         console.warn('Prepare error:', e);
       } finally {

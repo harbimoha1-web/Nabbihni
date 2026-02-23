@@ -97,8 +97,8 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
               <Text
                 style={[
                   styles.wheelItemText,
-                  { color: colors.textSecondary },
-                  isSelected && [styles.wheelItemTextSelected, { color: colors.text }],
+                  { color: colors.text, opacity: 0.5 },
+                  isSelected && [styles.wheelItemTextSelected, { color: colors.text, opacity: 1 }],
                 ]}
               >
                 {item.label}
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     left: 4,
     right: 4,
     height: ITEM_HEIGHT,
-    backgroundColor: 'rgba(246, 173, 85, 0.15)',
+    backgroundColor: 'rgba(246, 173, 85, 0.25)',
     borderRadius: 8,
     zIndex: 1,
   },
