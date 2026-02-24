@@ -2,6 +2,28 @@ import { toGregorian, toHijri } from 'hijri-converter';
 
 const SAUDI_TZ_OFFSET = 3; // UTC+3 (Asia/Riyadh)
 
+const HIJRI_MONTHS_AR = [
+  'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني',
+  'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان',
+  'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة',
+];
+
+const HIJRI_MONTHS_EN = [
+  'Muharram', 'Safar', 'Rabi al-Awwal', 'Rabi al-Thani',
+  'Jumada al-Ula', 'Jumada al-Akhirah', 'Rajab', 'Sha\'ban',
+  'Ramadan', 'Shawwal', 'Dhul-Qi\'dah', 'Dhul-Hijjah',
+];
+
+const WEEKDAYS_AR = [
+  'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء',
+  'الخميس', 'الجمعة', 'السبت',
+];
+
+const WEEKDAYS_EN = [
+  'Sunday', 'Monday', 'Tuesday', 'Wednesday',
+  'Thursday', 'Friday', 'Saturday',
+];
+
 /**
  * Get current time in Saudi Arabia (UTC+3)
  */
@@ -59,9 +81,69 @@ export function getCurrentHijriYear(): number {
 }
 
 /**
- * Parse an ISO date string as local time (avoids timezone ambiguity with new Date(string))
+ * Format a Gregorian date/string as a localized Hijri string using the same
+ * hijri-converter library as the date picker (tabular Islamic calendar).
+ * This avoids the 1-2 day mismatch caused by using the platform's Umm al-Qura calendar.
+ */
+export function formatHijriDateLocalized(
+  input: Date | string,
+  language: 'ar' | 'en',
+  options?: { weekday?: boolean }
+): string {
+  // Resolve input to local date components
+  let year: number, month0: number, day: number, weekdayIndex: number;
+
+  if (typeof input === 'string') {
+    // For stored date strings, use parseLocalDate to handle both old UTC and new local formats
+    const d = parseLocalDate(input);
+    year = d.getFullYear();
+    month0 = d.getMonth();
+    day = d.getDate();
+    weekdayIndex = d.getDay();
+  } else {
+    year = input.getFullYear();
+    month0 = input.getMonth();
+    day = input.getDate();
+    weekdayIndex = input.getDay();
+  }
+
+  const hijri = toHijri(year, month0 + 1, day);
+  const months = language === 'ar' ? HIJRI_MONTHS_AR : HIJRI_MONTHS_EN;
+  const monthName = months[hijri.hm - 1];
+
+  if (options?.weekday) {
+    const weekdays = language === 'ar' ? WEEKDAYS_AR : WEEKDAYS_EN;
+    const weekdayName = weekdays[weekdayIndex];
+    return `${weekdayName}، ${hijri.hd} ${monthName} ${hijri.hy}`;
+  }
+
+  return `${hijri.hd} ${monthName} ${hijri.hy}`;
+}
+
+/**
+ * Format a Date as a local ISO string (no Z suffix) to avoid UTC date-shift.
+ * e.g. 2026-03-15T00:00:00 instead of 2026-03-14T21:00:00.000Z
+ */
+export function toLocalISOString(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  const h = String(date.getHours()).padStart(2, '0');
+  const min = String(date.getMinutes()).padStart(2, '0');
+  const s = String(date.getSeconds()).padStart(2, '0');
+  return `${y}-${m}-${d}T${h}:${min}:${s}`;
+}
+
+/**
+ * Parse an ISO date string as local time (avoids timezone ambiguity with new Date(string)).
+ * Handles both old UTC format ("...Z") and new local format ("...T00:00:00").
  */
 export function parseLocalDate(isoDate: string): Date {
+  // Old stored dates end in 'Z' — parse via Date constructor to get correct local components
+  if (isoDate.endsWith('Z')) {
+    const d = new Date(isoDate);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
   const [datePart] = isoDate.split('T');
   const [y, m, d] = datePart.split('-').map(Number);
   return new Date(y, m - 1, d);
@@ -132,20 +214,5 @@ export function formatHijriDate(
   month: number,
   day: number
 ): string {
-  const monthNames = [
-    'محرم',
-    'صفر',
-    'ربيع الأول',
-    'ربيع الثاني',
-    'جمادى الأولى',
-    'جمادى الآخرة',
-    'رجب',
-    'شعبان',
-    'رمضان',
-    'شوال',
-    'ذو القعدة',
-    'ذو الحجة',
-  ];
-
-  return `${day} ${monthNames[month - 1]} ${year}`;
+  return `${day} ${HIJRI_MONTHS_AR[month - 1]} ${year}`;
 }

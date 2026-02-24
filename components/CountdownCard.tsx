@@ -18,6 +18,7 @@ import { Countdown } from '@/types/countdown';
 import { getTheme } from '@/constants/themes';
 import { useCountdown } from '@/hooks/useCountdown';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { formatHijriDateLocalized } from '@/lib/hijriService';
 import CountdownTimer from './CountdownTimer';
 import AnimatedIcon from './AnimatedIcon';
 
@@ -35,12 +36,8 @@ const formatEventDate = (dateString: string, language: 'ar' | 'en') => {
     year: 'numeric',
   });
 
-  // Hijri format
-  const hijri = date.toLocaleDateString(`${locale}-u-ca-islamic`, {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  // Hijri format — use hijri-converter for consistency with the date picker
+  const hijri = formatHijriDateLocalized(dateString, language);
 
   return { gregorian, hijri };
 };

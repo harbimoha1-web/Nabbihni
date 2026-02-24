@@ -15,6 +15,7 @@ import * as Haptics from 'expo-haptics';
 import { decodeSharedCountdown } from '@/lib/shareLink';
 import { useCountdown } from '@/hooks/useCountdown';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { formatHijriDateLocalized } from '@/lib/hijriService';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCountdowns as useCountdownsList } from '@/hooks/useCountdowns';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -180,15 +181,7 @@ export default function SharedCountdownScreen() {
             {/* Target Date */}
             <View style={styles.dateContainer}>
               <Text style={[styles.dateHijri, { color: theme.colors.text }]}>
-                {new Date(sharedData.targetDate).toLocaleDateString(
-                  language === 'ar' ? 'ar-SA-u-ca-islamic' : 'en-US-u-ca-islamic',
-                  {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  }
-                )}
+                {formatHijriDateLocalized(sharedData.targetDate, language, { weekday: true })}
               </Text>
               <Text style={[styles.dateGregorian, { color: theme.colors.textSecondary }]}>
                 {new Date(sharedData.targetDate).toLocaleDateString(

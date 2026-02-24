@@ -23,6 +23,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useSubscription } from '@/hooks/useSubscription';
+import { formatHijriDateLocalized, toLocalISOString } from '@/lib/hijriService';
 import { ThemeId, RecurrenceSettings, ReminderOption, ReminderTiming } from '@/types/countdown';
 
 export default function CreateCountdownScreen() {
@@ -218,7 +219,7 @@ export default function CreateCountdownScreen() {
         // Update existing countdown
         const updated = await updateCountdown(id, {
           title: title.trim(),
-          targetDate: targetDate.toISOString(),
+          targetDate: toLocalISOString(targetDate),
           icon,
           theme,
           isRecurring: isRecurring,
@@ -238,7 +239,7 @@ export default function CreateCountdownScreen() {
         // Create new countdown
         const countdown = await add({
           title: title.trim(),
-          targetDate: targetDate.toISOString(),
+          targetDate: toLocalISOString(targetDate),
           icon,
           theme,
           isPublic: false,
@@ -264,12 +265,7 @@ export default function CreateCountdownScreen() {
 
   const formatDate = (date: Date): string => {
     const locale = language === 'ar' ? 'ar-SA' : 'en-US';
-    // Show both Hijri and Gregorian
-    const hijri = date.toLocaleDateString(`${locale}-u-ca-islamic`, {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
+    const hijri = formatHijriDateLocalized(date, language);
     const gregorian = date.toLocaleDateString(`${locale}-u-ca-gregory`, {
       day: 'numeric',
       month: 'long',
