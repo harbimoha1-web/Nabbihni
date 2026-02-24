@@ -72,7 +72,10 @@ function gregorianToHijri(date: Date): { year: number; month: number; day: numbe
 
 function hijriToGregorian(year: number, month: number, day: number): Date {
   const dateStr = serviceHijriToGregorian(year, month, day);
-  return new Date(dateStr);
+  // Parse components explicitly — new Date(string) has timezone ambiguity
+  const [datePart] = dateStr.split('T');
+  const [y, m, d] = datePart.split('-').map(Number);
+  return new Date(y, m - 1, d);
 }
 
 interface WheelPickerProps {

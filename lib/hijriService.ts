@@ -26,6 +26,14 @@ export function hijriToGregorian(
 }
 
 /**
+ * Convert Hijri date to a local-time Date object (no timezone ambiguity)
+ */
+export function hijriToGregorianDate(year: number, month: number, day: number): Date {
+  const gregorian = toGregorian(year, month, day);
+  return new Date(gregorian.gy, gregorian.gm - 1, gregorian.gd);
+}
+
+/**
  * Convert Gregorian date to Hijri
  */
 export function gregorianToHijri(date: Date): {
