@@ -59,10 +59,19 @@ export function getCurrentHijriYear(): number {
 }
 
 /**
+ * Parse an ISO date string as local time (avoids timezone ambiguity with new Date(string))
+ */
+export function parseLocalDate(isoDate: string): Date {
+  const [datePart] = isoDate.split('T');
+  const [y, m, d] = datePart.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+/**
  * Check if a date has passed in Saudi time (after 23:59:59)
  */
 export function hasDatePassedInSaudiTime(isoDate: string): boolean {
-  const targetDate = new Date(isoDate);
+  const targetDate = parseLocalDate(isoDate);
   const saudiNow = getSaudiNow();
 
   // Set target to end of day (23:59:59) in Saudi time
@@ -83,7 +92,7 @@ export function getTimeUntilSaudiMidnight(isoDate: string): {
   totalSeconds: number;
   isComplete: boolean;
 } {
-  const targetDate = new Date(isoDate);
+  const targetDate = parseLocalDate(isoDate);
   const saudiNow = getSaudiNow();
 
   const diff = targetDate.getTime() - saudiNow.getTime();

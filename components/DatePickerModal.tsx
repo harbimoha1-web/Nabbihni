@@ -15,7 +15,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   gregorianToHijri as serviceGregorianToHijri,
-  hijriToGregorian as serviceHijriToGregorian,
+  hijriToGregorianDate as serviceHijriToGregorianDate,
 } from '@/lib/hijriService';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -71,11 +71,7 @@ function gregorianToHijri(date: Date): { year: number; month: number; day: numbe
 }
 
 function hijriToGregorian(year: number, month: number, day: number): Date {
-  const dateStr = serviceHijriToGregorian(year, month, day);
-  // Parse components explicitly — new Date(string) has timezone ambiguity
-  const [datePart] = dateStr.split('T');
-  const [y, m, d] = datePart.split('-').map(Number);
-  return new Date(y, m - 1, d);
+  return serviceHijriToGregorianDate(year, month, day);
 }
 
 interface WheelPickerProps {

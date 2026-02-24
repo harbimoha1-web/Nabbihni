@@ -15,10 +15,11 @@ import {
   FixedAnnualDateInfo,
 } from '@/types/countdown';
 import {
-  hijriToGregorian,
+  hijriToGregorianDate,
   getCurrentHijriYear,
   gregorianToHijri,
   getSaudiNow,
+  parseLocalDate,
 } from './hijriService';
 
 // Seasonal event astronomical dates (approximate - varies by 1-2 days)
@@ -71,16 +72,15 @@ function calculateNextHijriDate(event: PublicEvent, now: Date): string | null {
   const currentHijriYear = getCurrentHijriYear();
   const { month, day } = event.hijriDate;
 
-  // Try current Hijri year
-  let targetDate = hijriToGregorian(currentHijriYear, month, day);
-  let targetDateObj = new Date(targetDate);
+  // Use Date constructor directly to avoid timezone ambiguity
+  let targetDateObj = hijriToGregorianDate(currentHijriYear, month, day);
 
   // If date has passed, use next Hijri year
   if (targetDateObj <= now) {
-    targetDate = hijriToGregorian(currentHijriYear + 1, month, day);
+    targetDateObj = hijriToGregorianDate(currentHijriYear + 1, month, day);
   }
 
-  return targetDate;
+  return formatDateToISO(targetDateObj);
 }
 
 /**
@@ -155,7 +155,7 @@ function generateTitle(
   targetDate: string,
   recurrenceType: EventRecurrenceType
 ): { title: string; titleAr: string } {
-  const date = new Date(targetDate);
+  const date = parseLocalDate(targetDate);
   const gregorianYear = date.getFullYear();
 
   if (recurrenceType === 'hijri') {
@@ -205,7 +205,7 @@ export function generateEventInstance(event: PublicEvent): PublicEvent | null {
     return null;
   }
 
-  const targetDate = new Date(nextDate);
+  const targetDate = parseLocalDate(nextDate);
 
   // For one-time events, check if passed
   if (recurrenceType === 'one-time' && targetDate <= now) {
@@ -286,7 +286,7 @@ export function processEventsWithRecurrence(
 
   // Sort by date
   return processedEvents.sort(
-    (a, b) => new Date(a.targetDate).getTime() - new Date(b.targetDate).getTime()
+    (a, b) => parseLocalDate(a.targetDate).getTime() - parseLocalDate(b.targetDate).getTime()
   );
 }
 
@@ -300,7 +300,7 @@ export function shouldAutoAdvance(event: PublicEvent): boolean {
     return false;
   }
 
-  const targetDate = new Date(event.targetDate);
+  const targetDate = parseLocalDate(event.targetDate);
   const now = getSaudiNow();
 
   return targetDate <= now;

@@ -7,8 +7,10 @@ import {
 import { SAUDI_HOLIDAYS } from '@/constants/saudiHolidays';
 import {
   hijriToGregorian,
+  hijriToGregorianDate,
   getCurrentHijriYear,
   hasDatePassedInSaudiTime,
+  parseLocalDate,
 } from './hijriService';
 
 const HOLIDAY_OVERRIDES_KEY = '@nabbihni/holiday-overrides';
@@ -145,8 +147,8 @@ export async function getUpcomingSaudiHolidays(): Promise<ResolvedHoliday[]> {
   // Sort by effective date
   return resolvedHolidays.sort(
     (a, b) =>
-      new Date(a.effective_date).getTime() -
-      new Date(b.effective_date).getTime()
+      parseLocalDate(a.effective_date).getTime() -
+      parseLocalDate(b.effective_date).getTime()
   );
 }
 
