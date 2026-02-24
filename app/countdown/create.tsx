@@ -24,6 +24,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useSubscription } from '@/hooks/useSubscription';
 import { ThemeId, RecurrenceSettings, ReminderOption, ReminderTiming } from '@/types/countdown';
+import { formatHijriDateLocalized } from '@/lib/hijriService';
 
 export default function CreateCountdownScreen() {
   const { colors } = useTheme();
@@ -264,12 +265,8 @@ export default function CreateCountdownScreen() {
 
   const formatDate = (date: Date): string => {
     const locale = language === 'ar' ? 'ar-SA' : 'en-US';
-    // Show both Hijri and Gregorian
-    const hijri = date.toLocaleDateString(`${locale}-u-ca-islamic`, {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
+    // Use hijri-converter for Hijri (consistent with date picker)
+    const hijri = formatHijriDateLocalized(date, language);
     const gregorian = date.toLocaleDateString(`${locale}-u-ca-gregory`, {
       day: 'numeric',
       month: 'long',

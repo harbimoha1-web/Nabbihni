@@ -20,6 +20,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ThemeId, CalendarType, AdjustmentRule } from '@/types/countdown';
 import { calculateNextSalaryDate, formatCalendarTypeAr } from '@/lib/salaryCalculator';
+import { formatHijriDateLocalized } from '@/lib/hijriService';
 
 export default function CreateSalaryCountdownScreen() {
   const { colors } = useTheme();
@@ -47,12 +48,8 @@ export default function CreateSalaryCountdownScreen() {
   const formatPreviewDate = (isoDate: string): { hijri: string; gregorian: string } => {
     const date = new Date(isoDate);
     const locale = language === 'ar' ? 'ar-SA' : 'en-US';
-    const hijri = date.toLocaleDateString(`${locale}-u-ca-islamic`, {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
+    // Use hijri-converter for Hijri (consistent with date picker)
+    const hijri = formatHijriDateLocalized(date, language, { weekday: true });
     const gregorian = date.toLocaleDateString(`${locale}-u-ca-gregory`, {
       weekday: 'long',
       day: 'numeric',

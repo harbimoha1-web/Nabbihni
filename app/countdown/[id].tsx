@@ -37,6 +37,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { publicEvents } from '@/constants/publicEvents';
 import { processEventsWithRecurrence } from '@/lib/eventRecurrenceEngine';
 import { Countdown, PublicEvent } from '@/types/countdown';
+import { formatHijriDateLocalized } from '@/lib/hijriService';
 import { shareImage } from '@/lib/captureShare';
 
 const { width } = Dimensions.get('window');
@@ -325,15 +326,7 @@ export default function CountdownDetailScreen() {
         {!timeRemaining.isComplete && (
           <View style={styles.targetDateContainer}>
             <Text style={[styles.targetDateHijri, { color: theme.colors.text }]}>
-              {new Date(countdown.targetDate).toLocaleDateString(
-                language === 'ar' ? 'ar-SA-u-ca-islamic' : 'en-US-u-ca-islamic',
-                {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                }
-              )}
+              {formatHijriDateLocalized(new Date(countdown.targetDate), language, { weekday: true })}
             </Text>
             <Text style={[styles.targetDateGregorian, { color: theme.colors.textSecondary }]}>
               {new Date(countdown.targetDate).toLocaleDateString(

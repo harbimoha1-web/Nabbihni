@@ -22,6 +22,7 @@ import { createCountdown } from '@/lib/storage';
 import CountdownTimer from '@/components/CountdownTimer';
 import AnimatedIcon from '@/components/AnimatedIcon';
 import { getTheme } from '@/constants/themes';
+import { formatHijriDateLocalized } from '@/lib/hijriService';
 
 const { width } = Dimensions.get('window');
 
@@ -180,15 +181,7 @@ export default function SharedCountdownScreen() {
             {/* Target Date */}
             <View style={styles.dateContainer}>
               <Text style={[styles.dateHijri, { color: theme.colors.text }]}>
-                {new Date(sharedData.targetDate).toLocaleDateString(
-                  language === 'ar' ? 'ar-SA-u-ca-islamic' : 'en-US-u-ca-islamic',
-                  {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  }
-                )}
+                {formatHijriDateLocalized(new Date(sharedData.targetDate), language, { weekday: true })}
               </Text>
               <Text style={[styles.dateGregorian, { color: theme.colors.textSecondary }]}>
                 {new Date(sharedData.targetDate).toLocaleDateString(

@@ -132,3 +132,48 @@ export function formatHijriDate(
 
   return `${day} ${monthNames[month - 1]} ${year}`;
 }
+
+const HIJRI_MONTHS_AR = [
+  'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني',
+  'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان',
+  'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة',
+];
+
+const HIJRI_MONTHS_EN = [
+  'Muharram', 'Safar', 'Rabi\' al-Awwal', 'Rabi\' al-Thani',
+  'Jumada al-Ula', 'Jumada al-Thani', 'Rajab', 'Sha\'ban',
+  'Ramadan', 'Shawwal', 'Dhu al-Qi\'dah', 'Dhu al-Hijjah',
+];
+
+const WEEKDAYS_AR = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+const WEEKDAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+/**
+ * Format a Gregorian Date as a localized Hijri date string using hijri-converter.
+ * This ensures consistency with the Hijri date picker which also uses hijri-converter.
+ * Replaces toLocaleDateString with u-ca-islamic which uses a different calendar algorithm.
+ */
+export function formatHijriDateLocalized(
+  date: Date,
+  language: 'ar' | 'en',
+  options?: { weekday?: boolean }
+): string {
+  const hijri = gregorianToHijri(date);
+  const months = language === 'ar' ? HIJRI_MONTHS_AR : HIJRI_MONTHS_EN;
+  const monthName = months[hijri.month - 1];
+
+  if (options?.weekday) {
+    const weekdays = language === 'ar' ? WEEKDAYS_AR : WEEKDAYS_EN;
+    const weekday = weekdays[date.getDay()];
+
+    if (language === 'ar') {
+      return `${weekday}، ${hijri.day} ${monthName}، ${hijri.year} هـ`;
+    }
+    return `${weekday}, ${monthName} ${hijri.day}, ${hijri.year} AH`;
+  }
+
+  if (language === 'ar') {
+    return `${hijri.day} ${monthName}، ${hijri.year} هـ`;
+  }
+  return `${monthName} ${hijri.day}, ${hijri.year} AH`;
+}
