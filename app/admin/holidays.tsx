@@ -212,25 +212,6 @@ export default function AdminHolidaysScreen() {
     );
   };
 
-  if (loading) {
-    return (
-      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-        <Stack.Screen
-          options={{
-            title: 'إدارة المناسبات',
-            headerShown: true,
-          }}
-        />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.accent} />
-          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
-            جارٍ التحميل...
-          </Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['bottom']}>
       <Stack.Screen
@@ -245,6 +226,15 @@ export default function AdminHolidaysScreen() {
         }}
       />
 
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.accent} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            جارٍ التحميل...
+          </Text>
+        </View>
+      ) : (
+      <>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -407,6 +397,8 @@ export default function AdminHolidaysScreen() {
           </View>
         </View>
       </Modal>
+      </>
+      )}
     </SafeAreaView>
   );
 }

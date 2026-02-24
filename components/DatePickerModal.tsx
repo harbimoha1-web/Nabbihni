@@ -182,7 +182,12 @@ export const DatePickerModal: React.FC<DatePickerModalProps> = ({
   React.useEffect(() => {
     if (visible) {
       setTempDate(date);
-      setHijriOverride(null);
+      // Initialize hijri override if in hijri mode so we never fall back to lossy round-trip
+      if (calendarType === 'hijri') {
+        setHijriOverride(gregorianToHijri(date));
+      } else {
+        setHijriOverride(null);
+      }
     }
   }, [visible, date]);
 
@@ -343,8 +348,16 @@ export const DatePickerModal: React.FC<DatePickerModalProps> = ({
 
   const toggleCalendar = () => {
     Haptics.selectionAsync();
-    setHijriOverride(null);
-    setCalendarType(prev => prev === 'hijri' ? 'gregorian' : 'hijri');
+    setCalendarType(prev => {
+      const next = prev === 'hijri' ? 'gregorian' : 'hijri';
+      if (next === 'hijri') {
+        // Set override immediately so we never fall back to lossy round-trip
+        setHijriOverride(gregorianToHijri(tempDate));
+      } else {
+        setHijriOverride(null);
+      }
+      return next;
+    });
   };
 
   // Format display date

@@ -284,17 +284,6 @@ export default function EventEditorScreen() {
     return 'تعديل المناسبة';
   };
 
-  if (loading) {
-    return (
-      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-        <Stack.Screen options={{ title: getTitle(), headerShown: true }} />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.accent} />
-        </View>
-      </SafeAreaView>
-    );
-  }
-
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['bottom']}>
       <Stack.Screen
@@ -309,7 +298,7 @@ export default function EventEditorScreen() {
           headerRight: () => (
             <Pressable
               onPress={handleSave}
-              disabled={saving}
+              disabled={saving || loading}
               style={styles.headerButton}
             >
               {saving ? (
@@ -322,6 +311,11 @@ export default function EventEditorScreen() {
         }}
       />
 
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.accent} />
+        </View>
+      ) : (
       <KeyboardAvoidingView
         style={styles.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -628,6 +622,7 @@ export default function EventEditorScreen() {
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>
+      )}
 
       {/* Date Picker Modal */}
       <DatePickerModal
