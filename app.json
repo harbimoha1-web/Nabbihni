@@ -124,6 +124,7 @@
     },
     "plugins": [
       "expo-router",
+      "./plugins/withDisableExtraTranslationLint",
       "@react-native-community/datetimepicker",
       "expo-notifications",
       [
