@@ -12,6 +12,7 @@ import {
   TextInput,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import * as Crypto from 'expo-crypto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -22,8 +23,9 @@ import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useNotifications } from '@/hooks/useNotifications';
 
-// Admin PIN - Change this to your secret PIN
-const ADMIN_PIN = '1711';
+// SHA256 of the admin PIN (never store plaintext PIN in source code)
+// To update: run `echo -n "your_pin" | sha256sum` and replace the hash below
+const ADMIN_PIN_HASH = 'f8d64a31eb7d864da9252b7e5dd2659229cf1a3c4bf9d6d544c0318c81e13cff';
 
 export default function SettingsScreen() {
   const { colors, mode, setMode, isDark } = useTheme();
@@ -69,7 +71,11 @@ export default function SettingsScreen() {
   };
 
   const handlePinSubmit = async () => {
-    if (pinInput === ADMIN_PIN) {
+    const inputHash = await Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA256,
+      pinInput
+    );
+    if (inputHash === ADMIN_PIN_HASH) {
       setShowPinModal(false);
       setPinInput('');
       setPinError(false);
@@ -80,18 +86,18 @@ export default function SettingsScreen() {
       // Show admin options
       Alert.alert(
         'Admin',
-        language === 'ar' ? 'اختر لوحة الإدارة' : 'Choose Admin Panel',
+        t.admin.choosePanel,
         [
           {
-            text: language === 'ar' ? 'إدارة الأعياد' : 'Holidays Admin',
+            text: t.admin.holidaysAdmin,
             onPress: () => router.push('/admin/holidays'),
           },
           {
-            text: language === 'ar' ? 'إدارة المناسبات' : 'Events Admin',
+            text: t.admin.eventsAdmin,
             onPress: () => router.push('/admin/events'),
           },
           {
-            text: language === 'ar' ? 'إلغاء' : 'Cancel',
+            text: t.cancel,
             style: 'cancel',
           },
         ]
@@ -477,12 +483,12 @@ export default function SettingsScreen() {
         <Pressable style={styles.pinModalOverlay} onPress={handlePinClose}>
           <Pressable style={[styles.pinModalContent, { backgroundColor: colors.surface }]} onPress={() => {}}>
             <Text style={[styles.pinModalTitle, { color: colors.text }]}>
-              {language === 'ar' ? 'أدخل رمز الدخول' : 'Enter PIN'}
+              {t.admin.enterPin}
             </Text>
 
             {pinError && (
               <Text style={styles.pinErrorText}>
-                {language === 'ar' ? 'رمز خاطئ' : 'Wrong PIN'}
+                {t.admin.wrongPin}
               </Text>
             )}
 
@@ -512,7 +518,7 @@ export default function SettingsScreen() {
                 style={[styles.pinButton, { backgroundColor: colors.background }]}
               >
                 <Text style={[styles.pinButtonText, { color: colors.textSecondary }]}>
-                  {language === 'ar' ? 'إلغاء' : 'Cancel'}
+                  {t.cancel}
                 </Text>
               </Pressable>
               <Pressable
@@ -520,7 +526,7 @@ export default function SettingsScreen() {
                 style={[styles.pinButton, { backgroundColor: colors.accent }]}
               >
                 <Text style={[styles.pinButtonText, { color: '#000' }]}>
-                  {language === 'ar' ? 'دخول' : 'Enter'}
+                  {t.admin.enterButton}
                 </Text>
               </Pressable>
             </View>

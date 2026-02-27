@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Conditional import - native module not available in Expo Go
 let BannerAd: any = null;
@@ -78,6 +79,7 @@ interface AdBannerProps {
 export default function AdBanner({ size = 'banner' }: AdBannerProps) {
   const { shouldShowAds } = useSubscription();
   const { colors } = useTheme();
+  const { t } = useLanguage();
 
   // Premium users don't see ads
   if (!shouldShowAds) {
@@ -135,7 +137,7 @@ export default function AdBanner({ size = 'banner' }: AdBannerProps) {
         ]}
       >
         <Text style={[styles.placeholderText, { color: colors.textMuted }]}>
-          مساحة إعلانية ({size})
+          {t.ads?.placeholder || 'مساحة إعلانية'} ({size})
         </Text>
         <Text style={[styles.adIdText, { color: colors.textMuted }]}>
           {!isAdMobAvailable() ? 'Expo Go' : __DEV__ ? 'Test Mode' : 'Configure AdMob'}

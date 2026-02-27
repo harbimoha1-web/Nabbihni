@@ -90,6 +90,7 @@ export const translations = {
       added: 'تمت الإضافة!',
       addedMessage: 'تمت إضافة العد التنازلي إلى قائمتك',
       sharedCountdown: 'عد تنازلي مشترك',
+      modalTitle: 'شارك العد التنازلي',
     },
 
     // Language
@@ -182,6 +183,8 @@ export const translations = {
       estimated: 'تقديري',
       tentative: 'مبدئي',
       moonSightingNote: 'قد يتغير بناءً على رؤية الهلال',
+      loadFailed: 'فشل في تحميل الأحداث',
+      hijriDisclaimer: 'التواريخ الهجرية تقريبية وتعتمد على رؤية الهلال',
     },
 
     // Government Templates
@@ -224,6 +227,12 @@ export const translations = {
     // Admin
     admin: {
       manageEvents: 'إدارة المناسبات',
+      enterPin: 'أدخل رمز الدخول',
+      wrongPin: 'رمز خاطئ',
+      enterButton: 'دخول',
+      choosePanel: 'اختر لوحة الإدارة',
+      holidaysAdmin: 'إدارة الأعياد',
+      eventsAdmin: 'إدارة المناسبات',
     },
 
     // Reminders
@@ -373,8 +382,17 @@ export const translations = {
       termsOfUse: 'شروط الاستخدام',
     },
 
+    // Ads
+    ads: {
+      placeholder: 'مساحة إعلانية',
+    },
+
     // Errors
     errors: {
+      countdownLoadFailed: 'فشل في تحميل العد التنازلي',
+      countdownCreateFailed: 'فشل في إنشاء العد التنازلي',
+      countdownUpdateFailed: 'فشل في تحديث العد التنازلي',
+      countdownDeleteFailed: 'فشل في حذف العد التنازلي',
       networkError: 'خطأ في الاتصال',
       networkErrorDesc: 'فشل الاتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى',
       purchaseFailed: 'فشلت عملية الدفع',
@@ -503,6 +521,7 @@ export const translations = {
       added: 'Added!',
       addedMessage: 'Countdown added to your list',
       sharedCountdown: 'Shared Countdown',
+      modalTitle: 'Share Countdown',
     },
 
     // Language
@@ -595,6 +614,8 @@ export const translations = {
       estimated: 'Estimated',
       tentative: 'Tentative',
       moonSightingNote: 'May change based on moon sighting',
+      loadFailed: 'Failed to load events',
+      hijriDisclaimer: 'Hijri dates are approximate and depend on moon sighting',
     },
 
     // Government Templates
@@ -637,6 +658,12 @@ export const translations = {
     // Admin
     admin: {
       manageEvents: 'Manage Events',
+      enterPin: 'Enter PIN',
+      wrongPin: 'Wrong PIN',
+      enterButton: 'Enter',
+      choosePanel: 'Choose Admin Panel',
+      holidaysAdmin: 'Holidays Admin',
+      eventsAdmin: 'Events Admin',
     },
 
     // Reminders
@@ -786,8 +813,17 @@ export const translations = {
       termsOfUse: 'Terms of Use',
     },
 
+    // Ads
+    ads: {
+      placeholder: 'Ad Space',
+    },
+
     // Errors
     errors: {
+      countdownLoadFailed: 'Failed to load countdown',
+      countdownCreateFailed: 'Failed to create countdown',
+      countdownUpdateFailed: 'Failed to update countdown',
+      countdownDeleteFailed: 'Failed to delete countdown',
       networkError: 'Connection Error',
       networkErrorDesc: 'Failed to connect. Please check your connection and try again',
       purchaseFailed: 'Purchase Failed',

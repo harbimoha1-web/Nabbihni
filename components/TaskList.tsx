@@ -86,7 +86,7 @@ export default function TaskList({
             color={colors.textSecondary}
           />
           <Text style={[styles.headerTitle, { color: colors.text }]}>
-            {t.tasks?.title || 'Tasks'}
+            {t.tasks?.title || 'المهام'}
           </Text>
           {totalCount > 0 && (
             <Text style={[styles.headerCount, { color: colors.textSecondary }]}>

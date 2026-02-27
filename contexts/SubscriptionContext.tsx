@@ -41,8 +41,9 @@ try {
 // RevenueCat Configuration (Production keys — configured 2026-02)
 // Products: com.nabbihni.premium.monthly (4.99 SAR), com.nabbihni.premium.lifetime (79.99 SAR)
 // Entitlement: "premium"
-const REVENUECAT_IOS_API_KEY = 'appl_bapASHjWolpHWzEdmLqgzBOcwFy';
-const REVENUECAT_ANDROID_API_KEY = 'goog_FXMvptjwLkbiOCyxjoFKnjVEfOS';
+// Keys are loaded from environment variables — set via EAS secrets or .env file
+const REVENUECAT_IOS_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY ?? '';
+const REVENUECAT_ANDROID_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? '';
 const ENTITLEMENT_ID = 'premium';
 const PRODUCT_ID_MONTHLY = 'com.nabbihni.premium.monthly';
 const PRODUCT_ID_LIFETIME = 'com.nabbihni.premium.lifetime';

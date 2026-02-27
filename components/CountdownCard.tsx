@@ -60,7 +60,7 @@ const CountdownCardInner: React.FC<CountdownCardProps> = ({
   size = 'small',
   tick,
 }) => {
-  const { t, language } = useLanguage();
+  const { t, language, isRTL } = useLanguage();
   const theme = useMemo(() => getTheme(countdown.theme), [countdown.theme]);
   const { timeRemaining } = useCountdown({
     targetDate: countdown.targetDate,
@@ -97,8 +97,8 @@ const CountdownCardInner: React.FC<CountdownCardProps> = ({
 
   const renderContent = () => (
     <View style={styles.content}>
-      {/* Badges in top-right corner */}
-      <View style={styles.badgesContainer}>
+      {/* Badges in top corner (RTL-aware) */}
+      <View style={[styles.badgesContainer, { [isRTL ? 'left' : 'right']: 8 }]}>
         {countdown.isStarred && (
           <View style={styles.starBadge}>
             <AnimatedIcon emoji="⭐" size={12} />
@@ -212,7 +212,6 @@ const styles = StyleSheet.create({
   badgesContainer: {
     position: 'absolute',
     top: 8,
-    right: 8,
     flexDirection: 'row',
     gap: 4,
     zIndex: 1,

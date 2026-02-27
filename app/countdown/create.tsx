@@ -199,7 +199,7 @@ export default function CreateCountdownScreen() {
       return;
     }
 
-    if (targetDate <= new Date()) {
+    if (targetDate < new Date()) {
       Alert.alert(t.error, t.create.errorPastDate);
       return;
     }

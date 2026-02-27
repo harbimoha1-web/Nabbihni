@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -116,6 +116,14 @@ export default function CountdownDetailScreen() {
   const [showCelebrationShare, setShowCelebrationShare] = useState(false);
   const [tempSharerName, setTempSharerName] = useState('');
   const [isSharing, setIsSharing] = useState(false);
+  const [loadingTimedOut, setLoadingTimedOut] = useState(false);
+
+  // 5-second loading timeout — prevents stuck loading screen if AsyncStorage hangs
+  useEffect(() => {
+    if (!loading || isPublicEvent) return;
+    const timer = setTimeout(() => setLoadingTimedOut(true), 5000);
+    return () => clearTimeout(timer);
+  }, [loading, isPublicEvent]);
 
   const handleComplete = useCallback(() => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -225,11 +233,24 @@ export default function CountdownDetailScreen() {
     setShowCelebrationShare(true);
   };
 
-  if (loading && !isPublicEvent) {
+  if (loading && !isPublicEvent && !loadingTimedOut) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
         <View style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
           <Text style={[styles.loadingText, { color: colors.textSecondary }]}>{t.loading}</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (loadingTimedOut && !countdown) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
+          <Text style={[styles.errorText, { color: colors.text }]}>{t.errors.countdownLoadFailed}</Text>
+          <Pressable onPress={() => router.back()} style={[styles.backButton, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.backButtonText, { color: colors.text }]}>{t.back}</Text>
+          </Pressable>
         </View>
       </SafeAreaView>
     );
@@ -443,17 +464,17 @@ export default function CountdownDetailScreen() {
             onPress={(e) => e.stopPropagation()}
           >
             <Text style={[styles.modalTitle, { color: colors.text }]}>
-              {language === 'ar' ? 'شارك العد التنازلي' : 'Share Countdown'}
+              {t.share.modalTitle}
             </Text>
             <Text style={[styles.modalSubtitle, { color: colors.textSecondary }]}>
-              {language === 'ar' ? 'اسمك (اختياري)' : 'Your name (optional)'}
+              {t.share.yourName}
             </Text>
             <TextInput
               style={[
                 styles.modalInput,
                 { backgroundColor: colors.glass, color: colors.text },
               ]}
-              placeholder={language === 'ar' ? 'مثال: محمد' : 'e.g., Mohammad'}
+              placeholder={t.share.namePlaceholder}
               placeholderTextColor={colors.textSecondary}
               value={tempSharerName}
               onChangeText={setTempSharerName}

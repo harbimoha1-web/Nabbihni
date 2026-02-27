@@ -75,7 +75,7 @@ const ExploreCard = React.memo(({
 export default function ExploreScreen() {
   const { colors } = useTheme();
   const { t, language } = useLanguage();
-  const { holidays, loading, refresh } = useHolidays();
+  const { holidays, loading, error, refresh } = useHolidays();
   const tick = useCountdownTick();
 
   // Only reload on focus if data is stale (> 5 minutes old)
@@ -160,6 +160,13 @@ export default function ExploreScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['bottom']}>
+      {/* Hijri date disclaimer */}
+      <View style={[styles.disclaimerContainer, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.disclaimerText, { color: colors.textSecondary }]}>
+          {t.explore.hijriDisclaimer}
+        </Text>
+      </View>
+
       {/* Filter Chips - Horizontal Scroll */}
       <View style={styles.filterWrapper}>
         <ScrollView
@@ -196,6 +203,18 @@ export default function ExploreScreen() {
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.accent} />
+        </View>
+      ) : error ? (
+        <View style={styles.errorContainer}>
+          <Text style={[styles.errorText, { color: colors.error ?? '#ef4444' }]}>
+            {t.explore.loadFailed}
+          </Text>
+          <Pressable
+            onPress={refresh}
+            style={[styles.retryButton, { backgroundColor: colors.surface }]}
+          >
+            <Text style={[styles.retryButtonText, { color: colors.text }]}>{t.retry}</Text>
+          </Pressable>
         </View>
       ) : (
         <FlatList
@@ -288,5 +307,36 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  errorText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  retryButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  disclaimerContainer: {
+    marginHorizontal: 16,
+    marginTop: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  disclaimerText: {
+    fontSize: 12,
+    textAlign: 'right',
   },
 });

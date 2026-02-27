@@ -73,7 +73,7 @@ const CountdownPairRow = React.memo(({
 
 export default function HomeScreen() {
   const { colors } = useTheme();
-  const { t, language } = useLanguage();
+  const { t, language, isRTL } = useLanguage();
   const { countdowns, loading, error, refresh, toggleStar, remove } = useCountdowns();
   const { checkAndPromptForUpgrade, isPremium, showPremiumFeaturePrompt, shouldShowAds } = useSubscription();
   const tick = useCountdownTick();
@@ -374,7 +374,7 @@ export default function HomeScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['bottom']}>
       {renderContent()}
 
-      <View style={styles.fabContainer}>
+      <View style={[styles.fabContainer, { [isRTL ? 'left' : 'right']: 24 }]}>
         <Pressable
           onPress={handleSalaryPress}
           style={[styles.fabSalaryPill, { backgroundColor: colors.surface, borderColor: colors.accent }]}
@@ -508,7 +508,6 @@ const styles = StyleSheet.create({
   fabContainer: {
     position: 'absolute',
     bottom: 24,
-    right: 24,
     flexDirection: 'row',
     gap: 12,
     alignItems: 'center',

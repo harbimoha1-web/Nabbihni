@@ -9,6 +9,7 @@ import {
   deleteCountdown,
 } from '@/lib/storage';
 import { checkAndAdvanceRecurringCountdown } from './useSalaryCountdown';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 /**
  * Sort countdowns: starred first, then by targetDate ascending (soonest first)
@@ -25,6 +26,7 @@ const sortCountdowns = (countdowns: Countdown[]): Countdown[] => {
 };
 
 export const useCountdowns = () => {
+  const { t } = useLanguage();
   const [countdowns, setCountdowns] = useState<Countdown[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,12 +54,12 @@ export const useCountdowns = () => {
       // Always update with fresh sorted data (fixes background image not updating)
       setCountdowns(sortCountdowns(updatedData));
     } catch (err) {
-      setError('فشل في تحميل العد التنازلي');
+      setError(t.errors.countdownLoadFailed);
       if (__DEV__) console.error('Error loading countdowns:', err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadCountdowns(true); // Initial load with spinner
@@ -77,12 +79,12 @@ export const useCountdowns = () => {
 
         return newCountdown;
       } catch (err) {
-        setError('فشل في إنشاء العد التنازلي');
+        setError(t.errors.countdownCreateFailed);
         if (__DEV__) console.error('Error creating countdown:', err);
         return null;
       }
     },
-    []
+    [t]
   );
 
   const update = useCallback(
@@ -96,12 +98,12 @@ export const useCountdowns = () => {
         }
         return updated;
       } catch (err) {
-        setError('فشل في تحديث العد التنازلي');
+        setError(t.errors.countdownUpdateFailed);
         if (__DEV__) console.error('Error updating countdown:', err);
         return null;
       }
     },
-    []
+    [t]
   );
 
   const remove = useCallback(async (id: string) => {
@@ -112,11 +114,11 @@ export const useCountdowns = () => {
       }
       return success;
     } catch (err) {
-      setError('فشل في حذف العد التنازلي');
+      setError(t.errors.countdownDeleteFailed);
       if (__DEV__) console.error('Error deleting countdown:', err);
       return false;
     }
-  }, []);
+  }, [t]);
 
   const toggleStar = useCallback(async (id: string) => {
     try {
@@ -136,11 +138,11 @@ export const useCountdowns = () => {
       }
       return updated;
     } catch (err) {
-      setError('فشل في تحديث العد التنازلي');
+      setError(t.errors.countdownUpdateFailed);
       if (__DEV__) console.error('Error toggling star:', err);
       return null;
     }
-  }, []);
+  }, [t]);
 
   // Silent refresh (no loading spinner) for focus events
   const refresh = useCallback(() => loadCountdowns(false), [loadCountdowns]);
@@ -158,6 +160,7 @@ export const useCountdowns = () => {
 };
 
 export const useSingleCountdown = (id: string) => {
+  const { t } = useLanguage();
   const [countdown, setCountdown] = useState<Countdown | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -186,12 +189,12 @@ export const useSingleCountdown = (id: string) => {
         setCountdown(data);
       }
     } catch (err) {
-      setError('فشل في تحميل العد التنازلي');
+      setError(t.errors.countdownLoadFailed);
       if (__DEV__) console.error('Error loading countdown:', err);
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, t]);
 
   useEffect(() => {
     loadCountdown();
@@ -208,12 +211,12 @@ export const useSingleCountdown = (id: string) => {
         }
         return updated;
       } catch (err) {
-        setError('فشل في تحديث العد التنازلي');
+        setError(t.errors.countdownUpdateFailed);
         if (__DEV__) console.error('Error updating countdown:', err);
         return null;
       }
     },
-    [id]
+    [id, t]
   );
 
   const remove = useCallback(async () => {
@@ -226,11 +229,11 @@ export const useSingleCountdown = (id: string) => {
       }
       return success;
     } catch (err) {
-      setError('فشل في حذف العد التنازلي');
+      setError(t.errors.countdownDeleteFailed);
       if (__DEV__) console.error('Error deleting countdown:', err);
       return false;
     }
-  }, [id]);
+  }, [id, t]);
 
   // Task CRUD operations
   const addTask = useCallback(
