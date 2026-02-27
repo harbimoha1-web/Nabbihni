@@ -5,8 +5,8 @@ import { useFonts } from 'expo-font';
 import { Stack, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Linking from 'expo-linking';
-import { useEffect, useRef, useState } from 'react';
-import { I18nManager, StatusBar, Platform, View, Text } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { I18nManager, StatusBar, Platform } from 'react-native';
 
 // Register Android widget task handler (must be at top level)
 if (Platform.OS === 'android') {
@@ -58,50 +58,27 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
-  const [isReady, setIsReady] = useState(false);
   const notificationListener = useRef<any>(null);
   const responseListener = useRef<any>(null);
 
-  // Initialize app
+  // Hide native splash as soon as fonts are ready (or errored)
   useEffect(() => {
-    async function prepare() {
-      try {
-        // Wait a tiny bit for contexts to initialize
-        await new Promise(resolve => setTimeout(resolve, 100));
-        // Sync widget data on app launch (non-blocking)
-        syncWidgetData().catch(() => {});
-
-        // Smart review prompt on app open (delayed, non-blocking)
-        if (Platform.OS !== 'web') {
-          setTimeout(async () => {
-            try {
-              const { maybeRequestReview } = require('@/lib/reviewPrompt');
-              await maybeRequestReview('app_open');
-            } catch {}
-          }, 3000);
-        }
-      } catch (e) {
-        console.warn('Prepare error:', e);
-      } finally {
-        setIsReady(true);
-      }
-    }
-    prepare();
-  }, []);
-
-  // Hide splash when ready
-  useEffect(() => {
-    if ((fontsLoaded || fontError) && isReady) {
+    if (fontsLoaded || fontError) {
       SplashScreen.hideAsync().catch(() => {});
     }
-  }, [fontsLoaded, fontError, isReady]);
+  }, [fontsLoaded, fontError]);
 
-  // Safety timeout: force-hide splash after 5s to prevent permanent black screen
+  // Initialize app side effects (non-blocking)
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      SplashScreen.hideAsync().catch(() => {});
-    }, 5000);
-    return () => clearTimeout(timeout);
+    syncWidgetData().catch(() => {});
+    if (Platform.OS !== 'web') {
+      setTimeout(async () => {
+        try {
+          const { maybeRequestReview } = require('@/lib/reviewPrompt');
+          await maybeRequestReview('app_open');
+        } catch {}
+      }, 3000);
+    }
   }, []);
 
   // Setup notifications (non-blocking)
@@ -165,15 +142,6 @@ export default function RootLayout() {
 
     return () => subscription.remove();
   }, []);
-
-  // Show loading while fonts load — solid color to match splash screen
-  if ((!fontsLoaded && !fontError) || !isReady) {
-    return (
-      <View style={{ flex: 1, backgroundColor: '#0f172a', alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ color: '#f6ad55', fontSize: 36, fontWeight: '700' }}>نبّهني</Text>
-      </View>
-    );
-  }
 
   return (
     <LanguageProvider>
