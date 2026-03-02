@@ -179,7 +179,15 @@ export default function SettingsScreen() {
 
   const handlePrivacyPolicy = async () => {
     try {
-      await Linking.openURL('https://nabbihni.com/privacy');
+      await Linking.openURL('https://nabbihni.com/privacy.html');
+    } catch {
+      Alert.alert(t.error, t.settings.cantOpenLink);
+    }
+  };
+
+  const handleTermsOfService = async () => {
+    try {
+      await Linking.openURL('https://nabbihni.com/terms.html');
     } catch {
       Alert.alert(t.error, t.settings.cantOpenLink);
     }
@@ -442,6 +450,22 @@ export default function SettingsScreen() {
               </View>
               <View style={styles.settingContent}>
                 <Text style={[styles.settingTitle, { color: colors.text }]}>{t.settings.privacyPolicy}</Text>
+              </View>
+              <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textSecondary} />
+            </Pressable>
+            <Pressable
+              onPress={handleTermsOfService}
+              style={({ pressed }) => [
+                styles.settingRow,
+                { borderBottomColor: colors.border },
+                pressed && { backgroundColor: colors.surfaceSecondary },
+              ]}
+            >
+              <View style={[styles.settingIcon, { backgroundColor: colors.accent + '20' }]}>
+                <Ionicons name="document-text-outline" size={22} color={colors.accent} />
+              </View>
+              <View style={styles.settingContent}>
+                <Text style={[styles.settingTitle, { color: colors.text }]}>{t.paywall.termsOfUse}</Text>
               </View>
               <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textSecondary} />
             </Pressable>

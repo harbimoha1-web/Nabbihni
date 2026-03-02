@@ -1,130 +1,191 @@
-import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import { View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
+import ViewShot from 'react-native-view-shot';
+import { getTheme } from '@/constants/themes';
 import { Countdown } from '@/types/countdown';
-import { getTheme , COLORS } from '@/constants/themes';
-import { useLanguage } from '@/contexts/LanguageContext';
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const CARD_WIDTH = Math.min(SCREEN_WIDTH - 48, 340);
+const CARD_HEIGHT = CARD_WIDTH * 1.25;
+
+export interface ShareCardRef {
+  capture: () => Promise<string | undefined>;
+}
 
 interface ShareCardProps {
   countdown: Countdown;
   timeText: string;
-  onShare?: () => void;
+  language?: 'ar' | 'en';
 }
 
-export const ShareCard: React.FC<ShareCardProps> = ({
-  countdown,
-  timeText,
-  onShare,
-}) => {
-  const theme = getTheme(countdown.theme);
-  const { t } = useLanguage();
+const ShareCard = forwardRef<ShareCardRef, ShareCardProps>(
+  ({ countdown, timeText, language = 'ar' }, ref) => {
+    const viewShotRef = useRef<ViewShot>(null);
+    const themeConfig = getTheme(countdown.theme);
 
-  return (
-    <View style={styles.container}>
-      <LinearGradient
-        colors={theme.colors.background}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.card}
+    useImperativeHandle(ref, () => ({
+      capture: async () => {
+        if (viewShotRef.current && viewShotRef.current.capture) {
+          return viewShotRef.current.capture();
+        }
+        return undefined;
+      },
+    }));
+
+    const downloadText = language === 'ar' ? 'حمّل التطبيق' : 'Download the app';
+
+    return (
+      <ViewShot
+        ref={viewShotRef}
+        options={{
+          format: 'png',
+          quality: 1,
+          result: 'tmpfile',
+        }}
       >
-        <View style={styles.header}>
-          <Text style={styles.appName}>نبّهني</Text>
-        </View>
-        <View style={styles.content}>
-          <Text style={styles.icon}>{countdown.icon}</Text>
-          <Text style={[styles.title, { color: theme.colors.text }]}>
-            {countdown.title}
-          </Text>
-          <Text style={[styles.timeText, { color: theme.colors.accent }]}>
-            {timeText}
-          </Text>
-          <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-            {t.share.startCounting}
-          </Text>
-        </View>
-        <View style={styles.footer}>
-          <Text style={[styles.footerText, { color: theme.colors.textSecondary }]}>
-            nabbihni.com
-          </Text>
-        </View>
-      </LinearGradient>
+        <View style={styles.container}>
+          <LinearGradient
+            colors={themeConfig.colors.background}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.card}
+          >
+            {/* Decorative circles */}
+            <View style={styles.decorativeCircle1} />
+            <View style={styles.decorativeCircle2} />
 
-      {onShare && (
-        <Pressable onPress={onShare} style={styles.shareButton}>
-          <Ionicons name="share-outline" size={20} color={COLORS.text} />
-          <Text style={styles.shareText}>{t.share.shareButton}</Text>
-        </Pressable>
-      )}
-    </View>
-  );
-};
+            {/* Header watermark */}
+            <View style={styles.header}>
+              <Text style={styles.watermark}>نبّهني</Text>
+            </View>
+
+            {/* Content */}
+            <View style={styles.content}>
+              <Text style={styles.icon}>{countdown.icon}</Text>
+              <Text
+                style={[styles.title, { color: themeConfig.colors.text }]}
+                numberOfLines={2}
+              >
+                {countdown.title}
+              </Text>
+              <Text
+                style={[styles.timeText, { color: themeConfig.colors.accent }]}
+                numberOfLines={2}
+                adjustsFontSizeToFit
+              >
+                {timeText}
+              </Text>
+            </View>
+
+            {/* Footer with download CTA */}
+            <View style={styles.footer}>
+              <View style={styles.footerDivider} />
+              <Text style={styles.downloadText}>{downloadText}</Text>
+              <Text style={styles.url}>nabbihni.com</Text>
+            </View>
+          </LinearGradient>
+        </View>
+      </ViewShot>
+    );
+  }
+);
+
+ShareCard.displayName = 'ShareCard';
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    gap: 16,
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    borderRadius: 24,
+    overflow: 'hidden',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 16,
+      },
+      android: {
+        elevation: 8,
+      },
+    }),
   },
   card: {
-    width: 280,
-    borderRadius: 20,
-    overflow: 'hidden',
+    flex: 1,
+    padding: 20,
+    position: 'relative',
+  },
+  decorativeCircle1: {
+    position: 'absolute',
+    top: -50,
+    right: -50,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  decorativeCircle2: {
+    position: 'absolute',
+    bottom: -30,
+    left: -30,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
   },
   header: {
-    padding: 12,
     alignItems: 'flex-end',
+    marginBottom: 4,
   },
-  appName: {
+  watermark: {
     fontSize: 14,
     fontWeight: '700',
     color: 'rgba(255, 255, 255, 0.5)',
   },
   content: {
+    flex: 1,
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 32,
+    justifyContent: 'center',
+    paddingHorizontal: 8,
   },
   icon: {
-    fontSize: 48,
+    fontSize: 64,
     marginBottom: 16,
+    textAlign: 'center',
   },
   title: {
     fontSize: 20,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
+    lineHeight: 28,
   },
   timeText: {
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 14,
+    fontSize: 28,
+    fontWeight: '800',
+    textAlign: 'center',
+    lineHeight: 36,
   },
   footer: {
-    padding: 12,
     alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+    paddingTop: 12,
   },
-  footerText: {
+  footerDivider: {
+    width: '100%',
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    marginBottom: 10,
+  },
+  downloadText: {
     fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.6)',
+    marginBottom: 2,
   },
-  shareButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    backgroundColor: COLORS.surface,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 24,
-  },
-  shareText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.text,
+  url: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.8)',
   },
 });
 

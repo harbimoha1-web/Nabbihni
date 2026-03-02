@@ -91,6 +91,7 @@ export const translations = {
       addedMessage: 'تمت إضافة العد التنازلي إلى قائمتك',
       sharedCountdown: 'عد تنازلي مشترك',
       modalTitle: 'شارك العد التنازلي',
+      downloadApp: 'حمّل التطبيق',
     },
 
     // Language
@@ -522,6 +523,7 @@ export const translations = {
       addedMessage: 'Countdown added to your list',
       sharedCountdown: 'Shared Countdown',
       modalTitle: 'Share Countdown',
+      downloadApp: 'Download the app',
     },
 
     // Language

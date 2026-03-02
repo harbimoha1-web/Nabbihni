@@ -25,10 +25,11 @@ import { useNotifications } from '@/hooks/useNotifications';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatHijriDateLocalized } from '@/lib/hijriService';
 import { useSharerName } from '@/hooks/useSharerName';
-import { shareCountdownWithData } from '@/lib/sharing';
+import { shareCountdownWithData, createEmbeddedShareLink } from '@/lib/sharing';
 import CountdownTimer from '@/components/CountdownTimer';
 import CelebrationAnimation from '@/components/CelebrationAnimation';
 import CelebrationShareCard, { CelebrationShareCardRef } from '@/components/CelebrationShareCard';
+import ShareCard, { ShareCardRef } from '@/components/ShareCard';
 import AnimatedIcon from '@/components/AnimatedIcon';
 import IconParticleBurst from '@/components/IconParticleBurst';
 import DateConfidenceBadge from '@/components/DateConfidenceBadge';
@@ -106,6 +107,7 @@ export default function CountdownDetailScreen() {
   const { cancelNotifications } = useNotifications();
   const { name: sharerName, setName: setSharerName } = useSharerName();
   const celebrationCardRef = useRef<CelebrationShareCardRef>(null);
+  const shareCardRef = useRef<ShareCardRef>(null);
 
   const countdown = publicEvent
     ? publicEventToCountdown(publicEvent)
@@ -159,12 +161,20 @@ export default function CountdownDetailScreen() {
         await setSharerName(tempSharerName.trim());
       }
 
-      // Share with embedded data
-      await shareCountdownWithData(
-        countdown,
-        tempSharerName.trim() || undefined,
-        language
-      );
+      const link = createEmbeddedShareLink(countdown, tempSharerName.trim() || undefined);
+
+      // Try to capture the share card as an image
+      const uri = await shareCardRef.current?.capture();
+      if (uri) {
+        await shareImage(uri, { message: link });
+      } else {
+        // Fallback: text share
+        await shareCountdownWithData(
+          countdown,
+          tempSharerName.trim() || undefined,
+          language
+        );
+      }
 
       setShowShareModal(false);
     } catch (error) {
@@ -448,7 +458,7 @@ export default function CountdownDetailScreen() {
         </LinearGradient>
       )}
 
-      {/* Share Name Modal */}
+      {/* Share Modal */}
       <Modal
         visible={showShareModal}
         transparent
@@ -463,48 +473,61 @@ export default function CountdownDetailScreen() {
             style={[styles.modalContent, { backgroundColor: colors.surface }]}
             onPress={(e) => e.stopPropagation()}
           >
-            <Text style={[styles.modalTitle, { color: colors.text }]}>
-              {t.share.modalTitle}
-            </Text>
-            <Text style={[styles.modalSubtitle, { color: colors.textSecondary }]}>
-              {t.share.yourName}
-            </Text>
-            <TextInput
-              style={[
-                styles.modalInput,
-                { backgroundColor: colors.glass, color: colors.text },
-              ]}
-              placeholder={t.share.namePlaceholder}
-              placeholderTextColor={colors.textSecondary}
-              value={tempSharerName}
-              onChangeText={setTempSharerName}
-              textAlign={language === 'ar' ? 'right' : 'left'}
-            />
-            <View style={styles.modalActions}>
-              <Pressable
-                style={[styles.modalButton, { backgroundColor: colors.glass }]}
-                onPress={() => setShowShareModal(false)}
-              >
-                <Text style={[styles.modalButtonText, { color: colors.text }]}>
-                  {t.cancel}
-                </Text>
-              </Pressable>
-              <Pressable
+            {/* Share card preview — capturable via shareCardRef */}
+            {countdown && (
+              <ShareCard
+                ref={shareCardRef}
+                countdown={countdown}
+                timeText={formatTime()}
+                language={language}
+              />
+            )}
+
+            {/* Info section below the card */}
+            <View style={styles.modalInfoSection}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>
+                {t.share.modalTitle}
+              </Text>
+              <Text style={[styles.modalSubtitle, { color: colors.textSecondary }]}>
+                {t.share.yourName}
+              </Text>
+              <TextInput
                 style={[
-                  styles.modalButton,
-                  styles.modalButtonPrimary,
-                  { backgroundColor: colors.accent },
+                  styles.modalInput,
+                  { backgroundColor: colors.glass, color: colors.text },
                 ]}
-                onPress={handleShareConfirm}
-                disabled={isSharing}
-              >
-                <Ionicons name="share-social" size={18} color={colors.background} />
-                <Text style={[styles.modalButtonText, { color: colors.background }]}>
-                  {isSharing
-                    ? language === 'ar' ? 'جارٍ...' : 'Sharing...'
-                    : t.share.shareButton}
-                </Text>
-              </Pressable>
+                placeholder={t.share.namePlaceholder}
+                placeholderTextColor={colors.textSecondary}
+                value={tempSharerName}
+                onChangeText={setTempSharerName}
+                textAlign={language === 'ar' ? 'right' : 'left'}
+              />
+              <View style={styles.modalActions}>
+                <Pressable
+                  style={[styles.modalButton, { backgroundColor: colors.glass }]}
+                  onPress={() => setShowShareModal(false)}
+                >
+                  <Text style={[styles.modalButtonText, { color: colors.text }]}>
+                    {t.cancel}
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={[
+                    styles.modalButton,
+                    styles.modalButtonPrimary,
+                    { backgroundColor: colors.accent },
+                  ]}
+                  onPress={handleShareConfirm}
+                  disabled={isSharing}
+                >
+                  <Ionicons name="share-social" size={18} color={colors.background} />
+                  <Text style={[styles.modalButtonText, { color: colors.background }]}>
+                    {isSharing
+                      ? language === 'ar' ? 'جارٍ...' : 'Sharing...'
+                      : t.share.shareButton}
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           </Pressable>
         </Pressable>
@@ -764,8 +787,11 @@ const styles = StyleSheet.create({
   modalContent: {
     width: '100%',
     maxWidth: 340,
-    borderRadius: 20,
-    padding: 24,
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  modalInfoSection: {
+    padding: 20,
   },
   modalTitle: {
     fontSize: 20,

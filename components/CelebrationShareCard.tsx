@@ -40,6 +40,7 @@ const CelebrationShareCard = forwardRef<CelebrationShareCardRef, CelebrationShar
 
     const celebrationText = language === 'ar' ? 'حان الوقت!' : "Time's up!";
     const watermarkText = 'نبّهني';
+    const downloadText = language === 'ar' ? 'حمّل التطبيق' : 'Download the app';
 
     return (
       <ViewShot
@@ -90,8 +91,9 @@ const CelebrationShareCard = forwardRef<CelebrationShareCardRef, CelebrationShar
               </Text>
             </View>
 
-            {/* Watermark */}
-            <View style={styles.watermarkContainer}>
+            {/* Footer: app watermark + download CTA */}
+            <View style={styles.footerContainer}>
+              <View style={styles.footerDivider} />
               <Text
                 style={[
                   styles.watermark,
@@ -100,6 +102,8 @@ const CelebrationShareCard = forwardRef<CelebrationShareCardRef, CelebrationShar
               >
                 {watermarkText}
               </Text>
+              <Text style={styles.footerDownload}>{downloadText}</Text>
+              <Text style={styles.footerUrl}>nabbihni.com</Text>
             </View>
           </LinearGradient>
         </View>
@@ -180,17 +184,34 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     paddingHorizontal: 16,
   },
-  watermarkContainer: {
+  footerContainer: {
     position: 'absolute',
-    bottom: 16,
-    left: 0,
-    right: 0,
+    bottom: 12,
+    left: 24,
+    right: 24,
     alignItems: 'center',
+  },
+  footerDivider: {
+    width: '100%',
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    marginBottom: 8,
   },
   watermark: {
     fontSize: 14,
     fontWeight: '500',
     opacity: 0.6,
+    marginBottom: 2,
+  },
+  footerDownload: {
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.6)',
+    marginBottom: 1,
+  },
+  footerUrl: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.8)',
   },
 });
 
