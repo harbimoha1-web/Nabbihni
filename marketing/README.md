@@ -1,6 +1,6 @@
-# Nabbihni Marketing Automation
+# Kam Baqi Marketing Automation
 
-Automated X/Twitter marketing for Nabbihni app using Make.com.
+Automated X/Twitter marketing for Kam Baqi app using Make.com.
 
 ## Files
 

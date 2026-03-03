@@ -1,4 +1,4 @@
-# Nabbihni - X/Twitter Automation Setup Guide
+# Kam Baqi - X/Twitter Automation Setup Guide
 
 ## Overview
 
@@ -47,11 +47,11 @@ This guide walks you through setting up automated daily countdown posts to X (Tw
 
 5. Accept the Developer Agreement
 6. Create a Project:
-   - Name: "Nabbihni Marketing"
+   - Name: "Kam Baqi Marketing"
    - Use case: "Making a bot"
 
 7. Create an App within the project:
-   - App name: "NabbihniBot"
+   - App name: "KamBaqiBot"
 
 8. Go to "Keys and Tokens" tab:
    - Generate **API Key and Secret**
@@ -69,7 +69,7 @@ This guide walks you through setting up automated daily countdown posts to X (Tw
 ### 2.1 Create New Spreadsheet
 1. Go to https://sheets.google.com
 2. Create new spreadsheet
-3. Name it: "Nabbihni - Tweet Database"
+3. Name it: "Kam Baqi - Tweet Database"
 
 ### 2.2 Sheet 1: Events Calendar
 Name the first sheet tab "Events"
@@ -102,7 +102,7 @@ Create third sheet tab named "Log"
 ### 3.1 Create New Scenario
 1. Log into Make.com
 2. Click "Create a new scenario"
-3. Name it: "Nabbihni Daily Tweet"
+3. Name it: "Kam Baqi Daily Tweet"
 
 ### 3.2 Module 1: Schedule Trigger
 1. Click the "+" button
@@ -121,7 +121,7 @@ Create third sheet tab named "Log"
 3. Select "Search Rows"
 4. Connect your Google account
 5. Configure:
-   - **Spreadsheet**: Select "Nabbihni - Tweet Database"
+   - **Spreadsheet**: Select "Kam Baqi - Tweet Database"
    - **Sheet**: Events
    - **Filter**: Leave empty (get all rows)
 
@@ -161,13 +161,13 @@ For each event in Events sheet:
 4. Build the tweet text:
 
 ```
-{{nearestEvent.emoji}} نبّهني على {{nearestEvent.event_ar}}؟
+{{nearestEvent.emoji}} كم باقي على {{nearestEvent.event_ar}}؟
 
 {{daysUntil}} يوم
 
 💡 {{fact.fact_ar}}
 
-📲 حمّل تطبيق "نبّهني"
+📲 حمّل تطبيق "كم باقي"
 🔗 https://onelink.to/nabbihni
 
 {{nearestEvent.hashtag}} #نبهني

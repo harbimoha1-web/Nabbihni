@@ -13,12 +13,12 @@
 - [ ] **Create X Developer account**
   - Go to https://developer.twitter.com
   - Sign up for Free tier
-  - Create Project: "Nabbihni Marketing"
-  - Create App: "NabbihniBot"
+  - Create Project: "Kam Baqi Marketing"
+  - Create App: "KamBaqiBot"
   - Generate and save API credentials
 
 - [ ] **Create Google Sheet**
-  - Create new sheet: "Nabbihni - Tweet Database"
+  - Create new sheet: "Kam Baqi - Tweet Database"
   - Import `events_calendar.csv` → "Events" tab
   - Import `fun_facts_database.csv` → "Facts" tab
   - Create empty "Log" tab

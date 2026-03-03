@@ -1,11 +1,11 @@
-# Nabbihni Strategic Expansion Plan
+# Kam Baqi Strategic Expansion Plan
 ## THEBOLDS Full Company Recommendation
 
 ---
 
 ## Executive Summary
 
-Expand Nabbihni's functionality and revenue with **zero to low-cost features** by leveraging existing infrastructure, free-tier services, and community-driven content.
+Expand Kam Baqi's functionality and revenue with **zero to low-cost features** by leveraging existing infrastructure, free-tier services, and community-driven content.
 
 **Key Insight:** The app has excellent architecture but is earning $0 because monetization isn't configured. Priority #1 is enabling revenue.
 
@@ -173,8 +173,8 @@ Expand Nabbihni's functionality and revenue with **zero to low-cost features** b
 **Voice Commands:**
 | Arabic Command | Action |
 |----------------|--------|
-| "يا سيري، نبّهني قبل رمضان" | Speak remaining time |
-| "يا سيري، نبّهني قبل الراتب" | Speak salary countdown |
+| "يا سيري، كم باقي قبل رمضان" | Speak remaining time |
+| "يا سيري، كم باقي قبل الراتب" | Speak salary countdown |
 | "يا سيري، أضف عد تنازلي جديد" | Open create screen |
 | "يا سيري، عداداتي" | Open app to home |
 

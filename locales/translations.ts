@@ -73,7 +73,7 @@ export const translations = {
 
     // Share
     share: {
-      message: '{icon} العد التنازلي لـ {title}\n\n{time}\n\nشاركني العد على تطبيق نبّهني!',
+      message: '{icon} العد التنازلي لـ {title}\n\n{time}\n\nشاركني العد على تطبيق كم باقي!',
       startCounting: 'ابدأ العد التنازلي معنا!',
       shareButton: 'شارك',
       fromPerson: 'عد تنازلي من {name}',
@@ -136,7 +136,7 @@ export const translations = {
       cantOpenStore: 'لا يمكن فتح متجر التطبيقات',
       cantOpenEmail: 'لا يمكن فتح تطبيق البريد',
       cantOpenLink: 'لا يمكن فتح الرابط',
-      appName: 'نبّهني - Nabbihni',
+      appName: 'كم باقي',
     },
 
     // Create Screen
@@ -418,7 +418,7 @@ export const translations = {
 
     // Notifications
     notifications: {
-      channelName: 'تنبيهات نبّهني',
+      channelName: 'تنبيهات كم باقي',
       reminderTitle: 'تنبيه: {title}',
       countdownEnded: 'حان الموعد!',
     },
@@ -505,7 +505,7 @@ export const translations = {
 
     // Share
     share: {
-      message: '{icon} Countdown to {title}\n\n{time}\n\nJoin me counting on Nabbihni!',
+      message: '{icon} Countdown to {title}\n\n{time}\n\nJoin me counting on Kam Baqi!',
       startCounting: 'Start counting with us!',
       shareButton: 'Share',
       fromPerson: 'Countdown from {name}',
@@ -568,7 +568,7 @@ export const translations = {
       cantOpenStore: 'Cannot open App Store',
       cantOpenEmail: 'Cannot open email app',
       cantOpenLink: 'Cannot open link',
-      appName: 'Nabbihni',
+      appName: 'Kam Baqi',
     },
 
     // Create Screen
@@ -850,7 +850,7 @@ export const translations = {
 
     // Notifications
     notifications: {
-      channelName: 'Nabbihni Alerts',
+      channelName: 'Kam Baqi Alerts',
       reminderTitle: 'Alert: {title}',
       countdownEnded: "Time's up!",
     },

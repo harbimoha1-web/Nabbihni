@@ -1,7 +1,7 @@
-# نبّهني (Nabbihni) - Social Countdown App
+# كم باقي (Kam Baqi) - Social Countdown App
 
 ## Project Overview
-Nabbihni is an Arabic-first social countdown app for iOS and Android built with React Native + Expo.
+Kam Baqi is an Arabic-first social countdown app for iOS and Android built with React Native + Expo.
 
 ## Tech Stack
 - **Framework:** React Native + Expo (managed workflow)

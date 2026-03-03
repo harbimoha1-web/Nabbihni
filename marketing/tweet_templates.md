@@ -1,4 +1,4 @@
-# Nabbihni - Tweet Templates
+# Kam Baqi - Tweet Templates
 
 Ready-to-use tweet templates for each event type.
 
@@ -8,14 +8,14 @@ Ready-to-use tweet templates for each event type.
 
 ### Template 1: Standard
 ```
-🌙 نبّهني على رمضان؟
+🌙 كم باقي على رمضان؟
 
 {{DAYS}} يوم
 
 💡 هل تعلم؟
 {{FACT}}
 
-📲 حمّل تطبيق "نبّهني"
+📲 حمّل تطبيق "كم باقي"
 🔗 https://onelink.to/nabbihni
 
 #رمضان #نبهني
@@ -29,7 +29,7 @@ Ready-to-use tweet templates for each event type.
 
 💡 {{FACT}}
 
-جهّز نفسك مع تطبيق نبّهني 📲
+جهّز نفسك مع تطبيق كم باقي 📲
 🔗 https://onelink.to/nabbihni
 
 #رمضان_قادم #نبهني
@@ -55,13 +55,13 @@ Ready-to-use tweet templates for each event type.
 
 ### Template 1: Standard
 ```
-🎉 نبّهني على عيد الفطر؟
+🎉 كم باقي على عيد الفطر؟
 
 {{DAYS}} يوم
 
 💡 {{FACT}}
 
-📲 حمّل تطبيق "نبّهني"
+📲 حمّل تطبيق "كم باقي"
 🔗 https://onelink.to/nabbihni
 
 #عيد_الفطر #نبهني
@@ -87,13 +87,13 @@ Ready-to-use tweet templates for each event type.
 
 ### Template 1: Standard
 ```
-🐑 نبّهني على عيد الأضحى؟
+🐑 كم باقي على عيد الأضحى؟
 
 {{DAYS}} يوم
 
 💡 {{FACT}}
 
-📲 حمّل تطبيق "نبّهني"
+📲 حمّل تطبيق "كم باقي"
 🔗 https://onelink.to/nabbihni
 
 #عيد_الأضحى #نبهني
@@ -119,13 +119,13 @@ Ready-to-use tweet templates for each event type.
 
 ### Template 1: Standard
 ```
-🇸🇦 نبّهني على اليوم الوطني؟
+🇸🇦 كم باقي على اليوم الوطني؟
 
 {{DAYS}} يوم
 
 💡 {{FACT}}
 
-📲 حمّل تطبيق "نبّهني"
+📲 حمّل تطبيق "كم باقي"
 🔗 https://onelink.to/nabbihni
 
 #اليوم_الوطني_السعودي #نبهني
@@ -151,13 +151,13 @@ Ready-to-use tweet templates for each event type.
 
 ### Template 1: Standard
 ```
-🏰 نبّهني على يوم التأسيس؟
+🏰 كم باقي على يوم التأسيس؟
 
 {{DAYS}} يوم
 
 💡 {{FACT}}
 
-📲 حمّل تطبيق "نبّهني"
+📲 حمّل تطبيق "كم باقي"
 🔗 https://onelink.to/nabbihni
 
 #يوم_التأسيس #نبهني
@@ -183,7 +183,7 @@ Ready-to-use tweet templates for each event type.
 
 ### Template 1: Standard
 ```
-💰 نبّهني على الراتب؟
+💰 كم باقي على الراتب؟
 
 {{DAYS}} أيام
 
@@ -204,7 +204,7 @@ Ready-to-use tweet templates for each event type.
 
 💡 {{FACT}}
 
-📲 تابع كل عداداتك بتطبيق نبّهني
+📲 تابع كل عداداتك بتطبيق كم باقي
 🔗 https://onelink.to/nabbihni
 
 #يوم_الراتب #نبهني
@@ -216,13 +216,13 @@ Ready-to-use tweet templates for each event type.
 
 ### Template 1: Standard
 ```
-🎭 نبّهني على موسم الرياض؟
+🎭 كم باقي على موسم الرياض؟
 
 {{DAYS}} يوم
 
 💡 {{FACT}}
 
-📲 حمّل تطبيق "نبّهني"
+📲 حمّل تطبيق "كم باقي"
 🔗 https://onelink.to/nabbihni
 
 #موسم_الرياض #نبهني
@@ -248,7 +248,7 @@ Ready-to-use tweet templates for each event type.
 
 ### Template 1: Standard
 ```
-⚽ نبّهني على كأس العالم 2034؟
+⚽ كم باقي على كأس العالم 2034؟
 
 {{DAYS}} يوم ({{YEARS}} سنة)
 
@@ -280,13 +280,13 @@ Ready-to-use tweet templates for each event type.
 
 ### Template 1: Standard
 ```
-🏇 نبّهني على كأس السعودية؟
+🏇 كم باقي على كأس السعودية؟
 
 {{DAYS}} يوم
 
 💡 {{FACT}}
 
-📲 حمّل تطبيق "نبّهني"
+📲 حمّل تطبيق "كم باقي"
 🔗 https://onelink.to/nabbihni
 
 #كأس_السعودية #نبهني
@@ -298,13 +298,13 @@ Ready-to-use tweet templates for each event type.
 
 ### Template 1: Standard
 ```
-☀️ نبّهني على الإجازة الصيفية؟
+☀️ كم باقي على الإجازة الصيفية؟
 
 {{DAYS}} يوم
 
 💡 {{FACT}}
 
-📲 خطط لإجازتك مع نبّهني
+📲 خطط لإجازتك مع كم باقي
 🔗 https://onelink.to/nabbihni
 
 #الإجازة_الصيفية #نبهني
@@ -318,12 +318,12 @@ Ready-to-use tweet templates for each event type.
 ```
 📅 اصنع عداداتك الخاصة!
 
-نبّهني على:
+كم باقي على:
 - إجازتك القادمة؟
 - يوم زفافك؟
 - هدفك المالي؟
 
-📲 حمّل تطبيق "نبّهني"
+📲 حمّل تطبيق "كم باقي"
 🔗 https://onelink.to/nabbihni
 
 #نبهني
@@ -331,7 +331,7 @@ Ready-to-use tweet templates for each event type.
 
 ### App Feature Highlight
 ```
-✨ مميزات تطبيق "نبّهني"
+✨ مميزات تطبيق "كم باقي"
 
 ⏳ عدادات مخصصة
 🎨 ثيمات جميلة

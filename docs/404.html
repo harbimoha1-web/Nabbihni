@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نبّهني</title>
+  <title>كم باقي</title>
   <meta name="theme-color" content="#0A0E13">
   <link rel="stylesheet" href="/style.css">
   <link rel="icon" type="image/png" href="/icon.png">
@@ -233,8 +233,8 @@
   <nav class="navbar">
     <div class="container">
       <a href="/" class="nav-logo">
-        <img src="/icon.png" alt="نبّهني" onerror="this.style.display='none'">
-        <span>نبّهني</span>
+        <img src="/icon.png" alt="كم باقي" onerror="this.style.display='none'">
+        <span>كم باقي</span>
       </a>
     </div>
   </nav>
@@ -337,7 +337,7 @@
     function brandingHTML() {
       return '<div class="share-branding">' +
         '<img src="/icon.png" alt="" onerror="this.style.display=\'none\'">' +
-        '<span>نبّهني</span> — تطبيق العد التنازلي' +
+        '<span>كم باقي</span> — تطبيق العد التنازلي' +
       '</div>';
     }
 
@@ -370,7 +370,7 @@
       }
 
       // Update page title and OG meta
-      document.title = data.icon + ' ' + data.title + ' — نبّهني';
+      document.title = data.icon + ' ' + data.title + ' — كم باقي';
       updateMeta('og:title', data.icon + ' ' + data.title);
       updateMeta('og:description', 'العد التنازلي لـ ' + data.title + ' — ' + formatDate(data.targetDate));
 
@@ -425,12 +425,12 @@
 
     /** Fallback when decode fails */
     function renderDecodeFallback() {
-      document.title = 'عد تنازلي مشترك — نبّهني';
+      document.title = 'عد تنازلي مشترك — كم باقي';
 
       root.innerHTML = '<div class="share-page">' +
         '<span class="error-icon">⏳</span>' +
         '<div class="error-title">رابط عد تنازلي</div>' +
-        '<div class="error-subtitle">حمّل تطبيق نبّهني لعرض هذا العد التنازلي</div>' +
+        '<div class="error-subtitle">حمّل تطبيق كم باقي لعرض هذا العد التنازلي</div>' +
         '<div class="share-actions">' + storeButtonsHTML() + '</div>' +
         brandingHTML() +
       '</div>';
@@ -438,12 +438,12 @@
 
     /** Render /c/{id} page — countdown by ID needs the app */
     function renderCountdownIdPage(id) {
-      document.title = 'عد تنازلي — نبّهني';
+      document.title = 'عد تنازلي — كم باقي';
 
       root.innerHTML = '<div class="share-page">' +
         '<span class="error-icon">⏳</span>' +
         '<div class="error-title">عد تنازلي مشترك</div>' +
-        '<div class="error-subtitle">حمّل تطبيق نبّهني لعرض هذا العد التنازلي ومتابعته</div>' +
+        '<div class="error-subtitle">حمّل تطبيق كم باقي لعرض هذا العد التنازلي ومتابعته</div>' +
         '<div class="share-actions">' + storeButtonsHTML() + '</div>' +
         brandingHTML() +
       '</div>';
@@ -451,7 +451,7 @@
 
     /** Render 404 page */
     function render404Page() {
-      document.title = 'الصفحة غير موجودة — نبّهني';
+      document.title = 'الصفحة غير موجودة — كم باقي';
 
       root.innerHTML = '<div class="share-page">' +
         '<span class="error-icon">🔍</span>' +

@@ -1,4 +1,4 @@
-# Nabbihni - TODO List
+# Kam Baqi - TODO List
 
 ## Next Up (Tomorrow)
 
@@ -7,7 +7,7 @@
 
 | # | Screenshot | Arabic Title | Arabic Subtitle |
 |---|------------|--------------|-----------------|
-| 1 | Home screen | نبّهني | عد تنازلي لأهم لحظاتك |
+| 1 | Home screen | كم باقي | عد تنازلي لأهم لحظاتك |
 | 2 | Countdown detail | تابع كل ثانية | عد تنازلي مباشر بالهجري والميلادي |
 | 3 | Public events | مناسبات السعودية | رمضان، العيد، اليوم الوطني |
 | 4 | Create screen | أنشئ عدادك | سهل وسريع |

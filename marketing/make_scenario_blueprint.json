@@ -1,6 +1,6 @@
 {
-  "name": "Nabbihni Daily Tweet",
-  "description": "Posts daily countdown tweets to X/Twitter for Nabbihni app",
+  "name": "Kam Baqi Daily Tweet",
+  "description": "Posts daily countdown tweets to X/Twitter for Kam Baqi app",
   "version": 1,
   "scheduling": {
     "type": "daily",
@@ -90,7 +90,7 @@
       "type": "tools-set-variable",
       "config": {
         "variableName": "tweetText",
-        "variableValue": "{{3.nearestEvent.emoji}} نبّهني على {{3.nearestEvent.event_ar}}؟\n\n{{3.nearestEvent.daysUntil}} يوم\n\n💡 هل تعلم؟\n{{4.fact.fact_ar}}\n\n📲 حمّل تطبيق \"نبّهني\"\n🔗 https://onelink.to/nabbihni\n\n{{3.nearestEvent.hashtag}} #نبهني"
+        "variableValue": "{{3.nearestEvent.emoji}} كم باقي على {{3.nearestEvent.event_ar}}؟\n\n{{3.nearestEvent.daysUntil}} يوم\n\n💡 هل تعلم؟\n{{4.fact.fact_ar}}\n\n📲 حمّل تطبيق \"كم باقي\"\n🔗 https://onelink.to/nabbihni\n\n{{3.nearestEvent.hashtag}} #نبهني"
       },
       "output": {
         "tweetText": "{{tweetText}}"
