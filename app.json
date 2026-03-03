@@ -139,6 +139,7 @@
           "delayAppMeasurementInit": false
         }
       ],
+      "./plugins/withNoSplashLogo",
       "@bacons/apple-targets",
       [
         "react-native-android-widget",
