@@ -153,6 +153,7 @@ interface Countdown {
 - `newArchEnabled`: Set to `true` — required by react-native-reanimated 4.x (RN 0.81+).
 - Never auto-reload for RTL changes. Prompt the user to restart manually.
 - Always handle both the success AND error states from `useFonts`.
+- **NO SPLASH IMAGE — EVER.** `app.json` splash has NO `image` field and `backgroundColor: "#000000"`. `assets/images/splash-icon.png` has been permanently deleted. Do NOT re-add the image field or restore the file. Any splash logo is intentionally removed by Mohammad's explicit request.
 
 ## TODO
 - [ ] Supabase integration for social features

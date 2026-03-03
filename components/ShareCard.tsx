@@ -2,8 +2,10 @@ import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ViewShot from 'react-native-view-shot';
+import QRCode from 'react-native-qrcode-svg';
 import { getTheme } from '@/constants/themes';
 import { Countdown } from '@/types/countdown';
+import { DOWNLOAD_URL } from '@/lib/sharing';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = Math.min(SCREEN_WIDTH - 48, 340);
@@ -33,7 +35,8 @@ const ShareCard = forwardRef<ShareCardRef, ShareCardProps>(
       },
     }));
 
-    const downloadText = language === 'ar' ? 'حمّل التطبيق' : 'Download the app';
+    const scanText = language === 'ar' ? 'امسح للتحميل' : 'Scan to Download';
+    const isRTL = language === 'ar';
 
     return (
       <ViewShot
@@ -78,11 +81,22 @@ const ShareCard = forwardRef<ShareCardRef, ShareCardProps>(
               </Text>
             </View>
 
-            {/* Footer with download CTA */}
+            {/* Footer: QR code + text stack */}
             <View style={styles.footer}>
               <View style={styles.footerDivider} />
-              <Text style={styles.downloadText}>{downloadText}</Text>
-              <Text style={styles.url}>nabbihni.com</Text>
+              <View style={[styles.footerRow, isRTL && styles.footerRowRTL]}>
+                <QRCode
+                  value={DOWNLOAD_URL}
+                  size={52}
+                  color="rgba(255,255,255,0.9)"
+                  backgroundColor="transparent"
+                />
+                <View style={[styles.footerTextStack, isRTL && styles.footerTextStackRTL]}>
+                  <Text style={styles.footerAppName}>كم باقي</Text>
+                  <Text style={styles.footerScanText}>{scanText}</Text>
+                  <Text style={styles.footerUrl}>nabbihni.com</Text>
+                </View>
+              </View>
             </View>
           </LinearGradient>
         </View>

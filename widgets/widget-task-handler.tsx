@@ -40,10 +40,10 @@ export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
           const first = data?.countdowns?.[0] ?? null;
           props.renderWidget(<CountdownSmallWidget countdown={first} />);
         } else if (widgetName === 'CountdownMedium') {
-          const countdowns = data?.countdowns ?? [];
+          const countdowns = (data?.countdowns ?? []).slice(0, 3);
           props.renderWidget(<CountdownMediumWidget countdowns={countdowns} />);
         } else if (widgetName === 'CountdownLarge') {
-          const countdowns = data?.countdowns ?? [];
+          const countdowns = (data?.countdowns ?? []).slice(0, 5);
           props.renderWidget(<CountdownLargeWidget countdowns={countdowns} />);
         }
         break;
@@ -61,10 +61,10 @@ export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
           const first = data?.countdowns?.[0] ?? null;
           props.renderWidget(<CountdownSmallWidget countdown={first} />);
         } else if (widgetName === 'CountdownMedium') {
-          const countdowns = data?.countdowns ?? [];
+          const countdowns = (data?.countdowns ?? []).slice(0, 3);
           props.renderWidget(<CountdownMediumWidget countdowns={countdowns} />);
         } else if (widgetName === 'CountdownLarge') {
-          const countdowns = data?.countdowns ?? [];
+          const countdowns = (data?.countdowns ?? []).slice(0, 5);
           props.renderWidget(<CountdownLargeWidget countdowns={countdowns} />);
         }
         break;

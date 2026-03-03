@@ -61,10 +61,21 @@ struct CountdownDataProvider {
     }
 
     static func calculateRemaining(targetDate: String) -> (days: Int, hours: Int, minutes: Int, isComplete: Bool) {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let formatter1 = ISO8601DateFormatter()
+        formatter1.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
-        guard let target = formatter.date(from: targetDate) ?? ISO8601DateFormatter().date(from: targetDate) else {
+        let formatter2 = ISO8601DateFormatter()
+
+        // Handles local ISO strings with no timezone suffix (e.g. "2026-03-15T00:00:00")
+        // produced by toLocalISOString() in hijriService.ts and publicEvents.ts
+        let formatter3 = DateFormatter()
+        formatter3.locale = Locale(identifier: "en_US_POSIX")
+        formatter3.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        formatter3.timeZone = TimeZone.current
+
+        guard let target = formatter1.date(from: targetDate)
+                        ?? formatter2.date(from: targetDate)
+                        ?? formatter3.date(from: targetDate) else {
             return (0, 0, 0, true)
         }
 
@@ -252,15 +263,15 @@ struct MediumCountdownView: View {
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(Color(hex: "#F59E0B"))
                         Spacer()
-                        Text("\(entry.countdowns.count) عدادات")
+                        Text("\(min(entry.countdowns.count, 3)) عدادات")
                             .font(.system(size: 11))
                             .foregroundColor(.white.opacity(0.48))
                     }
                     .padding(.horizontal, 4)
                     .padding(.bottom, 2)
 
-                    // Countdown rows
-                    ForEach(entry.countdowns) { countdown in
+                    // Countdown rows (cap at 3 to prevent overflow in 4×2 widget)
+                    ForEach(entry.countdowns.prefix(3)) { countdown in
                         countdownRow(countdown)
                     }
                 }
@@ -349,7 +360,7 @@ struct LargeCountdownView: View {
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(Color(hex: "#F59E0B"))
                         Spacer()
-                        Text("\(entry.countdowns.count) عدادات")
+                        Text("\(min(entry.countdowns.count, 5)) عدادات")
                             .font(.system(size: 11))
                             .foregroundColor(.white.opacity(0.48))
                     }

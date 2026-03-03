@@ -13,13 +13,18 @@ import { EventCategory } from '@/types/countdown';
 
 // Category definitions with icons and labels
 const CATEGORIES: { id: EventCategory; icon: string; labelAr: string; labelEn: string }[] = [
-  { id: 'religious', icon: '🌙', labelAr: 'ديني', labelEn: 'Religious' },
-  { id: 'national', icon: '🇸🇦', labelAr: 'وطني', labelEn: 'National' },
-  { id: 'seasonal', icon: '☀️', labelAr: 'موسمي', labelEn: 'Seasonal' },
-  { id: 'entertainment', icon: '🎭', labelAr: 'ترفيهي', labelEn: 'Entertainment' },
-  { id: 'milestone', icon: '🏆', labelAr: 'محطة', labelEn: 'Milestone' },
-  { id: 'education', icon: '🎓', labelAr: 'تعليمي', labelEn: 'Education' },
-  { id: 'international', icon: '🌍', labelAr: 'دولي', labelEn: 'International' },
+  { id: 'religious',     icon: '🌙',  labelAr: 'دينية',     labelEn: 'Religious'     },
+  { id: 'national',      icon: '🇸🇦',  labelAr: 'وطنية',     labelEn: 'National'      },
+  { id: 'education',     icon: '🎓',  labelAr: 'تعليمية',   labelEn: 'Education'     },
+  { id: 'tech',          icon: '💻',  labelAr: 'تقنية',     labelEn: 'Tech'          },
+  { id: 'gaming',        icon: '🎮',  labelAr: 'ألعاب',     labelEn: 'Gaming'        },
+  { id: 'sports',        icon: '⚽',  labelAr: 'رياضية',    labelEn: 'Sports'        },
+  { id: 'finance',       icon: '💰',  labelAr: 'مالية',     labelEn: 'Finance'       },
+  { id: 'entertainment', icon: '🎭',  labelAr: 'ترفيهية',   labelEn: 'Entertainment' },
+  { id: 'political',     icon: '🗳️', labelAr: 'سياسية',    labelEn: 'Political'     },
+  { id: 'international', icon: '🌍',  labelAr: 'دولية',     labelEn: 'International' },
+  { id: 'milestone',     icon: '🏆',  labelAr: 'إنجازات',   labelEn: 'Milestones'   },
+  { id: 'seasonal',      icon: '🌤️', labelAr: 'موسمية',    labelEn: 'Seasonal'      },
 ];
 
 interface EventCategoryPickerProps {

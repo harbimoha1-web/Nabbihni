@@ -1,0 +1,21 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "info": {
+      "ar-SA": {
+        "title": "كم باقي - عد تنازلي",
+        "subtitle": "رمضان، العيد، اليوم الوطني",
+        "description": "عد تنازلي لكل لحظة تنتظرها.\n\nرمضان، العيد، اليوم الوطني، الراتب، أو أي مناسبة خاصة. شاركها مع أحبابك بضغطة واحدة.\n\n✦ مناسبات سعودية جاهزة\n✦ ثيمات جميلة\n✦ ويدجت الشاشة الرئيسية\n✦ مشاركة بدون حساب\n✦ احتفال عند الصفر\n✦ بدون تسجيل - خصوصيتك أولاً",
+        "keywords": ["عد تنازلي", "كم باقي", "رمضان", "العيد", "اليوم الوطني", "ويدجت", "مناسبات", "تنبيه", "راتب", "سعودي"],
+        "privacyPolicyUrl": "https://nabbihni.com/privacy.html"
+      },
+      "en-US": {
+        "title": "Kam Baqi - Countdown Timer",
+        "subtitle": "Ramadan, Eid & Saudi Events",
+        "description": "Countdown to every moment that matters.\n\nRamadan, Eid, National Day, salary day, or any personal occasion. Share with loved ones in one tap.\n\n✦ Saudi events ready to go\n✦ Beautiful themes\n✦ Home screen widgets\n✦ Share without an account\n✦ Celebration animation at zero\n✦ No sign up - your privacy first",
+        "keywords": ["countdown", "Kam Baqi", "Ramadan", "Eid", "National Day", "widget", "timer", "Saudi", "events", "reminder"],
+        "privacyPolicyUrl": "https://nabbihni.com/privacy.html"
+      }
+    }
+  }
+}

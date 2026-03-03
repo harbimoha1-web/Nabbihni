@@ -1,9 +1,9 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  SectionList,
+  FlatList,
   Pressable,
   ScrollView,
   ActivityIndicator,
@@ -42,12 +42,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   seasonal: '🌤️',
 };
 
-type SectionData = {
-  category: EventCategory;
-  title: string;
-  icon: string;
-  data: PublicEvent[];
-};
+type FilterCategory = EventCategory | 'all';
 
 // Memoized card wrapper to stabilize per-item onPress
 const ExploreCard = React.memo(({
@@ -95,32 +90,16 @@ const ExploreCard = React.memo(({
   );
 });
 
-const SectionHeader = React.memo(({
-  icon,
-  title,
-  colors,
-}: {
-  icon: string;
-  title: string;
-  colors: ReturnType<typeof useTheme>['colors'];
-}) => (
-  <View style={[styles.sectionHeader, { backgroundColor: colors.background }]}>
-    <View style={[styles.sectionDivider, { backgroundColor: colors.border }]} />
-    <Text style={styles.sectionIcon}>{icon}</Text>
-    <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>{title}</Text>
-    <View style={[styles.sectionDivider, { backgroundColor: colors.border }]} />
-  </View>
-));
-
 export default function ExploreScreen() {
   const { colors } = useTheme();
   const { t, language } = useLanguage();
   const { holidays, loading, error, refresh } = useHolidays();
   const tick = useCountdownTick();
-  const sectionListRef = useRef<SectionList<PublicEvent, SectionData>>(null);
 
   // Only reload on focus if data is stale (> 5 minutes old)
   const lastLoadRef = useRef<number>(0);
+
+  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>('all');
 
   useFocusEffect(
     useCallback(() => {
@@ -166,30 +145,21 @@ export default function ExploreScreen() {
     return map;
   }, [holidays, language]);
 
-  // Group events into sections ordered by CATEGORY_ORDER
-  const sections = useMemo<SectionData[]>(() => {
-    const grouped: Partial<Record<EventCategory, PublicEvent[]>> = {};
-    for (const event of holidays) {
-      if (!grouped[event.category]) grouped[event.category] = [];
-      grouped[event.category]!.push(event);
-    }
-    return CATEGORY_ORDER
-      .filter(cat => (grouped[cat]?.length ?? 0) > 0)
-      .map(cat => ({
-        category: cat,
-        title: categoryLabels[cat] ?? cat,
-        icon: CATEGORY_ICONS[cat] ?? '📌',
-        data: grouped[cat]!,
-      }));
-  }, [holidays, categoryLabels]);
+  // Categories that have at least one event, ordered by CATEGORY_ORDER
+  const availableCategories = useMemo((): EventCategory[] => {
+    const seen = new Set<EventCategory>();
+    for (const event of holidays) seen.add(event.category);
+    return CATEGORY_ORDER.filter(cat => seen.has(cat));
+  }, [holidays]);
 
-  const handleJumpToSection = useCallback((sectionIndex: number) => {
-    sectionListRef.current?.scrollToLocation({
-      animated: true,
-      sectionIndex,
-      itemIndex: 0,
-      viewPosition: 0,
-    });
+  // Filter events by selected category
+  const filteredEvents = useMemo((): PublicEvent[] => {
+    if (selectedCategory === 'all') return holidays;
+    return holidays.filter(event => event.category === selectedCategory);
+  }, [holidays, selectedCategory]);
+
+  const handleChipPress = useCallback((cat: FilterCategory) => {
+    setSelectedCategory(cat);
   }, []);
 
   const handleEventPress = useCallback((event: PublicEvent) => {
@@ -211,14 +181,6 @@ export default function ExploreScreen() {
     );
   }, [countdownMap, handleEventPress, tick]);
 
-  const renderSectionHeader = useCallback(({ section }: { section: SectionData }) => (
-    <SectionHeader
-      icon={section.icon}
-      title={section.title}
-      colors={colors}
-    />
-  ), [colors]);
-
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['bottom']}>
       {/* Hijri date disclaimer */}
@@ -228,28 +190,55 @@ export default function ExploreScreen() {
         </Text>
       </View>
 
-      {/* Jump Anchor Bar */}
-      <View style={styles.anchorWrapper}>
+      {/* Filter Chip Bar */}
+      <View style={styles.filterWrapper}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.anchorContainer}
+          contentContainerStyle={styles.filterContainer}
         >
-          {sections.map((section, index) => (
-            <Pressable
-              key={section.category}
-              onPress={() => handleJumpToSection(index)}
-              style={[
-                styles.anchorChip,
-                { borderColor: colors.border, backgroundColor: colors.surface },
-              ]}
-            >
-              <Text style={styles.anchorIcon}>{section.icon}</Text>
-              <Text style={[styles.anchorText, { color: colors.textSecondary }]}>
-                {section.title}
-              </Text>
-            </Pressable>
-          ))}
+          {/* "All" chip */}
+          <Pressable
+            onPress={() => handleChipPress('all')}
+            style={[
+              styles.filterChip,
+              selectedCategory === 'all'
+                ? { backgroundColor: colors.accent, borderColor: colors.accent }
+                : { backgroundColor: colors.surface, borderColor: colors.border },
+            ]}
+          >
+            <Text style={[
+              styles.filterChipText,
+              { color: selectedCategory === 'all' ? colors.background : colors.textSecondary },
+            ]}>
+              {t.explore.all}
+            </Text>
+          </Pressable>
+
+          {/* Category chips */}
+          {availableCategories.map((cat) => {
+            const isActive = selectedCategory === cat;
+            return (
+              <Pressable
+                key={cat}
+                onPress={() => handleChipPress(cat)}
+                style={[
+                  styles.filterChip,
+                  isActive
+                    ? { backgroundColor: colors.accent, borderColor: colors.accent }
+                    : { backgroundColor: colors.surface, borderColor: colors.border },
+                ]}
+              >
+                <Text style={styles.filterChipIcon}>{CATEGORY_ICONS[cat] ?? '📌'}</Text>
+                <Text style={[
+                  styles.filterChipText,
+                  { color: isActive ? colors.background : colors.textSecondary },
+                ]}>
+                  {categoryLabels[cat] ?? cat}
+                </Text>
+              </Pressable>
+            );
+          })}
         </ScrollView>
       </View>
 
@@ -270,16 +259,12 @@ export default function ExploreScreen() {
           </Pressable>
         </View>
       ) : (
-        <SectionList
-          ref={sectionListRef}
-          sections={sections}
+        <FlatList
+          data={filteredEvents}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
-          renderSectionHeader={renderSectionHeader}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
-          stickySectionHeadersEnabled={false}
-          onScrollToIndexFailed={() => {}}
           removeClippedSubviews={true}
           initialNumToRender={6}
           maxToRenderPerBatch={4}
@@ -287,7 +272,9 @@ export default function ExploreScreen() {
           ListEmptyComponent={
             <View style={styles.emptyState}>
               <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-                {t.explore.noUpcomingEvents}
+                {selectedCategory === 'all'
+                  ? t.explore.noUpcomingEvents
+                  : t.explore.noEventsInCategory}
               </Text>
             </View>
           }
@@ -301,17 +288,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  anchorWrapper: {
+  filterWrapper: {
     minHeight: 48,
   },
-  anchorContainer: {
+  filterContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,
     paddingVertical: 8,
     gap: 8,
     alignItems: 'center',
   },
-  anchorChip: {
+  filterChip: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
@@ -320,32 +307,12 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
   },
-  anchorIcon: {
+  filterChipIcon: {
     fontSize: 13,
   },
-  anchorText: {
+  filterChipText: {
     fontSize: 13,
     fontWeight: '500',
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    gap: 8,
-  },
-  sectionDivider: {
-    flex: 1,
-    height: 1,
-  },
-  sectionIcon: {
-    fontSize: 16,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
   },
   listContent: {
     paddingBottom: 16,

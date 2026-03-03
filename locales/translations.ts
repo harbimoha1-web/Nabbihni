@@ -92,6 +92,10 @@ export const translations = {
       sharedCountdown: 'عد تنازلي مشترك',
       modalTitle: 'شارك العد التنازلي',
       downloadApp: 'حمّل التطبيق',
+      shareLink: 'شارك الرابط',
+      inviteFriends: 'دعوة أصدقاء',
+      inviteMessage: '📱 جرّب تطبيق "كم باقي" - عد تنازلي لأهم لحظاتك! 🎯\n\nحمّل التطبيق الآن: {url}',
+      scanToDownload: 'امسح للتحميل',
     },
 
     // Language
@@ -137,6 +141,7 @@ export const translations = {
       cantOpenEmail: 'لا يمكن فتح تطبيق البريد',
       cantOpenLink: 'لا يمكن فتح الرابط',
       appName: 'كم باقي',
+      inviteFriends: 'دعوة أصدقاء',
     },
 
     // Create Screen
@@ -185,6 +190,7 @@ export const translations = {
       sports: 'رياضية',
       political: 'سياسية',
       noUpcomingEvents: 'لا توجد أحداث قادمة',
+      noEventsInCategory: 'لا توجد مناسبات في هذا التصنيف',
       confirmed: 'مؤكد',
       estimated: 'تقديري',
       tentative: 'مبدئي',
@@ -529,6 +535,10 @@ export const translations = {
       sharedCountdown: 'Shared Countdown',
       modalTitle: 'Share Countdown',
       downloadApp: 'Download the app',
+      shareLink: 'Share Link',
+      inviteFriends: 'Invite Friends',
+      inviteMessage: '📱 Try "Kam Baqi" - countdown to your most important moments! 🎯\n\nDownload now: {url}',
+      scanToDownload: 'Scan to Download',
     },
 
     // Language
@@ -574,6 +584,7 @@ export const translations = {
       cantOpenEmail: 'Cannot open email app',
       cantOpenLink: 'Cannot open link',
       appName: 'Kam Baqi',
+      inviteFriends: 'Invite Friends',
     },
 
     // Create Screen
@@ -622,6 +633,7 @@ export const translations = {
       sports: 'Sports',
       political: 'Political',
       noUpcomingEvents: 'No upcoming events',
+      noEventsInCategory: 'No events in this category',
       confirmed: 'Confirmed',
       estimated: 'Estimated',
       tentative: 'Tentative',

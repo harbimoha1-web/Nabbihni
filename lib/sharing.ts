@@ -2,6 +2,7 @@ import * as Sharing from 'expo-sharing';
 import * as Linking from 'expo-linking';
 import { Share } from 'react-native';
 import { Countdown } from '@/types/countdown';
+import { TranslationKeys } from '@/locales/translations';
 import {
   encodeCountdownForShare,
   decodeSharedCountdown,
@@ -12,6 +13,12 @@ import {
 
 const APP_SCHEME = 'nabbihni';
 const WEB_URL = 'https://nabbihni.com';
+
+export const DOWNLOAD_URL = 'https://nabbihni.com/download';
+
+export function getInviteShareText(t: TranslationKeys): string {
+  return t.share.inviteMessage.replace('{url}', DOWNLOAD_URL);
+}
 
 export const createDeepLink = (countdownId: string): string => {
   return `${APP_SCHEME}://countdown/${countdownId}`;

@@ -52,9 +52,10 @@ export function CountdownLargeWidget({ countdowns }: Props) {
         height: 'match_parent',
         width: 'match_parent',
         flexDirection: 'column',
+        justifyContent: 'space-between',
         backgroundColor: '#0F1419',
         borderRadius: 24,
-        padding: 14,
+        padding: 18,
       }}
     >
       {/* Header (RTL: count left, title right) */}
