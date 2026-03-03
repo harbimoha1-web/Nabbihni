@@ -196,8 +196,8 @@ export default function CountdownDetailScreen() {
       if (uri) {
         await shareImage(uri, {
           message: language === 'ar'
-            ? `🎉 ${countdown.title} - حان الوقت!\n\nنبّهني`
-            : `🎉 ${countdown.title} - Time's up!\n\nNabbihni`,
+            ? `🎉 ${countdown.title} - حان الوقت!\n\nكم باقي`
+            : `🎉 ${countdown.title} - Time's up!\n\nKam Baqi`,
           title: language === 'ar' ? 'شارك اللحظة' : 'Share the moment',
         });
       }

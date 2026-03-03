@@ -27,7 +27,7 @@ function EmptyWidget() {
         style={{ fontSize: 32 }}
       />
       <TextWidget
-        text="نبّهني"
+        text="كم باقي"
         style={{
           fontSize: 16,
           fontWeight: '700',

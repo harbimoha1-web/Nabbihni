@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "نبّهني",
+    "name": "كم باقي",
     "slug": "nabbihni",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,6 +9,8 @@
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
       "backgroundColor": "#0f172a"
     },
     "ios": {

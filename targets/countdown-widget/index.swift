@@ -222,7 +222,7 @@ struct SmallCountdownView: View {
             VStack(spacing: 8) {
                 Text("⏳")
                     .font(.system(size: 32))
-                Text("نبّهني")
+                Text("كم باقي")
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.white)
                 Text("أضف عد تنازلي")
@@ -248,7 +248,7 @@ struct MediumCountdownView: View {
                 VStack(spacing: 6) {
                     // Header
                     HStack {
-                        Text("⏳ نبّهني")
+                        Text("⏳ كم باقي")
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(Color(hex: "#F59E0B"))
                         Spacer()
@@ -319,7 +319,7 @@ struct MediumCountdownView: View {
         ZStack {
             Color(hex: "#0F1419")
             VStack(spacing: 6) {
-                Text("⏳ نبّهني")
+                Text("⏳ كم باقي")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(.white)
                 Text("أضف عدادات لتظهر هنا")
@@ -345,7 +345,7 @@ struct LargeCountdownView: View {
                 VStack(spacing: 6) {
                     // Header
                     HStack {
-                        Text("⏳ نبّهني")
+                        Text("⏳ كم باقي")
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(Color(hex: "#F59E0B"))
                         Spacer()
@@ -418,7 +418,7 @@ struct LargeCountdownView: View {
         ZStack {
             Color(hex: "#0F1419")
             VStack(spacing: 6) {
-                Text("⏳ نبّهني")
+                Text("⏳ كم باقي")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(.white)
                 Text("أضف عدادات لتظهر هنا")

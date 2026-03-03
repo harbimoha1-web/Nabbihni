@@ -57,7 +57,7 @@ const ShareCard = forwardRef<ShareCardRef, ShareCardProps>(
 
             {/* Header watermark */}
             <View style={styles.header}>
-              <Text style={styles.watermark}>نبّهني</Text>
+              <Text style={styles.watermark}>كم باقي</Text>
             </View>
 
             {/* Content */}

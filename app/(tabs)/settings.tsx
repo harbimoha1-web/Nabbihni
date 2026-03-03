@@ -169,7 +169,7 @@ export default function SettingsScreen() {
 
   const handleContactUs = async () => {
     const email = 'support@nabbihni.com';
-    const subject = encodeURIComponent(language === 'ar' ? 'تواصل من تطبيق نبّهني' : 'Contact from Nabbihni app');
+    const subject = encodeURIComponent(language === 'ar' ? 'تواصل من تطبيق كم باقي' : 'Contact from Kam Baqi app');
     try {
       await Linking.openURL(`mailto:${email}?subject=${subject}`);
     } catch {

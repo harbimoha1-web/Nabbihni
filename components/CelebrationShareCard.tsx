@@ -39,7 +39,7 @@ const CelebrationShareCard = forwardRef<CelebrationShareCardRef, CelebrationShar
     }));
 
     const celebrationText = language === 'ar' ? 'حان الوقت!' : "Time's up!";
-    const watermarkText = 'نبّهني';
+    const watermarkText = 'كم باقي';
     const downloadText = language === 'ar' ? 'حمّل التطبيق' : 'Download the app';
 
     return (

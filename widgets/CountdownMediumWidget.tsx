@@ -24,7 +24,7 @@ function EmptyWidget() {
       clickAction="OPEN_APP"
     >
       <TextWidget
-        text="⏳ نبّهني"
+        text="⏳ كم باقي"
         style={{
           fontSize: 18,
           fontWeight: '700',
@@ -76,7 +76,7 @@ export function CountdownMediumWidget({ countdowns }: Props) {
           }}
         />
         <TextWidget
-          text="⏳ نبّهني"
+          text="⏳ كم باقي"
           style={{
             fontSize: 14,
             fontWeight: '700',
