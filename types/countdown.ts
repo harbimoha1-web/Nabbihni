@@ -88,7 +88,10 @@ export interface Theme {
 }
 
 // Event categories for public events
-export type EventCategory = 'religious' | 'national' | 'seasonal' | 'entertainment' | 'milestone' | 'education' | 'international';
+export type EventCategory =
+  | 'religious' | 'national' | 'seasonal' | 'entertainment'
+  | 'milestone' | 'education' | 'international'
+  | 'tech' | 'finance' | 'gaming' | 'sports' | 'political';
 
 // Date confidence levels (critical for Islamic dates)
 export type DateConfidence = 'confirmed' | 'estimated' | 'tentative';

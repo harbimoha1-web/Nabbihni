@@ -1,9 +1,9 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  FlatList,
+  SectionList,
   Pressable,
   ScrollView,
   ActivityIndicator,
@@ -18,13 +18,36 @@ import { useHolidays } from '@/hooks/useHolidays';
 import { useCountdownTick } from '@/hooks/useCountdown';
 import { PublicEvent, Countdown, EventCategory } from '@/types/countdown';
 
-type CategoryFilter = 'all' | EventCategory;
-
 // Stable keyExtractor at module level
 const keyExtractor = (item: PublicEvent) => item.id;
 
-// Card height (230) + marginBottom (16) for getItemLayout
-const ITEM_HEIGHT = 230 + 16;
+const CATEGORY_ORDER: EventCategory[] = [
+  'religious', 'national', 'education', 'tech',
+  'gaming', 'sports', 'finance', 'entertainment',
+  'political', 'international', 'milestone', 'seasonal',
+];
+
+const CATEGORY_ICONS: Record<string, string> = {
+  religious: '🌙',
+  national: '🇸🇦',
+  education: '📚',
+  tech: '💻',
+  gaming: '🎮',
+  sports: '⚽',
+  finance: '💰',
+  entertainment: '🎭',
+  political: '🗳️',
+  international: '🌍',
+  milestone: '🏆',
+  seasonal: '🌤️',
+};
+
+type SectionData = {
+  category: EventCategory;
+  title: string;
+  icon: string;
+  data: PublicEvent[];
+};
 
 // Memoized card wrapper to stabilize per-item onPress
 const ExploreCard = React.memo(({
@@ -72,11 +95,29 @@ const ExploreCard = React.memo(({
   );
 });
 
+const SectionHeader = React.memo(({
+  icon,
+  title,
+  colors,
+}: {
+  icon: string;
+  title: string;
+  colors: ReturnType<typeof useTheme>['colors'];
+}) => (
+  <View style={[styles.sectionHeader, { backgroundColor: colors.background }]}>
+    <View style={[styles.sectionDivider, { backgroundColor: colors.border }]} />
+    <Text style={styles.sectionIcon}>{icon}</Text>
+    <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>{title}</Text>
+    <View style={[styles.sectionDivider, { backgroundColor: colors.border }]} />
+  </View>
+));
+
 export default function ExploreScreen() {
   const { colors } = useTheme();
   const { t, language } = useLanguage();
   const { holidays, loading, error, refresh } = useHolidays();
   const tick = useCountdownTick();
+  const sectionListRef = useRef<SectionList<PublicEvent, SectionData>>(null);
 
   // Only reload on focus if data is stale (> 5 minutes old)
   const lastLoadRef = useRef<number>(0);
@@ -90,11 +131,9 @@ export default function ExploreScreen() {
       }
     }, [refresh])
   );
-  const [filter, setFilter] = useState<CategoryFilter>('all');
 
   // Category labels based on current language
-  const categoryLabels: Record<CategoryFilter, string> = useMemo(() => ({
-    all: t.explore.all,
+  const categoryLabels: Partial<Record<EventCategory, string>> = useMemo(() => ({
     religious: t.explore.religious,
     national: t.explore.national,
     seasonal: t.explore.seasonal,
@@ -102,9 +141,14 @@ export default function ExploreScreen() {
     milestone: t.explore.milestone,
     education: t.explore.education,
     international: t.explore.international,
+    tech: t.explore.tech,
+    finance: t.explore.finance,
+    gaming: t.explore.gaming,
+    sports: t.explore.sports,
+    political: t.explore.political,
   }), [t]);
 
-  // Pre-compute the mapped list with stable objects (no new Date() per render)
+  // Pre-compute the mapped list with stable objects
   const countdownMap = useMemo(() => {
     const map = new Map<string, Countdown>();
     for (const event of holidays) {
@@ -115,17 +159,38 @@ export default function ExploreScreen() {
         icon: event.icon,
         theme: event.theme,
         isPublic: true,
-        createdAt: event.targetDate, // Stable proxy instead of new Date().toISOString()
+        createdAt: event.targetDate,
         backgroundImage: event.backgroundImage,
       });
     }
     return map;
   }, [holidays, language]);
 
-  const filteredEvents = useMemo(() => {
-    if (filter === 'all') return holidays;
-    return holidays.filter((event) => event.category === filter);
-  }, [holidays, filter]);
+  // Group events into sections ordered by CATEGORY_ORDER
+  const sections = useMemo<SectionData[]>(() => {
+    const grouped: Partial<Record<EventCategory, PublicEvent[]>> = {};
+    for (const event of holidays) {
+      if (!grouped[event.category]) grouped[event.category] = [];
+      grouped[event.category]!.push(event);
+    }
+    return CATEGORY_ORDER
+      .filter(cat => (grouped[cat]?.length ?? 0) > 0)
+      .map(cat => ({
+        category: cat,
+        title: categoryLabels[cat] ?? cat,
+        icon: CATEGORY_ICONS[cat] ?? '📌',
+        data: grouped[cat]!,
+      }));
+  }, [holidays, categoryLabels]);
+
+  const handleJumpToSection = useCallback((sectionIndex: number) => {
+    sectionListRef.current?.scrollToLocation({
+      animated: true,
+      sectionIndex,
+      itemIndex: 0,
+      viewPosition: 0,
+    });
+  }, []);
 
   const handleEventPress = useCallback((event: PublicEvent) => {
     router.push({
@@ -133,18 +198,6 @@ export default function ExploreScreen() {
       params: { id: event.id, public: 'true', eventData: JSON.stringify(event) },
     });
   }, []);
-
-  // Get categories that have events
-  const availableCategories = useMemo(() => {
-    const categories = new Set(holidays.map(h => h.category));
-    return ['all', ...Array.from(categories)] as CategoryFilter[];
-  }, [holidays]);
-
-  const getItemLayout = useCallback((_: any, index: number) => ({
-    length: ITEM_HEIGHT,
-    offset: ITEM_HEIGHT * index,
-    index,
-  }), []);
 
   const renderItem = useCallback(({ item }: { item: PublicEvent }) => {
     const countdown = countdownMap.get(item.id)!;
@@ -158,6 +211,14 @@ export default function ExploreScreen() {
     );
   }, [countdownMap, handleEventPress, tick]);
 
+  const renderSectionHeader = useCallback(({ section }: { section: SectionData }) => (
+    <SectionHeader
+      icon={section.icon}
+      title={section.title}
+      colors={colors}
+    />
+  ), [colors]);
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['bottom']}>
       {/* Hijri date disclaimer */}
@@ -167,33 +228,25 @@ export default function ExploreScreen() {
         </Text>
       </View>
 
-      {/* Filter Chips - Horizontal Scroll */}
-      <View style={styles.filterWrapper}>
+      {/* Jump Anchor Bar */}
+      <View style={styles.anchorWrapper}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filterContainer}
+          contentContainerStyle={styles.anchorContainer}
         >
-          {availableCategories.map((cat) => (
+          {sections.map((section, index) => (
             <Pressable
-              key={cat}
-              onPress={() => setFilter(cat)}
+              key={section.category}
+              onPress={() => handleJumpToSection(index)}
               style={[
-                styles.filterChip,
-                {
-                  backgroundColor: filter === cat ? colors.accent : colors.surface,
-                  borderWidth: 1,
-                  borderColor: filter === cat ? colors.accent : colors.border,
-                },
+                styles.anchorChip,
+                { borderColor: colors.border, backgroundColor: colors.surface },
               ]}
             >
-              <Text
-                style={[
-                  styles.filterChipText,
-                  { color: filter === cat ? colors.background : colors.text },
-                ]}
-              >
-                {categoryLabels[cat]}
+              <Text style={styles.anchorIcon}>{section.icon}</Text>
+              <Text style={[styles.anchorText, { color: colors.textSecondary }]}>
+                {section.title}
               </Text>
             </Pressable>
           ))}
@@ -217,17 +270,20 @@ export default function ExploreScreen() {
           </Pressable>
         </View>
       ) : (
-        <FlatList
-          data={filteredEvents}
+        <SectionList
+          ref={sectionListRef}
+          sections={sections}
           keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          renderSectionHeader={renderSectionHeader}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
-          renderItem={renderItem}
-          getItemLayout={getItemLayout}
+          stickySectionHeadersEnabled={false}
+          onScrollToIndexFailed={() => {}}
           removeClippedSubviews={true}
-          initialNumToRender={5}
-          maxToRenderPerBatch={3}
-          windowSize={5}
+          initialNumToRender={6}
+          maxToRenderPerBatch={4}
+          windowSize={7}
           ListEmptyComponent={
             <View style={styles.emptyState}>
               <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
@@ -245,34 +301,58 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  filterWrapper: {
-    minHeight: 56,
+  anchorWrapper: {
+    minHeight: 48,
   },
-  filterContainer: {
+  anchorContainer: {
     flexDirection: 'row',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 8,
     gap: 8,
     alignItems: 'center',
   },
-  filterChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
-    minHeight: 40,
-    justifyContent: 'center',
+  anchorChip: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
   },
-  filterChipText: {
-    fontSize: 14,
+  anchorIcon: {
+    fontSize: 13,
+  },
+  anchorText: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 8,
+  },
+  sectionDivider: {
+    flex: 1,
+    height: 1,
+  },
+  sectionIcon: {
+    fontSize: 16,
+  },
+  sectionTitle: {
+    fontSize: 13,
     fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   listContent: {
-    padding: 16,
-    paddingTop: 0,
+    paddingBottom: 16,
   },
   cardContainer: {
     marginBottom: 16,
+    paddingHorizontal: 16,
   },
   cardWrapper: {
     position: 'relative',
