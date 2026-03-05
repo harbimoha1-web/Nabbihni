@@ -182,8 +182,7 @@ const styles = StyleSheet.create({
     lineHeight: 36,
   },
   footer: {
-    alignItems: 'center',
-    paddingTop: 12,
+    paddingTop: 10,
   },
   footerDivider: {
     width: '100%',
@@ -191,15 +190,36 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
     marginBottom: 10,
   },
-  downloadText: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.6)',
-    marginBottom: 2,
+  footerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
-  url: {
-    fontSize: 13,
+  footerRowRTL: {
+    flexDirection: 'row-reverse',
+  },
+  footerTextStack: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  footerTextStackRTL: {
+    alignItems: 'flex-end',
+  },
+  footerAppName: {
+    fontSize: 14,
     fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: 'rgba(255, 255, 255, 0.9)',
+    marginBottom: 1,
+  },
+  footerScanText: {
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.6)',
+    marginBottom: 1,
+  },
+  footerUrl: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.7)',
   },
 });
 

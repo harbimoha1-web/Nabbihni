@@ -4,7 +4,7 @@ import { publicEvents } from '@/constants/publicEvents';
 import { educationEvents, getUpcomingEducationEvents } from '@/constants/educationCalendar';
 import { syncHolidaysToStorage, clearHolidayCache } from '@/lib/holidayApiService';
 import { processEventsWithRecurrence } from '@/lib/eventRecurrenceEngine';
-import { getEventOverrides, getCustomEvents, CustomEvent } from '@/lib/eventAdminStorage';
+import { getEventOverrides, getCustomEvents, getHiddenEventIds, CustomEvent } from '@/lib/eventAdminStorage';
 
 // Note: API key should be configured via environment variables
 // For now, we fallback to hardcoded events when no API key is available
@@ -46,9 +46,10 @@ export const useHolidays = (): UseHolidaysResult => {
 
       // Apply admin overrides to existing events
       try {
-        const [overrides, customEvents] = await Promise.all([
+        const [overrides, customEvents, hiddenEventIds] = await Promise.all([
           getEventOverrides(),
           getCustomEvents(),
+          getHiddenEventIds(),
         ]);
 
         if (overrides.length > 0) {
@@ -85,6 +86,15 @@ export const useHolidays = (): UseHolidaysResult => {
             recurrenceType: ce.recurrenceType || 'one-time',
           }));
           allHolidays = [...allHolidays, ...customAsPublicEvents];
+        }
+
+        // Filter out admin-suppressed events
+        if (hiddenEventIds.length > 0) {
+          const hiddenSet = new Set(hiddenEventIds);
+          allHolidays = allHolidays.filter(event => {
+            const baseId = event.baseId || event.id;
+            return !hiddenSet.has(baseId);
+          });
         }
       } catch (adminError) {
         console.warn('Error loading admin data:', adminError);

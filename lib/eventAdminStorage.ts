@@ -5,6 +5,7 @@ import { PublicEvent, EventCategory, ThemeId, DateConfidence, EventRecurrenceTyp
 // Storage keys
 export const EVENT_OVERRIDES_KEY = '@nabbihni/event-overrides';
 export const CUSTOM_EVENTS_KEY = '@nabbihni/custom-events';
+export const HIDDEN_EVENTS_KEY = '@nabbihni/hidden-events';
 
 // Event override - changes to existing hardcoded events
 export interface EventOverride {
@@ -219,7 +220,7 @@ export const getCustomEvent = async (eventId: string): Promise<CustomEvent | nul
  */
 export const clearAllAdminData = async (): Promise<boolean> => {
   try {
-    await AsyncStorage.multiRemove([EVENT_OVERRIDES_KEY, CUSTOM_EVENTS_KEY]);
+    await AsyncStorage.multiRemove([EVENT_OVERRIDES_KEY, CUSTOM_EVENTS_KEY, HIDDEN_EVENTS_KEY]);
     return true;
   } catch (error) {
     console.error('Error clearing admin data:', error);
@@ -240,4 +241,41 @@ export const hasOverride = async (eventId: string): Promise<boolean> => {
  */
 export const isCustomEvent = (eventId: string): boolean => {
   return eventId.startsWith('custom-');
+};
+
+// =====================
+// Hidden Events (suppress built-in events from Explore)
+// =====================
+
+export const getHiddenEventIds = async (): Promise<string[]> => {
+  try {
+    const data = await AsyncStorage.getItem(HIDDEN_EVENTS_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch { return []; }
+};
+
+export const hideBuiltinEvent = async (eventId: string): Promise<boolean> => {
+  try {
+    const hidden = await getHiddenEventIds();
+    if (!hidden.includes(eventId)) {
+      hidden.push(eventId);
+      await AsyncStorage.setItem(HIDDEN_EVENTS_KEY, JSON.stringify(hidden));
+    }
+    return true;
+  } catch (error) {
+    console.error('Error hiding event:', error);
+    return false;
+  }
+};
+
+export const restoreBuiltinEvent = async (eventId: string): Promise<boolean> => {
+  try {
+    const hidden = await getHiddenEventIds();
+    const filtered = hidden.filter(id => id !== eventId);
+    await AsyncStorage.setItem(HIDDEN_EVENTS_KEY, JSON.stringify(filtered));
+    return true;
+  } catch (error) {
+    console.error('Error restoring event:', error);
+    return false;
+  }
 };

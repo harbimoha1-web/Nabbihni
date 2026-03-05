@@ -54,27 +54,20 @@ export function CountdownMediumWidget({ countdowns }: Props) {
         flexDirection: 'column',
         backgroundColor: '#0F1419',
         borderRadius: 24,
-        padding: 14,
+        padding: 16,
       }}
     >
-      {/* Header (RTL: count left, title right) */}
+      {/* Header */}
       <FlexWidget
         style={{
           width: 'match_parent',
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-end',
           marginBottom: 8,
           paddingHorizontal: 4,
         }}
       >
-        <TextWidget
-          text={`${countdowns.length} عدادات`}
-          style={{
-            fontSize: 11,
-            color: 'rgba(245, 243, 240, 0.48)',
-          }}
-        />
         <TextWidget
           text="⏳ كم باقي"
           style={{

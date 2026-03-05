@@ -10,6 +10,7 @@ import {
   Alert,
   Modal,
   TextInput,
+  Share,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import * as Crypto from 'expo-crypto';
@@ -22,6 +23,7 @@ import { useTheme, ThemeMode } from '@/contexts/ThemeContext';
 import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useNotifications } from '@/hooks/useNotifications';
+import { getInviteShareText } from '@/lib/sharing';
 
 // SHA256 of the admin PIN (never store plaintext PIN in source code)
 // To update: run `echo -n "your_pin" | sha256sum` and replace the hash below
@@ -190,6 +192,14 @@ export default function SettingsScreen() {
       await Linking.openURL('https://nabbihni.com/terms.html');
     } catch {
       Alert.alert(t.error, t.settings.cantOpenLink);
+    }
+  };
+
+  const handleInviteFriends = async () => {
+    try {
+      await Share.share({ message: getInviteShareText(t) });
+    } catch (error) {
+      if (__DEV__) console.error('Error sharing invite:', error);
     }
   };
 
@@ -417,6 +427,22 @@ export default function SettingsScreen() {
               <View style={styles.settingContent}>
                 <Text style={[styles.settingTitle, { color: colors.text }]}>{t.settings.rateApp}</Text>
                 <Text style={[styles.settingSubtitle, { color: colors.textSecondary }]}>{t.settings.rateAppDesc}</Text>
+              </View>
+              <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textSecondary} />
+            </Pressable>
+            <Pressable
+              onPress={handleInviteFriends}
+              style={({ pressed }) => [
+                styles.settingRow,
+                { borderBottomColor: colors.border },
+                pressed && { backgroundColor: colors.surfaceSecondary },
+              ]}
+            >
+              <View style={[styles.settingIcon, { backgroundColor: colors.accent + '20' }]}>
+                <Ionicons name="gift-outline" size={22} color={colors.accent} />
+              </View>
+              <View style={styles.settingContent}>
+                <Text style={[styles.settingTitle, { color: colors.text }]}>{t.settings.inviteFriends}</Text>
               </View>
               <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.textSecondary} />
             </Pressable>

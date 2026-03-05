@@ -11,6 +11,14 @@ const FONT_SIZES = {
   large: { value: 36, label: 13 },
 } as const;
 
+// Cascade mode: single dominant unit, much larger typography
+const CASCADE_FONT_SIZES = {
+  compact: { value: 28, label: 11 },
+  small: { value: 48, label: 16 },
+  medium: { value: 64, label: 18 },
+  large: { value: 88, label: 24 },
+} as const;
+
 const CONTAINER_SIZES = {
   compact: { minWidth: 32, height: 32, paddingVertical: 3, paddingHorizontal: 4 },
   small: { minWidth: 52, height: 56, paddingVertical: 6, paddingHorizontal: 6 },
@@ -132,6 +140,7 @@ interface CountdownTimerProps {
   theme: Theme;
   size?: 'compact' | 'small' | 'medium' | 'large';
   showDays?: boolean;
+  cascade?: boolean;
 }
 
 export const CountdownTimer: React.FC<CountdownTimerProps> = ({
@@ -139,6 +148,7 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
   theme,
   size = 'medium',
   showDays = true,
+  cascade = false,
 }) => {
   const { t } = useLanguage();
   const { days, hours, minutes, seconds, isComplete } = timeRemaining;
@@ -149,6 +159,48 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
         <Text style={[styles.completeText, { color: theme.colors.accent }]}>
           {t.countdown.timeUp}
         </Text>
+      </View>
+    );
+  }
+
+  // Cascade mode: single dominant unit
+  if (cascade) {
+    let cascadeValue: number;
+    let cascadeLabel: string;
+    if (days > 0) {
+      cascadeValue = days;
+      cascadeLabel = t.timeUnits.days;
+    } else if (hours > 0) {
+      cascadeValue = hours;
+      cascadeLabel = t.timeUnits.hours;
+    } else if (minutes > 0) {
+      cascadeValue = minutes;
+      cascadeLabel = t.timeUnits.minutes;
+    } else {
+      cascadeValue = seconds;
+      cascadeLabel = t.timeUnits.seconds;
+    }
+
+    const fontSize = CASCADE_FONT_SIZES[size];
+    const displayValue = String(cascadeValue);
+    const showGlass = size !== 'large';
+
+    return (
+      <View style={styles.cascadeContainer}>
+        <View style={showGlass ? [styles.cascadeGlass, { backgroundColor: 'rgba(245, 243, 240, 0.12)' }] : null}>
+          <Text
+            style={[styles.cascadeValue, { color: theme.colors.text, fontSize: fontSize.value }]}
+            adjustsFontSizeToFit
+            numberOfLines={1}
+            minimumFontScale={0.5}
+            allowFontScaling={false}
+          >
+            {displayValue}
+          </Text>
+          <Text style={[styles.cascadeLabel, { color: theme.colors.textSecondary, fontSize: fontSize.label }]}>
+            {cascadeLabel}
+          </Text>
+        </View>
       </View>
     );
   }
@@ -218,6 +270,27 @@ const styles = StyleSheet.create({
   completeText: {
     fontSize: 32,
     fontWeight: '700',
+  },
+  cascadeContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  cascadeGlass: {
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+  cascadeValue: {
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+    textAlign: 'center',
+  },
+  cascadeLabel: {
+    marginTop: 4,
+    textAlign: 'center',
   },
 });
 

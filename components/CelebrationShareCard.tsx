@@ -2,8 +2,10 @@ import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ViewShot from 'react-native-view-shot';
+import QRCode from 'react-native-qrcode-svg';
 import { getTheme } from '@/constants/themes';
 import { ThemeId } from '@/types/countdown';
+import { DOWNLOAD_URL } from '@/lib/sharing';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = Math.min(SCREEN_WIDTH - 48, 340);
@@ -39,8 +41,8 @@ const CelebrationShareCard = forwardRef<CelebrationShareCardRef, CelebrationShar
     }));
 
     const celebrationText = language === 'ar' ? 'حان الوقت!' : "Time's up!";
-    const watermarkText = 'كم باقي';
-    const downloadText = language === 'ar' ? 'حمّل التطبيق' : 'Download the app';
+    const scanText = language === 'ar' ? 'امسح للتحميل' : 'Scan to Download';
+    const isRTL = language === 'ar';
 
     return (
       <ViewShot
@@ -91,19 +93,22 @@ const CelebrationShareCard = forwardRef<CelebrationShareCardRef, CelebrationShar
               </Text>
             </View>
 
-            {/* Footer: app watermark + download CTA */}
+            {/* Footer: QR code + text stack */}
             <View style={styles.footerContainer}>
               <View style={styles.footerDivider} />
-              <Text
-                style={[
-                  styles.watermark,
-                  { color: themeConfig.colors.textSecondary },
-                ]}
-              >
-                {watermarkText}
-              </Text>
-              <Text style={styles.footerDownload}>{downloadText}</Text>
-              <Text style={styles.footerUrl}>nabbihni.com</Text>
+              <View style={[styles.footerRow, isRTL && styles.footerRowRTL]}>
+                <QRCode
+                  value={DOWNLOAD_URL}
+                  size={52}
+                  color="rgba(255,255,255,0.9)"
+                  backgroundColor="transparent"
+                />
+                <View style={[styles.footerTextStack, isRTL && styles.footerTextStackRTL]}>
+                  <Text style={styles.footerAppName}>كم باقي</Text>
+                  <Text style={styles.footerScanText}>{scanText}</Text>
+                  <Text style={styles.footerUrl}>nabbihni.com</Text>
+                </View>
+              </View>
             </View>
           </LinearGradient>
         </View>
@@ -189,29 +194,43 @@ const styles = StyleSheet.create({
     bottom: 12,
     left: 24,
     right: 24,
-    alignItems: 'center',
   },
   footerDivider: {
     width: '100%',
     height: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    marginBottom: 8,
+    marginBottom: 10,
   },
-  watermark: {
+  footerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  footerRowRTL: {
+    flexDirection: 'row-reverse',
+  },
+  footerTextStack: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  footerTextStackRTL: {
+    alignItems: 'flex-end',
+  },
+  footerAppName: {
     fontSize: 14,
-    fontWeight: '500',
-    opacity: 0.6,
-    marginBottom: 2,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.9)',
+    marginBottom: 1,
   },
-  footerDownload: {
+  footerScanText: {
     fontSize: 11,
     color: 'rgba(255, 255, 255, 0.6)',
     marginBottom: 1,
   },
   footerUrl: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 11,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.7)',
   },
 });
 

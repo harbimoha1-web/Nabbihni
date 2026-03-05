@@ -127,6 +127,7 @@ const CountdownCardInner: React.FC<CountdownCardProps> = ({
         timeRemaining={timeRemaining}
         theme={theme}
         size={isLarge ? 'small' : 'compact'}
+        cascade
       />
 
       {/* Dates */}

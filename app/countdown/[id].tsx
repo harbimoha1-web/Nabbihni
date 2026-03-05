@@ -25,7 +25,7 @@ import { useNotifications } from '@/hooks/useNotifications';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { formatHijriDateLocalized } from '@/lib/hijriService';
 import { useSharerName } from '@/hooks/useSharerName';
-import { shareCountdownWithData, createEmbeddedShareLink } from '@/lib/sharing';
+import { shareCountdownWithData, createEmbeddedShareLink, getInviteShareText } from '@/lib/sharing';
 import CountdownTimer from '@/components/CountdownTimer';
 import CelebrationAnimation from '@/components/CelebrationAnimation';
 import CelebrationShareCard, { CelebrationShareCardRef } from '@/components/CelebrationShareCard';
@@ -184,6 +184,27 @@ export default function CountdownDetailScreen() {
     }
   };
 
+  const handleShareLink = async () => {
+    if (!countdown) return;
+    setShowShareModal(false);
+    try {
+      const link = createEmbeddedShareLink(countdown, tempSharerName.trim() || undefined);
+      await Share.share({ message: link });
+    } catch (error) {
+      if (__DEV__) console.error('Error sharing link:', error);
+    }
+  };
+
+  const handleShareInvite = async () => {
+    setShowShareModal(false);
+    try {
+      const message = getInviteShareText(t);
+      await Share.share({ message });
+    } catch (error) {
+      if (__DEV__) console.error('Error sharing invite:', error);
+    }
+  };
+
   const handleCelebrationShare = async () => {
     if (!countdown || isSharing) return;
 
@@ -331,6 +352,7 @@ export default function CountdownDetailScreen() {
             timeRemaining={timeRemaining}
             theme={theme}
             size="large"
+            cascade
           />
         </View>
 
@@ -502,32 +524,56 @@ export default function CountdownDetailScreen() {
                 onChangeText={setTempSharerName}
                 textAlign={language === 'ar' ? 'right' : 'left'}
               />
-              <View style={styles.modalActions}>
+
+              {/* Primary: Share as Image */}
+              <Pressable
+                style={[
+                  styles.modalButtonPrimary,
+                  { backgroundColor: colors.accent },
+                  isSharing && { opacity: 0.6 },
+                ]}
+                onPress={handleShareConfirm}
+                disabled={isSharing}
+              >
+                <Ionicons name="image-outline" size={20} color={colors.background} />
+                <Text style={[styles.modalButtonPrimaryText, { color: colors.background }]}>
+                  {isSharing
+                    ? language === 'ar' ? 'جارٍ...' : 'Sharing...'
+                    : t.share.shareAsImage}
+                </Text>
+              </Pressable>
+
+              {/* Secondary row: Share Link + Invite Friends */}
+              <View style={styles.modalSecondaryRow}>
                 <Pressable
-                  style={[styles.modalButton, { backgroundColor: colors.glass }]}
-                  onPress={() => setShowShareModal(false)}
+                  style={[styles.modalButtonSecondary, { backgroundColor: colors.glass }]}
+                  onPress={handleShareLink}
                 >
-                  <Text style={[styles.modalButtonText, { color: colors.text }]}>
-                    {t.cancel}
+                  <Ionicons name="link-outline" size={18} color={colors.text} />
+                  <Text style={[styles.modalButtonSecondaryText, { color: colors.text }]}>
+                    {t.share.shareLink}
                   </Text>
                 </Pressable>
                 <Pressable
-                  style={[
-                    styles.modalButton,
-                    styles.modalButtonPrimary,
-                    { backgroundColor: colors.accent },
-                  ]}
-                  onPress={handleShareConfirm}
-                  disabled={isSharing}
+                  style={[styles.modalButtonSecondary, { backgroundColor: colors.glass }]}
+                  onPress={handleShareInvite}
                 >
-                  <Ionicons name="share-social" size={18} color={colors.background} />
-                  <Text style={[styles.modalButtonText, { color: colors.background }]}>
-                    {isSharing
-                      ? language === 'ar' ? 'جارٍ...' : 'Sharing...'
-                      : t.share.shareButton}
+                  <Ionicons name="gift-outline" size={18} color={colors.text} />
+                  <Text style={[styles.modalButtonSecondaryText, { color: colors.text }]}>
+                    {t.share.inviteFriends}
                   </Text>
                 </Pressable>
               </View>
+
+              {/* Cancel */}
+              <Pressable
+                style={styles.modalCancelButton}
+                onPress={() => setShowShareModal(false)}
+              >
+                <Text style={[styles.modalCancelText, { color: colors.textSecondary }]}>
+                  {t.cancel}
+                </Text>
+              </Pressable>
             </View>
           </Pressable>
         </Pressable>
@@ -811,23 +857,43 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 20,
   },
-  modalActions: {
+  modalButtonPrimary: {
     flexDirection: 'row',
-    gap: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 16,
+    borderRadius: 14,
+    marginBottom: 10,
   },
-  modalButton: {
+  modalButtonPrimaryText: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  modalSecondaryRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 12,
+  },
+  modalButtonSecondary: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    paddingVertical: 14,
+    paddingVertical: 13,
     borderRadius: 12,
   },
-  modalButtonPrimary: {},
-  modalButtonText: {
-    fontSize: 15,
+  modalButtonSecondaryText: {
+    fontSize: 14,
     fontWeight: '600',
+  },
+  modalCancelButton: {
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  modalCancelText: {
+    fontSize: 15,
   },
   // Celebration Share Modal Styles
   celebrationModalOverlay: {

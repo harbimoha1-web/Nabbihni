@@ -197,6 +197,10 @@ export const translations = {
       moonSightingNote: 'قد يتغير بناءً على رؤية الهلال',
       loadFailed: 'فشل في تحميل الأحداث',
       hijriDisclaimer: 'التواريخ الهجرية تقريبية وتعتمد على رؤية الهلال',
+      adminMode: 'وضع الإدارة — اضغط مطولاً على أي مناسبة لحذفها',
+      deleteEventTitle: 'حذف المناسبة',
+      deleteEventMessage: 'هل تريد حذف "{title}" من قائمة المناسبات العامة؟',
+      deleteEventError: 'حدث خطأ أثناء حذف المناسبة',
     },
 
     // Government Templates
@@ -244,7 +248,7 @@ export const translations = {
       enterButton: 'دخول',
       choosePanel: 'اختر لوحة الإدارة',
       holidaysAdmin: 'إدارة الأعياد',
-      eventsAdmin: 'إدارة المناسبات',
+      eventsAdmin: 'إدارة مناسبات الاستكشاف',
     },
 
     // Reminders
@@ -640,6 +644,10 @@ export const translations = {
       moonSightingNote: 'May change based on moon sighting',
       loadFailed: 'Failed to load events',
       hijriDisclaimer: 'Hijri dates are approximate and depend on moon sighting',
+      adminMode: 'Admin Mode — long-press any event to delete it',
+      deleteEventTitle: 'Delete Event',
+      deleteEventMessage: 'Remove "{title}" from the public events list?',
+      deleteEventError: 'An error occurred while deleting the event',
     },
 
     // Government Templates
@@ -687,7 +695,7 @@ export const translations = {
       enterButton: 'Enter',
       choosePanel: 'Choose Admin Panel',
       holidaysAdmin: 'Holidays Admin',
-      eventsAdmin: 'Events Admin',
+      eventsAdmin: 'Manage Explore Events',
     },
 
     // Reminders

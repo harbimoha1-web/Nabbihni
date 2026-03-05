@@ -29,11 +29,20 @@ struct CountdownDataProvider {
     static let appGroupId = "group.app.nabbihni.countdown"
 
     static func loadCountdowns() -> [WidgetCountdown] {
-        guard let defaults = UserDefaults(suiteName: appGroupId),
-              let jsonString = defaults.string(forKey: "widgetData"),
-              let data = jsonString.data(using: .utf8) else {
+        guard let defaults = UserDefaults(suiteName: appGroupId) else { return [] }
+
+        // Support both NSString and NSData storage formats across library versions
+        let jsonString: String
+        if let str = defaults.string(forKey: "widgetData") {
+            jsonString = str
+        } else if let rawData = defaults.data(forKey: "widgetData"),
+                  let str = String(data: rawData, encoding: .utf8) {
+            jsonString = str
+        } else {
             return []
         }
+
+        guard let data = jsonString.data(using: .utf8) else { return [] }
 
         do {
             let payload = try JSONDecoder().decode(WidgetDataPayload.self, from: data)
@@ -256,26 +265,23 @@ struct MediumCountdownView: View {
             ZStack {
                 Color(hex: "#0F1419")
 
-                VStack(spacing: 6) {
+                VStack(spacing: 8) {
                     // Header
                     HStack {
                         Text("⏳ كم باقي")
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(Color(hex: "#F59E0B"))
                         Spacer()
-                        Text("\(min(entry.countdowns.count, 3)) عدادات")
-                            .font(.system(size: 11))
-                            .foregroundColor(.white.opacity(0.48))
                     }
                     .padding(.horizontal, 4)
-                    .padding(.bottom, 2)
+                    .padding(.bottom, 4)
 
                     // Countdown rows (cap at 3 to prevent overflow in 4×2 widget)
                     ForEach(entry.countdowns.prefix(3)) { countdown in
                         countdownRow(countdown)
                     }
                 }
-                .padding(14)
+                .padding(16)
             }
         }
     }
@@ -353,46 +359,54 @@ struct LargeCountdownView: View {
             ZStack {
                 Color(hex: "#0F1419")
 
-                VStack(spacing: 6) {
+                VStack(spacing: 0) {
                     // Header
                     HStack {
                         Text("⏳ كم باقي")
-                            .font(.system(size: 14, weight: .bold))
+                            .font(.system(size: 15, weight: .bold))
                             .foregroundColor(Color(hex: "#F59E0B"))
                         Spacer()
-                        Text("\(min(entry.countdowns.count, 5)) عدادات")
-                            .font(.system(size: 11))
-                            .foregroundColor(.white.opacity(0.48))
                     }
                     .padding(.horizontal, 4)
-                    .padding(.bottom, 4)
+                    .padding(.bottom, 12)
 
-                    // Countdown rows (up to 5)
-                    ForEach(entry.countdowns.prefix(5)) { countdown in
-                        countdownRow(countdown)
+                    // Countdown rows — fixed 8pt gap, cap at 3
+                    VStack(spacing: 8) {
+                        ForEach(entry.countdowns.prefix(3)) { countdown in
+                            countdownRow(countdown)
+                        }
                     }
 
                     Spacer(minLength: 0)
+
+                    // Footer — fills dead space on large canvas
+                    HStack {
+                        Spacer()
+                        Text("كم باقي")
+                            .font(.system(size: 11))
+                            .foregroundColor(.white.opacity(0.24))
+                    }
+                    .padding(.top, 8)
                 }
-                .padding(14)
+                .padding(20)
             }
         }
     }
 
     private func countdownRow(_ countdown: WidgetCountdown) -> some View {
-        HStack(spacing: 10) {
-            // Emoji badge
+        HStack(spacing: 12) {
+            // Emoji badge — bigger on large canvas
             ZStack {
-                RoundedRectangle(cornerRadius: 10)
+                RoundedRectangle(cornerRadius: 14)
                     .fill(.white.opacity(0.08))
-                    .frame(width: 36, height: 36)
+                    .frame(width: 52, height: 52)
                 Text(countdown.icon)
-                    .font(.system(size: 18))
+                    .font(.system(size: 26))
             }
 
             // Title with star indicator
             Text(countdown.isStarred == true ? "\(countdown.title) ⭐" : countdown.title)
-                .font(.system(size: 13, weight: .semibold))
+                .font(.system(size: 15, weight: .semibold))
                 .foregroundColor(.white)
                 .lineLimit(1)
 
@@ -400,20 +414,20 @@ struct LargeCountdownView: View {
 
             // Time badge
             Text(timeString(countdown))
-                .font(.system(size: 12, weight: .bold))
+                .font(.system(size: 13, weight: .bold))
                 .foregroundColor(countdown.isComplete ? Color(hex: "#34D399") : Color(hex: "#F59E0B"))
-                .padding(.horizontal, 10)
-                .padding(.vertical, 4)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
                 .background(
-                    RoundedRectangle(cornerRadius: 8)
+                    RoundedRectangle(cornerRadius: 10)
                         .fill(countdown.isComplete
                               ? Color(hex: "#34D399").opacity(0.15)
                               : Color(hex: "#F59E0B").opacity(0.15))
                 )
         }
-        .padding(10)
+        .padding(14)
         .background(
-            RoundedRectangle(cornerRadius: 14)
+            RoundedRectangle(cornerRadius: 16)
                 .fill(.white.opacity(0.06))
         )
     }

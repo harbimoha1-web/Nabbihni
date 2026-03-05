@@ -183,13 +183,6 @@ export default function ExploreScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['bottom']}>
-      {/* Hijri date disclaimer */}
-      <View style={[styles.disclaimerContainer, { backgroundColor: colors.surface }]}>
-        <Text style={[styles.disclaimerText, { color: colors.textSecondary }]}>
-          {t.explore.hijriDisclaimer}
-        </Text>
-      </View>
-
       {/* Filter Chip Bar */}
       <View style={styles.filterWrapper}>
         <ScrollView
@@ -374,16 +367,5 @@ const styles = StyleSheet.create({
   retryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-  },
-  disclaimerContainer: {
-    marginHorizontal: 16,
-    marginTop: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-  },
-  disclaimerText: {
-    fontSize: 12,
-    textAlign: 'right',
   },
 });
