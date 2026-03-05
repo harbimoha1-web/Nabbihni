@@ -35,9 +35,15 @@ export default function PaywallScreen() {
     isLoading,
     monthlyPrice,
     lifetimePrice,
+    monthlyPackage,
+    lifetimePackage,
+    monthlyProduct,
+    lifetimeProduct,
     purchaseMonthly,
     purchaseLifetime,
     restorePurchases,
+    packagesLoaded,
+    retryFetchPackages,
   } = useSubscriptionContext();
 
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('lifetime');
@@ -277,11 +283,11 @@ export default function PaywallScreen() {
           <Animated.View entering={FadeInUp.delay(1000).duration(500)} style={styles.ctaContainer}>
             <Pressable
               onPress={handlePurchase}
-              disabled={isPurchasing || isLoading}
+              disabled={isPurchasing || isLoading || !packagesLoaded}
               style={({ pressed }) => [
                 styles.ctaButton,
                 pressed && styles.ctaButtonPressed,
-                (isPurchasing || isLoading) && styles.ctaButtonDisabled,
+                (isPurchasing || isLoading || !packagesLoaded) && styles.ctaButtonDisabled,
               ]}
             >
               <LinearGradient
@@ -290,7 +296,7 @@ export default function PaywallScreen() {
                 end={{ x: 1, y: 0 }}
                 style={styles.ctaGradient}
               >
-                {isPurchasing ? (
+                {isPurchasing || !packagesLoaded ? (
                   <ActivityIndicator size="small" color="#000" />
                 ) : (
                   <Text style={styles.ctaText}>
@@ -301,6 +307,13 @@ export default function PaywallScreen() {
                 )}
               </LinearGradient>
             </Pressable>
+
+            {/* Retry if packages AND direct products both failed to load */}
+            {packagesLoaded && !monthlyPackage && !lifetimePackage && !monthlyProduct && !lifetimeProduct && (
+              <Pressable onPress={retryFetchPackages} style={styles.retryLink}>
+                <Text style={styles.retryText}>{t.subscription.retry}</Text>
+              </Pressable>
+            )}
           </Animated.View>
 
           {/* Restore Link */}
@@ -592,6 +605,17 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '800',
     color: '#000',
+  },
+
+  // Retry
+  retryLink: {
+    alignItems: 'center',
+    paddingTop: 12,
+  },
+  retryText: {
+    fontSize: 13,
+    color: COLORS.accent,
+    fontWeight: '600',
   },
 
   // Restore

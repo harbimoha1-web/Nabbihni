@@ -45,8 +45,9 @@ try {
 const REVENUECAT_IOS_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY ?? '';
 const REVENUECAT_ANDROID_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? '';
 const ENTITLEMENT_ID = 'premium';
-const PRODUCT_ID_MONTHLY = 'com.nabbihni.premium.monthly';
-const PRODUCT_ID_LIFETIME = 'com.nabbihni.premium.lifetime';
+// Product identifiers — try both formats in case App Store Connect used short IDs
+const PRODUCT_ID_MONTHLY_VARIANTS = ['com.nabbihni.premium.monthly', 'premium_monthly'];
+const PRODUCT_ID_LIFETIME_VARIANTS = ['com.nabbihni.premium.lifetime', 'premium_lifetime'];
 
 // Check if RevenueCat is configured and available
 const isRevenueCatConfigured = () => {
@@ -75,12 +76,16 @@ interface SubscriptionContextType {
   isLoading: boolean;
   monthlyPrice: string;
   monthlyPackage: PurchasesPackage | null;
+  monthlyProduct: any | null;
   lifetimePrice: string;
   lifetimePackage: PurchasesPackage | null;
+  lifetimeProduct: any | null;
+  packagesLoaded: boolean;
   purchaseMonthly: () => Promise<boolean>;
   purchaseLifetime: () => Promise<boolean>;
   restorePurchases: () => Promise<boolean>;
   refreshCustomerInfo: () => Promise<void>;
+  retryFetchPackages: () => Promise<void>;
 }
 
 const SubscriptionContext = createContext<SubscriptionContextType | undefined>(undefined);
@@ -96,7 +101,10 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
   const [monthlyPackage, setMonthlyPackage] = useState<PurchasesPackage | null>(null);
   const [lifetimePrice, setLifetimePrice] = useState<string>('79.99 SAR');
   const [lifetimePackage, setLifetimePackage] = useState<PurchasesPackage | null>(null);
+  const [monthlyProduct, setMonthlyProduct] = useState<any | null>(null);
+  const [lifetimeProduct, setLifetimeProduct] = useState<any | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [packagesLoaded, setPackagesLoaded] = useState(false);
 
   // Cache premium status to AsyncStorage for offline access
   const cachePremiumStatus = async (premium: boolean) => {
@@ -162,6 +170,7 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
       if (!isRevenueCatConfigured()) {
         console.log('RevenueCat not configured - running in free mode');
         setIsLoading(false);
+        setPackagesLoaded(true);
         return;
       }
 
@@ -194,6 +203,8 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
       if (cachedStatus !== null) {
         setIsPremium(cachedStatus);
       }
+      // Mark packages as "done loading" so paywall doesn't spin forever
+      setPackagesLoaded(true);
     } finally {
       setIsLoading(false);
     }
@@ -207,31 +218,63 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
       const offerings = await Purchases.getOfferings();
       const current = offerings.current;
 
+      let foundMonthly = false;
+      let foundLifetime = false;
+
       if (current) {
         // Try to get monthly package
         const monthly = current.monthly || current.availablePackages.find(
-          (pkg) => pkg.product.identifier === PRODUCT_ID_MONTHLY
+          (pkg) => PRODUCT_ID_MONTHLY_VARIANTS.includes(pkg.product.identifier)
         );
 
         if (monthly) {
           setMonthlyPackage(monthly);
           setMonthlyPrice(monthly.product.priceString);
+          foundMonthly = true;
         }
 
         // Try to get lifetime package
         const lifetime = current.lifetime || current.availablePackages.find(
-          (pkg) => pkg.product.identifier === PRODUCT_ID_LIFETIME
+          (pkg) => PRODUCT_ID_LIFETIME_VARIANTS.includes(pkg.product.identifier)
         );
 
         if (lifetime) {
           setLifetimePackage(lifetime);
           setLifetimePrice(lifetime.product.priceString);
+          foundLifetime = true;
+        }
+      }
+
+      // Fallback: fetch products directly from StoreKit if offerings didn't resolve them
+      if (!foundMonthly || !foundLifetime) {
+        try {
+          const allIds = [...PRODUCT_ID_MONTHLY_VARIANTS, ...PRODUCT_ID_LIFETIME_VARIANTS];
+          const products = await Purchases!.getProducts(allIds);
+          for (const product of products) {
+            if (!foundMonthly && PRODUCT_ID_MONTHLY_VARIANTS.includes(product.identifier)) {
+              setMonthlyProduct(product);
+              setMonthlyPrice(product.priceString);
+            }
+            if (!foundLifetime && PRODUCT_ID_LIFETIME_VARIANTS.includes(product.identifier)) {
+              setLifetimeProduct(product);
+              setLifetimePrice(product.priceString);
+            }
+          }
+        } catch (e) {
+          console.error('Direct product fetch failed:', e);
         }
       }
     } catch (error) {
       console.error('Failed to fetch packages:', error);
+    } finally {
+      setPackagesLoaded(true);
     }
   };
+
+  const retryFetchPackages = useCallback(async () => {
+    setPackagesLoaded(false);
+    await fetchPackages();
+  }, []);
 
   // Refresh customer info
   const refreshCustomerInfo = useCallback(async () => {
@@ -281,7 +324,7 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
       return false;
     }
 
-    if (!monthlyPackage) {
+    if (!monthlyPackage && !monthlyProduct) {
       Alert.alert(
         t.subscription.premiumTitle,
         t.subscription.notAvailable
@@ -291,7 +334,9 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
 
     try {
       setIsLoading(true);
-      const { customerInfo } = await Purchases!.purchasePackage(monthlyPackage);
+      const { customerInfo } = monthlyPackage
+        ? await Purchases!.purchasePackage(monthlyPackage)
+        : await Purchases!.purchaseProduct(monthlyProduct.identifier);
       const premium = checkPremiumStatus(customerInfo);
       setIsPremium(premium);
       await cachePremiumStatus(premium);
@@ -309,7 +354,7 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
     } finally {
       setIsLoading(false);
     }
-  }, [monthlyPackage]);
+  }, [monthlyPackage, monthlyProduct]);
 
   // Purchase lifetime access
   const purchaseLifetime = useCallback(async (): Promise<boolean> => {
@@ -324,7 +369,7 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
       return false;
     }
 
-    if (!lifetimePackage) {
+    if (!lifetimePackage && !lifetimeProduct) {
       Alert.alert(
         t.subscription.premiumTitle,
         t.subscription.notAvailable
@@ -334,7 +379,9 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
 
     try {
       setIsLoading(true);
-      const { customerInfo } = await Purchases!.purchasePackage(lifetimePackage);
+      const { customerInfo } = lifetimePackage
+        ? await Purchases!.purchasePackage(lifetimePackage)
+        : await Purchases!.purchaseProduct(lifetimeProduct.identifier);
       const premium = checkPremiumStatus(customerInfo);
       setIsPremium(premium);
       await cachePremiumStatus(premium);
@@ -352,7 +399,7 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
     } finally {
       setIsLoading(false);
     }
-  }, [lifetimePackage]);
+  }, [lifetimePackage, lifetimeProduct]);
 
   // Restore purchases
   const restorePurchases = useCallback(async (): Promise<boolean> => {
@@ -418,15 +465,19 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
     isLoading,
     monthlyPrice,
     monthlyPackage,
+    monthlyProduct,
     lifetimePrice,
     lifetimePackage,
+    lifetimeProduct,
+    packagesLoaded,
     purchaseMonthly,
     purchaseLifetime,
     restorePurchases,
     refreshCustomerInfo,
-  }), [isPremium, isLoading, monthlyPrice, monthlyPackage,
-       lifetimePrice, lifetimePackage, purchaseMonthly,
-       purchaseLifetime, restorePurchases, refreshCustomerInfo]);
+    retryFetchPackages,
+  }), [isPremium, isLoading, monthlyPrice, monthlyPackage, monthlyProduct,
+       lifetimePrice, lifetimePackage, lifetimeProduct, packagesLoaded, purchaseMonthly,
+       purchaseLifetime, restorePurchases, refreshCustomerInfo, retryFetchPackages]);
 
   return (
     <SubscriptionContext.Provider value={value}>
