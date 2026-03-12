@@ -44,7 +44,7 @@ try {
 // Keys are loaded from environment variables — set via EAS secrets or .env file
 const REVENUECAT_IOS_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY ?? '';
 const REVENUECAT_ANDROID_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? '';
-const ENTITLEMENT_ID = 'premium';
+const ENTITLEMENT_ID = 'Nabbihni Pro';
 // Product identifiers — try both formats in case App Store Connect used short IDs
 const PRODUCT_ID_MONTHLY_VARIANTS = ['com.nabbihni.premium.monthly', 'premium_monthly'];
 const PRODUCT_ID_LIFETIME_VARIANTS = ['com.nabbihni.premium.lifetime', 'premium_lifetime'];
