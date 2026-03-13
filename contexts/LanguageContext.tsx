@@ -13,10 +13,6 @@ try {
 
 const LANGUAGE_STORAGE_KEY = '@nabbihni/language';
 
-const getDeviceLanguage = (): Language => {
-  return I18nManager.isRTL ? 'ar' : 'en';
-};
-
 interface LanguageContextType {
   language: Language;
   isRTL: boolean;
@@ -27,7 +23,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>(getDeviceLanguage());
+  const [language, setLanguageState] = useState<Language>('ar');
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Load saved language preference and sync RTL state
@@ -35,7 +31,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     const loadLanguage = async () => {
       try {
         const saved = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
-        const lang: Language = (saved === 'ar' || saved === 'en') ? saved : getDeviceLanguage();
+        const lang: Language = (saved === 'ar' || saved === 'en') ? saved : 'ar';
         setLanguageState(lang);
 
         // Sync native RTL with saved language (takes effect on next native restart)

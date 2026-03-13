@@ -40,6 +40,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   international: '🌍',
   milestone: '🏆',
   seasonal: '🌤️',
+  others: '📌',
 };
 
 type FilterCategory = EventCategory | 'all';
@@ -125,6 +126,7 @@ export default function ExploreScreen() {
     gaming: t.explore.gaming,
     sports: t.explore.sports,
     political: t.explore.political,
+    others: t.explore.others,
   }), [t]);
 
   // Pre-compute the mapped list with stable objects

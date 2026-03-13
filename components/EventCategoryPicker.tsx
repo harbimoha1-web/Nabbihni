@@ -25,6 +25,7 @@ const CATEGORIES: { id: EventCategory; icon: string; labelAr: string; labelEn: s
   { id: 'international', icon: '🌍',  labelAr: 'دولية',     labelEn: 'International' },
   { id: 'milestone',     icon: '🏆',  labelAr: 'إنجازات',   labelEn: 'Milestones'   },
   { id: 'seasonal',      icon: '🌤️', labelAr: 'موسمية',    labelEn: 'Seasonal'      },
+  { id: 'others',        icon: '📌',  labelAr: 'أخرى',      labelEn: 'Others'        },
 ];
 
 interface EventCategoryPickerProps {

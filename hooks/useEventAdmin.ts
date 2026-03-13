@@ -11,12 +11,16 @@ import {
   updateCustomEvent,
   deleteCustomEvent,
   isCustomEvent,
+  getHiddenEventIds,
+  hideBuiltinEvent,
+  restoreBuiltinEvent,
 } from '@/lib/eventAdminStorage';
 
 interface UseEventAdminResult {
   // Data
   overrides: EventOverride[];
   customEvents: CustomEvent[];
+  hiddenEventIds: string[];
   loading: boolean;
   saving: boolean;
 
@@ -30,6 +34,10 @@ interface UseEventAdminResult {
   updateEvent: (eventId: string, changes: Partial<Omit<CustomEvent, 'id' | 'baseId' | 'isCustom' | 'createdAt'>>) => Promise<CustomEvent | null>;
   deleteEvent: (eventId: string) => Promise<boolean>;
 
+  // Hide/restore built-in events
+  hideEvent: (eventId: string) => Promise<boolean>;
+  restoreEvent: (eventId: string) => Promise<boolean>;
+
   // Refresh data
   refresh: () => Promise<void>;
 }
@@ -37,6 +45,7 @@ interface UseEventAdminResult {
 export const useEventAdmin = (): UseEventAdminResult => {
   const [overrides, setOverrides] = useState<EventOverride[]>([]);
   const [customEvents, setCustomEvents] = useState<CustomEvent[]>([]);
+  const [hiddenEventIds, setHiddenEventIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -44,12 +53,14 @@ export const useEventAdmin = (): UseEventAdminResult => {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [loadedOverrides, loadedCustomEvents] = await Promise.all([
+      const [loadedOverrides, loadedCustomEvents, loadedHiddenIds] = await Promise.all([
         getEventOverrides(),
         getCustomEvents(),
+        getHiddenEventIds(),
       ]);
       setOverrides(loadedOverrides);
       setCustomEvents(loadedCustomEvents);
+      setHiddenEventIds(loadedHiddenIds);
     } catch (error) {
       console.error('Error loading event admin data:', error);
     } finally {
@@ -144,6 +155,34 @@ export const useEventAdmin = (): UseEventAdminResult => {
     }
   }, [loadData]);
 
+  // Hide a built-in event from explore
+  const hideEvent = useCallback(async (eventId: string): Promise<boolean> => {
+    setSaving(true);
+    try {
+      const success = await hideBuiltinEvent(eventId);
+      if (success) {
+        await loadData();
+      }
+      return success;
+    } finally {
+      setSaving(false);
+    }
+  }, [loadData]);
+
+  // Restore a hidden built-in event
+  const restoreEvent = useCallback(async (eventId: string): Promise<boolean> => {
+    setSaving(true);
+    try {
+      const success = await restoreBuiltinEvent(eventId);
+      if (success) {
+        await loadData();
+      }
+      return success;
+    } finally {
+      setSaving(false);
+    }
+  }, [loadData]);
+
   // Refresh all data
   const refresh = useCallback(async () => {
     await loadData();
@@ -152,6 +191,7 @@ export const useEventAdmin = (): UseEventAdminResult => {
   return {
     overrides,
     customEvents,
+    hiddenEventIds,
     loading,
     saving,
     applyOverride,
@@ -160,6 +200,8 @@ export const useEventAdmin = (): UseEventAdminResult => {
     addEvent,
     updateEvent,
     deleteEvent,
+    hideEvent,
+    restoreEvent,
     refresh,
   };
 };

@@ -43,7 +43,29 @@ SUBTITLE (medium, color #F59E0B):
 
 ---
 
-## Screenshot 2 — Countdown Detail
+## Screenshot 2 — Widget (ودجت مجاني 🎁)
+**Goal:** The killer differentiator — widgets are 100% free. Most apps charge for this. Lead with it.
+
+**What to capture:**
+- iPhone home screen showing the كم باقي widget (small or medium size)
+- Widget displaying: `رمضان المبارك 🌙` with countdown time remaining
+- Use Royal or Midnight theme on the widget
+- Clean home screen — not too cluttered, widget is the hero
+
+**Background:** Gradient `#0f172a` → `#1a365d` (deep dark blue)
+
+**Text Overlay:**
+```
+HEADLINE (large, bold, white):
+ودجت مجاني تماماً 🎁
+
+SUBTITLE (color #34d399 green):
+بدون اشتراك — على شاشتك الرئيسية
+```
+
+---
+
+## Screenshot 3 — Countdown Detail
 **Goal:** Show the beauty — big timer, Hijri+Gregorian dates, theme.
 
 **What to capture:**
@@ -66,7 +88,7 @@ SUBTITLE (color #f4d03f gold):
 
 ---
 
-## Screenshot 3 — Explore / Public Events
+## Screenshot 4 — Explore / Public Events
 **Goal:** Show the Saudi-specific events feature. "This is made for me."
 
 **What to capture:**
@@ -88,7 +110,7 @@ SUBTITLE (color #64ffda cyan):
 
 ---
 
-## Screenshot 4 — Create Screen
+## Screenshot 5 — Create Screen
 **Goal:** Show how easy and fast it is to create a countdown.
 
 **What to capture:**
@@ -111,7 +133,7 @@ SUBTITLE (white, slightly transparent):
 
 ---
 
-## Screenshot 5 — Themes / Customization
+## Screenshot 6 — Themes / Customization
 **Goal:** Show visual richness — "I can make it mine."
 
 **What to capture:**
@@ -132,7 +154,7 @@ SUBTITLE (color #F59E0B amber):
 
 ---
 
-## Screenshot 6 — Celebration Screen
+## Screenshot 7 — Celebration Screen
 **Goal:** Show the emotional payoff — the moment the countdown ends.
 
 **What to capture:**
@@ -159,19 +181,20 @@ SUBTITLE (white):
 | # | Screen | Why |
 |---|--------|-----|
 | 1 | Home | Attention — show the full product immediately |
-| 2 | Detail | Interest — show depth and beauty |
-| 3 | Explore | Desire — Saudi audience: "this is for ME" |
-| 4 | Create | Action — remove friction, show ease |
-| 5 | Themes | Desire — "I can make it mine" |
-| 6 | Celebration | Hook — emotional payoff, show the reward |
+| 2 | Widget | Shock — "the widget is FREE?" immediate differentiation |
+| 3 | Detail | Interest — show depth and beauty |
+| 4 | Explore | Desire — Saudi audience: "this is for ME" |
+| 5 | Create | Action — remove friction, show ease |
+| 6 | Themes | Desire — "I can make it mine" |
+| 7 | Celebration | Hook — emotional payoff, show the reward |
 
 ---
 
 ## Final Checklist
 
-- [ ] All 6 screenshots exported as PNG
+- [ ] All 7 screenshots exported as PNG
 - [ ] All text in Arabic (no English in overlays)
-- [ ] Device frame is Black on all 6
+- [ ] Device frame is Black on all 7
 - [ ] Resolution minimum 1290×2796px per screenshot
 - [ ] App Store: Upload under iPhone 6.9" display section
 - [ ] Play Store: Upload same screenshots (accepted format)

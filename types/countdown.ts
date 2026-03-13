@@ -91,7 +91,7 @@ export interface Theme {
 export type EventCategory =
   | 'religious' | 'national' | 'seasonal' | 'entertainment'
   | 'milestone' | 'education' | 'international'
-  | 'tech' | 'finance' | 'gaming' | 'sports' | 'political';
+  | 'tech' | 'finance' | 'gaming' | 'sports' | 'political' | 'others';
 
 // Date confidence levels (critical for Islamic dates)
 export type DateConfidence = 'confirmed' | 'estimated' | 'tentative';

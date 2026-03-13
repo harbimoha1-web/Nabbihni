@@ -39,7 +39,7 @@ export default function AdminEventsScreen() {
   const { colors } = useTheme();
   const { language, isRTL } = useLanguage();
   const { holidays, loading: holidaysLoading, refresh: refreshHolidays } = useHolidays();
-  const { overrides, customEvents, loading: adminLoading, deleteEvent, saving } = useEventAdmin();
+  const { overrides, customEvents, hiddenEventIds, loading: adminLoading, deleteEvent, hideEvent, restoreEvent, saving } = useEventAdmin();
   const [filter, setFilter] = useState<CategoryFilter>('all');
 
   // Gate admin access in production builds
@@ -54,19 +54,28 @@ export default function AdminEventsScreen() {
     return null;
   }
 
-  // Combine holidays with info about whether they are modified/custom
+  // Combine holidays with info about whether they are modified/custom/hidden
   const eventsWithStatus = useMemo(() => {
-    const events: (PublicEvent & { isModified: boolean; isCustom: boolean })[] = [];
+    const events: (PublicEvent & { isModified: boolean; isCustom: boolean; isHidden: boolean })[] = [];
 
-    // Add all holidays (already merged with overrides in useHolidays)
+    // Add all visible holidays (already merged with overrides in useHolidays)
     holidays.forEach(holiday => {
       const isModified = overrides.some(o => o.eventId === (holiday.baseId || holiday.id));
       const isCustom = isCustomEvent(holiday.id);
-      events.push({ ...holiday, isModified, isCustom });
+      events.push({ ...holiday, isModified, isCustom, isHidden: false });
+    });
+
+    // Re-inject hidden built-in events (useHolidays filters them out, but admin needs to see them)
+    const hiddenSet = new Set(hiddenEventIds);
+    publicEvents.forEach(pe => {
+      const baseId = pe.baseId || pe.id;
+      if (hiddenSet.has(baseId) && !events.some(e => (e.baseId || e.id) === baseId)) {
+        events.push({ ...pe, isModified: false, isCustom: false, isHidden: true });
+      }
     });
 
     return events;
-  }, [holidays, overrides]);
+  }, [holidays, overrides, hiddenEventIds]);
 
   // Filter events by category
   const filteredEvents = useMemo(() => {
@@ -85,28 +94,69 @@ export default function AdminEventsScreen() {
     router.push('/admin/event-editor?mode=create');
   };
 
-  const handleEditEvent = (event: PublicEvent & { isModified: boolean; isCustom: boolean }) => {
+  const handleEditEvent = (event: PublicEvent & { isModified: boolean; isCustom: boolean; isHidden: boolean }) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const eventId = event.baseId || event.id;
     const mode = event.isCustom ? 'edit-custom' : 'edit-override';
     router.push(`/admin/event-editor?mode=${mode}&eventId=${encodeURIComponent(eventId)}`);
   };
 
-  const handleDeleteEvent = (event: PublicEvent & { isModified: boolean; isCustom: boolean }) => {
+  const handleDeleteEvent = (event: PublicEvent & { isModified: boolean; isCustom: boolean; isHidden: boolean }) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    const eventName = event.titleAr || event.title;
+    const eventId = event.baseId || event.id;
+
     if (!event.isCustom) {
-      Alert.alert(
-        'غير مسموح',
-        'لا يمكن حذف المناسبات الأصلية. يمكنك فقط تعديلها.',
-        [{ text: 'حسناً' }]
-      );
+      // Built-in event: toggle hide/restore
+      if (event.isHidden) {
+        Alert.alert(
+          'إظهار المناسبة',
+          `هل تريد إظهار "${eventName}" في شاشة الاستكشاف؟`,
+          [
+            { text: 'إلغاء', style: 'cancel' },
+            {
+              text: 'إظهار',
+              onPress: async () => {
+                const success = await restoreEvent(eventId);
+                if (success) {
+                  await refreshHolidays();
+                  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                } else {
+                  Alert.alert('خطأ', 'حدث خطأ أثناء الإظهار');
+                }
+              },
+            },
+          ]
+        );
+      } else {
+        Alert.alert(
+          'إخفاء المناسبة',
+          `سيختفي "${eventName}" من شاشة الاستكشاف. يمكنك إظهاره لاحقاً.`,
+          [
+            { text: 'إلغاء', style: 'cancel' },
+            {
+              text: 'إخفاء',
+              style: 'destructive',
+              onPress: async () => {
+                const success = await hideEvent(eventId);
+                if (success) {
+                  await refreshHolidays();
+                  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                } else {
+                  Alert.alert('خطأ', 'حدث خطأ أثناء الإخفاء');
+                }
+              },
+            },
+          ]
+        );
+      }
       return;
     }
 
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-
+    // Custom event: delete permanently
     Alert.alert(
       'حذف المناسبة',
-      `هل تريد حذف "${event.titleAr || event.title}"؟`,
+      `هل تريد حذف "${eventName}"؟`,
       [
         { text: 'إلغاء', style: 'cancel' },
         {
@@ -141,7 +191,7 @@ export default function AdminEventsScreen() {
     });
   };
 
-  const renderEventCard = (event: PublicEvent & { isModified: boolean; isCustom: boolean }) => {
+  const renderEventCard = (event: PublicEvent & { isModified: boolean; isCustom: boolean; isHidden: boolean }) => {
     const categoryInfo = getCategoryInfo(event.category, language as 'ar' | 'en');
 
     return (
@@ -174,6 +224,11 @@ export default function AdminEventsScreen() {
             {event.isModified && !event.isCustom && (
               <View style={[styles.badge, { backgroundColor: COLORS.warning + '20' }]}>
                 <Text style={[styles.badgeText, { color: COLORS.warning }]}>معدل</Text>
+              </View>
+            )}
+            {event.isHidden && (
+              <View style={[styles.badge, { backgroundColor: COLORS.danger + '20' }]}>
+                <Text style={[styles.badgeText, { color: COLORS.danger }]}>مخفي</Text>
               </View>
             )}
           </View>
@@ -239,7 +294,7 @@ export default function AdminEventsScreen() {
             مناسبات الاستكشاف
           </Text>
           <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
-            اضغط للتعديل • اضغط مطولاً للحذف (المخصصة فقط)
+            اضغط للتعديل • اضغط مطولاً للإخفاء/الإظهار (المخصصة: حذف)
           </Text>
         </View>
 
@@ -310,6 +365,14 @@ export default function AdminEventsScreen() {
             </Text>
             <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
               معدل
+            </Text>
+          </View>
+          <View style={[styles.statItem, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.statNumber, { color: COLORS.danger }]}>
+              {hiddenEventIds.length}
+            </Text>
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+              مخفي
             </Text>
           </View>
         </View>
