@@ -1,0 +1,58 @@
+{
+  "identifier": "KamBaqi",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "79.99",
+      "familyShareable": false,
+      "groupID": "",
+      "internalID": "premium_lifetime",
+      "introductoryOffer": null,
+      "localizations": [
+        {
+          "description": "Lifetime premium access",
+          "displayName": "Premium Lifetime",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "premium_lifetime",
+      "referenceName": "Premium Lifetime",
+      "subscriptionGroupID": "",
+      "type": "NonConsumable"
+    }
+  ],
+  "settings": {},
+  "subscriptionGroups": [
+    {
+      "id": "KamBaqiPremium",
+      "localizations": [],
+      "name": "Premium",
+      "subscriptions": [
+        {
+          "adHocOfferCodeRedemption": false,
+          "displayPrice": "4.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "premium_monthly",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Monthly premium access",
+              "displayName": "Premium Monthly",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "premium_monthly",
+          "referenceName": "Premium Monthly",
+          "referenceName_locale": "en_US",
+          "subscriptionPeriod": "P1M",
+          "type": "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version": {
+    "major": 3,
+    "minor": 0
+  }
+}
