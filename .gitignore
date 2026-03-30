@@ -48,6 +48,9 @@ monetization-keys.txt
 # build logs
 build-log*.txt
 
+# Supabase CLI
+supabase/.temp/
+
 # temp/accidental files
 nul
 UsersTECHTR*/
