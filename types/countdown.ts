@@ -61,6 +61,8 @@ export interface Countdown {
   backgroundImage?: string;         // Custom wallpaper (premium)
   note?: string;                    // Optional note for countdown
   tasks?: Task[];                   // Optional checklist tasks
+  updatedAt?: string;               // ISO date — for cloud sync conflict resolution
+  deletedAt?: string;               // ISO date — for cloud sync soft delete propagation
 }
 
 export interface TimeRemaining {

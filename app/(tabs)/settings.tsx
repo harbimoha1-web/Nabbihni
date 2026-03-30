@@ -24,6 +24,9 @@ import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useNotifications } from '@/hooks/useNotifications';
 import { getInviteShareText } from '@/lib/sharing';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCloudSync } from '@/hooks/useCloudSync';
+import { isSupabaseConfigured } from '@/lib/supabase';
 
 // SHA256 of the admin PIN (never store plaintext PIN in source code)
 // To update: run `echo -n "your_pin" | sha256sum` and replace the hash below
@@ -40,6 +43,8 @@ export default function SettingsScreen() {
     purchasePremium,
     restorePurchases,
   } = useSubscription();
+  const { user, isAuthenticated, signOut } = useAuth();
+  const { isSyncing } = useCloudSync();
 
   const {
     permissionGranted: notificationsPermissionGranted,
@@ -141,6 +146,17 @@ export default function SettingsScreen() {
 
   const handleUpgradeToPremium = () => {
     router.push({ pathname: '/paywall' as any, params: { trigger: 'settings' } });
+  };
+
+  const handleSignOut = () => {
+    Alert.alert(
+      t.auth.signOut,
+      t.auth.signOutConfirm,
+      [
+        { text: t.cancel, style: 'cancel' },
+        { text: t.auth.signOut, style: 'destructive', onPress: () => signOut() },
+      ]
+    );
   };
 
   const handleRestorePurchases = async () => {
@@ -270,6 +286,62 @@ export default function SettingsScreen() {
                 {t.subscription.subscribe}
               </Text>
             </Pressable>
+          </View>
+        )}
+
+        {/* Account Section */}
+        {isSupabaseConfigured() && (
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>
+              {t.auth.myAccount}
+            </Text>
+            <View style={[styles.sectionContent, { backgroundColor: colors.surface }]}>
+              {isAuthenticated && user ? (
+                <>
+                  <View style={[styles.settingRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+                    <View style={[styles.settingContent, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+                      <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', alignItems: 'center', gap: 8 }}>
+                        <Ionicons name="checkmark-circle" size={18} color="#22C55E" />
+                        <Text style={[styles.settingTitle, { color: colors.text }]} numberOfLines={1}>
+                          {user.email}
+                        </Text>
+                      </View>
+                      <Text style={[styles.settingSubtitle, { color: colors.textSecondary }]}>
+                        {isSyncing ? t.auth.syncing : t.auth.syncedAcrossDevices}
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={{ height: 1, backgroundColor: colors.border, marginHorizontal: 16 }} />
+                  <Pressable
+                    style={[styles.settingRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}
+                    onPress={handleSignOut}
+                  >
+                    <Text style={{ color: '#EF4444', fontSize: 16, fontWeight: '500' }}>
+                      {t.auth.signOut}
+                    </Text>
+                  </Pressable>
+                </>
+              ) : (
+                <Pressable
+                  style={[styles.settingRow, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}
+                  onPress={() => router.push('/auth/login' as any)}
+                >
+                  <View style={[styles.settingContent, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+                    <Text style={[styles.settingTitle, { color: colors.text }]}>
+                      {t.auth.signInToSyncShort}
+                    </Text>
+                    <Text style={[styles.settingSubtitle, { color: colors.textSecondary }]}>
+                      {t.auth.signInDesc}
+                    </Text>
+                  </View>
+                  <Ionicons
+                    name={isRTL ? 'chevron-back' : 'chevron-forward'}
+                    size={20}
+                    color={colors.textSecondary}
+                  />
+                </Pressable>
+              )}
+            </View>
           </View>
         )}
 

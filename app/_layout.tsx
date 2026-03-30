@@ -22,6 +22,8 @@ if (Platform.OS === 'android') {
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
 import { SubscriptionProvider } from '@/contexts/SubscriptionContext';
 import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { useCloudSync } from '@/hooks/useCloudSync';
 import { parseDeepLink } from '@/lib/sharing';
 import { syncWidgetData } from '@/lib/widgetData';
 
@@ -146,9 +148,11 @@ export default function RootLayout() {
   return (
     <LanguageProvider>
       <ThemeProvider>
-        <SubscriptionProvider>
-          <RootLayoutNav />
-        </SubscriptionProvider>
+        <AuthProvider>
+          <SubscriptionProvider>
+            <RootLayoutNav />
+          </SubscriptionProvider>
+        </AuthProvider>
       </ThemeProvider>
     </LanguageProvider>
   );
@@ -157,6 +161,8 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const { colors, isDark } = useTheme();
   const { t } = useLanguage();
+  // Cloud sync — runs initial sync on auth, pulls on app foreground
+  useCloudSync();
 
   return (
     <>
@@ -197,6 +203,14 @@ function RootLayoutNav() {
         />
         <Stack.Screen
           name="paywall"
+          options={{
+            presentation: 'modal',
+            headerShown: false,
+            animation: 'slide_from_bottom',
+          }}
+        />
+        <Stack.Screen
+          name="auth/login"
           options={{
             presentation: 'modal',
             headerShown: false,

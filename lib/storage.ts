@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { v4 as uuidv4 } from 'uuid';
 import { Countdown, ThemeId } from '@/types/countdown';
 import { syncWidgetData } from '@/lib/widgetData';
+import { getCurrentUserId, pushCreate, pushUpdate, pushDelete } from '@/lib/cloudSync';
 
 const COUNTDOWNS_KEY = '@nabbihni/countdowns';
 const SETTINGS_KEY = '@nabbihni/settings';
@@ -46,10 +47,12 @@ export const getCountdown = async (id: string): Promise<Countdown | null> => {
 export const createCountdown = async (
   data: Omit<Countdown, 'id' | 'createdAt'>
 ): Promise<Countdown> => {
+  const now = new Date().toISOString();
   const countdown: Countdown = {
     ...data,
     id: uuidv4(),
-    createdAt: new Date().toISOString(),
+    createdAt: now,
+    updatedAt: now,
   };
 
   const countdowns = await getCountdowns();
@@ -58,6 +61,10 @@ export const createCountdown = async (
 
   // Sync widget data (non-blocking)
   syncWidgetData().catch(() => {});
+
+  // Cloud sync (non-blocking)
+  const userId = getCurrentUserId();
+  if (userId) pushCreate(countdown, userId).catch(() => {});
 
   return countdown;
 };
@@ -72,11 +79,15 @@ export const updateCountdown = async (
 
     if (index === -1) return null;
 
-    countdowns[index] = { ...countdowns[index], ...updates };
+    countdowns[index] = { ...countdowns[index], ...updates, updatedAt: new Date().toISOString() };
     await AsyncStorage.setItem(COUNTDOWNS_KEY, JSON.stringify(countdowns));
 
     // Sync widget data (non-blocking)
     syncWidgetData().catch(() => {});
+
+    // Cloud sync (non-blocking)
+    const userId = getCurrentUserId();
+    if (userId) pushUpdate(countdowns[index], userId).catch(() => {});
 
     return countdowns[index];
   } catch (error) {
@@ -93,6 +104,10 @@ export const deleteCountdown = async (id: string): Promise<boolean> => {
 
     // Sync widget data (non-blocking)
     syncWidgetData().catch(() => {});
+
+    // Cloud sync — soft delete (non-blocking)
+    const userId = getCurrentUserId();
+    if (userId) pushDelete(id, userId).catch(() => {});
 
     return true;
   } catch (error) {
