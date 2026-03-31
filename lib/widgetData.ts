@@ -55,8 +55,10 @@ function prepareWidgetData(countdowns: Countdown[]): WidgetData {
   const now = Date.now();
   const sorted = [...countdowns]
     .sort((a, b) => {
-      // Starred countdowns come first
-      if (a.isStarred !== b.isStarred) return a.isStarred ? -1 : 1;
+      // Starred countdowns come first (normalize undefined to false)
+      const aStarred = !!a.isStarred;
+      const bStarred = !!b.isStarred;
+      if (aStarred !== bStarred) return aStarred ? -1 : 1;
       // Active (upcoming) before completed
       const aTime = new Date(a.targetDate).getTime();
       const bTime = new Date(b.targetDate).getTime();

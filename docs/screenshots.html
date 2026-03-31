@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>كم باقي — دليل لقطات المتجر</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Tajawal', 'SF Arabic', system-ui, sans-serif;
+      background: #080b10;
+      color: #e2e8f0;
+      direction: rtl;
+      padding: 0;
+      line-height: 1.7;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container { max-width: 780px; margin: 0 auto; padding: 40px 24px; }
+    section { margin-bottom: 64px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    h1 {
+      font-size: 38px; font-weight: 800; text-align: center; margin-bottom: 8px;
+      background: linear-gradient(135deg, #D97706, #F59E0B, #FBBF24);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .subtitle { text-align: center; color: #94a3b8; font-size: 17px; margin-bottom: 40px; }
+    h2 {
+      font-size: 26px; font-weight: 800; color: #F59E0B; margin-bottom: 20px;
+      padding-bottom: 10px; border-bottom: 2px solid rgba(245,158,11,0.2);
+    }
+    h3 { font-size: 19px; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    h4 { font-size: 15px; font-weight: 700; color: #F59E0B; margin-bottom: 8px; }
+
+    /* ===== CARDS & BOXES ===== */
+    .box {
+      background: #111827;
+      border: 1px solid rgba(245,243,240,0.08);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .tip-box {
+      background: #1a365d;
+      border-right: 4px solid #F59E0B;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #cbd5e1;
+      margin-bottom: 24px;
+    }
+    .warning-box {
+      background: #451a03;
+      border-right: 4px solid #f97316;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #fed7aa;
+      margin-bottom: 24px;
+    }
+    .success-box {
+      background: #052e16;
+      border-right: 4px solid #34D399;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #a7f3d0;
+      margin-bottom: 24px;
+    }
+
+    /* ===== STEPS ===== */
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      align-items: flex-start;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #D97706, #F59E0B);
+      color: #fff;
+      font-weight: 800;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-content { flex: 1; padding-top: 5px; }
+    .step-content strong { color: #f1f5f9; }
+    .step-content code {
+      background: rgba(245,158,11,0.15);
+      color: #F59E0B;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-family: 'Tajawal', monospace;
+      font-size: 14px;
+    }
+
+    /* ===== SCREENSHOT CARD ===== */
+    .screenshot-guide {
+      background: #111827;
+      border: 1px solid rgba(245,243,240,0.08);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+    .screenshot-header {
+      padding: 24px 28px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid rgba(245,243,240,0.06);
+    }
+    .screenshot-number {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #D97706, #F59E0B);
+      color: #fff;
+      font-weight: 800;
+      font-size: 22px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .screenshot-meta h3 { margin-bottom: 2px; }
+    .screenshot-meta p { color: #94a3b8; font-size: 13px; margin: 0; }
+
+    .screenshot-body {
+      display: flex;
+      gap: 28px;
+      padding: 24px 28px;
+      align-items: flex-start;
+    }
+    @media (max-width: 700px) {
+      .screenshot-body { flex-direction: column; align-items: center; }
+    }
+
+    .screenshot-instructions { flex: 1; min-width: 0; }
+    .screenshot-preview { flex-shrink: 0; }
+
+    /* ===== MINI PHONE MOCKUP ===== */
+    .mini-phone {
+      width: 180px;
+      height: 390px;
+      border-radius: 28px;
+      border: 3px solid #1a1a1a;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+    .mini-notch {
+      position: absolute;
+      top: 6px; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 18px;
+      border-radius: 9px;
+      background: #000;
+      z-index: 10;
+    }
+    .mini-content {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 40px 12px 20px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.7);
+    }
+    .mini-content .emoji { font-size: 28px; margin-bottom: 6px; }
+    .mini-content .label { font-size: 9px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+    /* Mini cards grid */
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 4px;
+      width: 100%;
+    }
+    .mini-card {
+      border-radius: 8px;
+      padding: 6px 4px;
+      text-align: center;
+      font-size: 8px;
+      color: #fff;
+    }
+    .mini-card .mc-emoji { font-size: 14px; }
+    .mini-card .mc-title { font-size: 7px; margin-top: 2px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mini-card .mc-time { font-size: 10px; font-weight: 800; margin-top: 2px; }
+
+    /* Theme gradients */
+    .tg-midnight { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+    .tg-aurora { background: linear-gradient(135deg, #ff6b6b, #ff8e53, #feca57); }
+    .tg-ocean { background: linear-gradient(135deg, #03045e, #0077b6, #00b4d8); }
+    .tg-royal { background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460); }
+    .tg-emerald { background: linear-gradient(135deg, #004d40, #00695c, #00897b); }
+
+    /* ===== OVERLAY TEXT PREVIEW ===== */
+    .overlay-preview {
+      background: #0F1419;
+      border: 1px solid rgba(245,243,240,0.1);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 12px 0;
+      text-align: center;
+    }
+    .overlay-preview .op-headline {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .overlay-preview .op-subtitle {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* ===== COLOR SWATCH ===== */
+    .color-row {
+      display: flex; gap: 10px; align-items: center;
+      margin: 8px 0;
+      flex-wrap: wrap;
+    }
+    .swatch {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.1);
+      flex-shrink: 0;
+    }
+    .color-code {
+      font-size: 13px;
+      color: #94a3b8;
+      font-family: 'Courier New', monospace;
+      direction: ltr;
+    }
+
+    /* ===== TABLE ===== */
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    th {
+      text-align: right;
+      padding: 10px 14px;
+      background: rgba(245,158,11,0.1);
+      color: #F59E0B;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(245,243,240,0.06);
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+    td:first-child { color: #f1f5f9; font-weight: 700; }
+
+    /* ===== CHECKLIST ===== */
+    .checklist { list-style: none; padding: 0; }
+    .checklist li {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(245,243,240,0.06);
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .checklist li::before {
+      content: '☐';
+      font-size: 18px;
+      color: #64748b;
+      flex-shrink: 0;
+    }
+
+    /* ===== COPYABLE ===== */
+    .copyable {
+      background: rgba(245,158,11,0.08);
+      border: 1px dashed rgba(245,158,11,0.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin: 8px 0;
+      font-size: 15px;
+      color: #F5F3F0;
+      cursor: pointer;
+      user-select: all;
+      direction: rtl;
+      text-align: right;
+      line-height: 1.6;
+    }
+    .copyable:hover { background: rgba(245,158,11,0.15); }
+    .copyable-label {
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 4px;
+      direction: ltr;
+      text-align: left;
+    }
+
+    /* ===== PHASE BADGE ===== */
+    .phase-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    /* ===== LINK ===== */
+    a { color: #F59E0B; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ===== COUNTDOWN SETUP TABLE ===== */
+    .setup-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(245,243,240,0.06);
+    }
+    .setup-emoji { font-size: 32px; flex-shrink: 0; }
+    .setup-info { flex: 1; }
+    .setup-name { font-weight: 700; font-size: 16px; color: #f1f5f9; }
+    .setup-detail { font-size: 13px; color: #94a3b8; margin-top: 2px; }
+    .setup-theme {
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    /* Divider */
+    hr {
+      border: none;
+      border-top: 1px solid rgba(245,243,240,0.06);
+      margin: 40px 0;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      display: flex;
+      gap: 4px;
+      margin: 20px 0 40px;
+    }
+    .progress-segment {
+      flex: 1;
+      height: 6px;
+      border-radius: 3px;
+      background: #1e293b;
+    }
+    .progress-segment.done { background: linear-gradient(90deg, #D97706, #F59E0B); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- ============================================================ -->
+<!-- HEADER -->
+<!-- ============================================================ -->
+<section>
+  <h1>كم باقي — دليل لقطات المتجر</h1>
+  <p class="subtitle">٤ مراحل بسيطة: جهّز → صوّر → أطّر → ارفع</p>
+
+  <div class="progress-bar">
+    <div class="progress-segment" style="background: #f97316;"></div>
+    <div class="progress-segment" style="background: #F59E0B;"></div>
+    <div class="progress-segment" style="background: #34D399;"></div>
+    <div class="progress-segment" style="background: #818cf8;"></div>
+  </div>
+
+  <div class="tip-box">
+    <strong>الخطة:</strong> تفتح التطبيق على الآيفون → تنشئ العدادات → تصوّر ٧ لقطات → تضيف الإطار والنص في AppMockUp → ترفعها على المتجر. كل شي مشروح بالتفصيل تحت.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PHASE 0: PREPARATION -->
+<!-- ============================================================ -->
+<section>
+  <span class="phase-badge" style="background: rgba(249,115,22,0.15); color: #f97316;">المرحلة ٠</span>
+  <h2>🔧 التجهيز — قبل ما تبدأ</h2>
+
+  <div class="box">
+    <h3>تحتاج:</h3>
+    <table>
+      <tr><td>📱 الجهاز</td><td>iPhone 14 (أو أي آيفون عندك)</td></tr>
+      <tr><td>📲 التطبيق</td><td>كم باقي — مثبّت ويشتغل (dev build أو TestFlight)</td></tr>
+      <tr><td>💻 الكمبيوتر</td><td>للدخول على AppMockUp Studio</td></tr>
+      <tr><td>🌐 الموقع</td><td><a href="https://studio.app-mockup.com" target="_blank">studio.app-mockup.com</a> — مجاني، بدون تسجيل</td></tr>
+    </table>
+  </div>
+
+  <div class="warning-box">
+    <strong>مهم:</strong> تأكد إن لغة التطبيق عربي والوضع الليلي (Dark Mode) مفعّل. روح الإعدادات داخل التطبيق وتأكد.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PHASE 1: CREATE COUNTDOWNS -->
+<!-- ============================================================ -->
+<section>
+  <span class="phase-badge" style="background: rgba(245,158,11,0.15); color: #F59E0B;">المرحلة ١</span>
+  <h2>📱 أنشئ العدادات في التطبيق</h2>
+
+  <p style="color: #94a3b8; margin-bottom: 20px;">أنشئ هذي العدادات الـ ٦ بالترتيب. كل واحد بالثيم المحدد — عشان اللقطات تطلع بألوان مختلفة وجذابة.</p>
+
+  <div class="box">
+    <!-- Countdown 1 -->
+    <div class="setup-card">
+      <span class="setup-emoji">🌙</span>
+      <div class="setup-info">
+        <div class="setup-name">رمضان المبارك</div>
+        <div class="setup-detail">التاريخ: ١٧ فبراير ٢٠٢٧ (أو أقرب رمضان)</div>
+      </div>
+      <span class="setup-theme tg-emerald">زمردي</span>
+    </div>
+
+    <!-- Countdown 2 -->
+    <div class="setup-card">
+      <span class="setup-emoji">🎊</span>
+      <div class="setup-info">
+        <div class="setup-name">عيد الفطر</div>
+        <div class="setup-detail">التاريخ: ١٩ مارس ٢٠٢٧ (أو أقرب عيد)</div>
+      </div>
+      <span class="setup-theme tg-royal">ملكي</span>
+    </div>
+
+    <!-- Countdown 3 -->
+    <div class="setup-card">
+      <span class="setup-emoji">🇸🇦</span>
+      <div class="setup-info">
+        <div class="setup-name">اليوم الوطني</div>
+        <div class="setup-detail">التاريخ: ٢٣ سبتمبر ٢٠٢٦</div>
+      </div>
+      <span class="setup-theme tg-ocean">المحيط</span>
+    </div>
+
+    <!-- Countdown 4 -->
+    <div class="setup-card">
+      <span class="setup-emoji">✈️</span>
+      <div class="setup-info">
+        <div class="setup-name">رحلة الصيف</div>
+        <div class="setup-detail">التاريخ: ١ يوليو ٢٠٢٦</div>
+      </div>
+      <span class="setup-theme tg-aurora">الشفق</span>
+    </div>
+
+    <!-- Countdown 5 -->
+    <div class="setup-card">
+      <span class="setup-emoji">💰</span>
+      <div class="setup-info">
+        <div class="setup-name">موعد الراتب</div>
+        <div class="setup-detail">التاريخ: ٢٥ الشهر الجاي (أي تاريخ قريب)</div>
+      </div>
+      <span class="setup-theme tg-midnight">منتصف الليل</span>
+    </div>
+
+    <!-- Countdown 6 -->
+    <div class="setup-card" style="border-bottom: none;">
+      <span class="setup-emoji">🎓</span>
+      <div class="setup-info">
+        <div class="setup-name">التخرج</div>
+        <div class="setup-detail">التاريخ: ٢٩ يوليو ٢٠٢٦ (أي تاريخ بعيد)</div>
+      </div>
+      <span class="setup-theme tg-royal">ملكي</span>
+    </div>
+  </div>
+
+  <div class="success-box">
+    <strong>✓ جاهز!</strong> لما تنشئ الـ ٦ عدادات، الشاشة الرئيسية بتكون ملونة وجاهزة للتصوير.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PHASE 2: TAKE SCREENSHOTS -->
+<!-- ============================================================ -->
+<section>
+  <span class="phase-badge" style="background: rgba(52,211,153,0.15); color: #34D399;">المرحلة ٢</span>
+  <h2>📸 صوّر ٧ لقطات شاشة</h2>
+
+  <div class="tip-box">
+    <strong>طريقة التصوير على آيفون:</strong> اضغط <strong>زر الباور + رفع الصوت</strong> بنفس الوقت. اللقطة تنحفظ في الصور تلقائياً.
+  </div>
+
+  <!-- =================== SCREENSHOT 1 =================== -->
+  <div class="screenshot-guide">
+    <div class="screenshot-header">
+      <div class="screenshot-number">١</div>
+      <div class="screenshot-meta">
+        <h3>الشاشة الرئيسية</h3>
+        <p>AIDA: Attention — أول انطباع للمستخدم</p>
+      </div>
+    </div>
+    <div class="screenshot-body">
+      <div class="screenshot-instructions">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">افتح التطبيق — خلّك على <strong>تاب الرئيسية</strong></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">تأكد إن <strong>٦ عدادات</strong> ظاهرة بألوان مختلفة في شبكة ٢×٣</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">تأكد إن <strong>زر (+)</strong> الذهبي ظاهر في الأسفل</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content"><strong>صوّر!</strong> 📸 (زر الباور + رفع الصوت)</div>
+        </div>
+
+        <h4 style="margin-top: 16px;">النص اللي تضيفه في AppMockUp:</h4>
+        <div class="overlay-preview">
+          <div class="op-headline">كم باقي؟</div>
+          <div class="op-subtitle" style="color: #F59E0B;">عدّ لحظاتك المميزة</div>
+        </div>
+        <div class="copyable-label">Headline — انسخه</div>
+        <div class="copyable">كم باقي؟</div>
+        <div class="copyable-label">Subtitle — انسخه</div>
+        <div class="copyable">عدّ لحظاتك المميزة</div>
+        <div class="copyable-label">Subtitle Color</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #F59E0B;"></div>
+          <span class="color-code">#F59E0B</span>
+        </div>
+        <div class="copyable-label">Background Gradient</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #0f0c29;"></div>
+          <span class="color-code">#0f0c29</span>
+          <span style="color: #64748b;">→</span>
+          <div class="swatch" style="background: #302b63;"></div>
+          <span class="color-code">#302b63</span>
+        </div>
+      </div>
+      <div class="screenshot-preview">
+        <div class="mini-phone tg-midnight" style="background: #0F1419;">
+          <div class="mini-notch"></div>
+          <div class="mini-content" style="padding: 30px 6px 12px; justify-content: flex-start;">
+            <div class="mini-grid" style="margin-top: 8px;">
+              <div class="mini-card tg-emerald"><div class="mc-emoji">🌙</div><div class="mc-title">رمضان</div><div class="mc-time">٤٧ يوم</div></div>
+              <div class="mini-card tg-royal"><div class="mc-emoji">🎊</div><div class="mc-title">عيد الفطر</div><div class="mc-time">٧٧ يوم</div></div>
+              <div class="mini-card tg-ocean"><div class="mc-emoji">🇸🇦</div><div class="mc-title">اليوم الوطني</div><div class="mc-time">١٧٨ يوم</div></div>
+              <div class="mini-card tg-aurora"><div class="mc-emoji">✈️</div><div class="mc-title">رحلة الصيف</div><div class="mc-time">٩٢ يوم</div></div>
+              <div class="mini-card tg-midnight"><div class="mc-emoji">💰</div><div class="mc-title">الراتب</div><div class="mc-time">٥ يوم</div></div>
+              <div class="mini-card tg-royal"><div class="mc-emoji">🎓</div><div class="mc-title">التخرج</div><div class="mc-time">١٢٠ يوم</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== SCREENSHOT 2 =================== -->
+  <div class="screenshot-guide">
+    <div class="screenshot-header">
+      <div class="screenshot-number">٢</div>
+      <div class="screenshot-meta">
+        <h3>الودجت المجاني 🎁</h3>
+        <p>AIDA: Shock — "الودجت مجاني؟!" هذي ميزة نادرة</p>
+      </div>
+    </div>
+    <div class="screenshot-body">
+      <div class="screenshot-instructions">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">روح <strong>الشاشة الرئيسية للآيفون</strong> (مو التطبيق)</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content"><strong>اضغط مطوّل</strong> على الخلفية → اضغط <strong>"+"</strong> فوق يسار</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">ابحث عن <strong>"كم باقي"</strong> → اختر <strong>الودجت الصغير</strong> أو المتوسط</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">ضعه في <strong>مكان واضح</strong> بالشاشة الرئيسية</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content">اضغط <strong>"تم"</strong> → خلّ الشاشة نظيفة (لا تكثر تطبيقات حوله)</div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-content"><strong>صوّر!</strong> 📸</div>
+        </div>
+
+        <h4 style="margin-top: 16px;">النص اللي تضيفه في AppMockUp:</h4>
+        <div class="overlay-preview">
+          <div class="op-headline">ودجت مجاني تماماً 🎁</div>
+          <div class="op-subtitle" style="color: #34D399;">بدون اشتراك — على شاشتك الرئيسية</div>
+        </div>
+        <div class="copyable-label">Headline — انسخه</div>
+        <div class="copyable">ودجت مجاني تماماً 🎁</div>
+        <div class="copyable-label">Subtitle — انسخه</div>
+        <div class="copyable">بدون اشتراك — على شاشتك الرئيسية</div>
+        <div class="copyable-label">Subtitle Color</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #34D399;"></div>
+          <span class="color-code">#34D399</span>
+          <span style="color:#64748b; font-size:12px; margin-right:8px;">(أخضر = مجاني)</span>
+        </div>
+        <div class="copyable-label">Background Gradient</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #0f172a;"></div>
+          <span class="color-code">#0f172a</span>
+          <span style="color: #64748b;">→</span>
+          <div class="swatch" style="background: #1a365d;"></div>
+          <span class="color-code">#1a365d</span>
+        </div>
+      </div>
+      <div class="screenshot-preview">
+        <div class="mini-phone" style="background: linear-gradient(180deg, #1a1a2e, #0f172a);">
+          <div class="mini-notch"></div>
+          <div class="mini-content" style="gap: 10px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 4px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #34C759; font-size: 18px; display: flex; align-items: center; justify-content: center;">📞</div>
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #007AFF; font-size: 18px; display: flex; align-items: center; justify-content: center;">📧</div>
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #FF9500; font-size: 18px; display: flex; align-items: center; justify-content: center;">📷</div>
+            </div>
+            <div class="tg-royal" style="border-radius: 16px; padding: 12px 16px; width: 140px; text-align: center; border: 1px solid rgba(244,208,63,0.2);">
+              <div style="font-size: 20px;">🌙</div>
+              <div style="font-size: 32px; font-weight: 800; color: #fff;">٤٧</div>
+              <div style="font-size: 11px; color: #f4d03f; font-weight: 700;">يوم</div>
+              <div style="font-size: 8px; color: rgba(255,255,255,0.5);">رمضان المبارك</div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 4px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #25D366; font-size: 18px; display: flex; align-items: center; justify-content: center;">📱</div>
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #D97706, #F59E0B); font-size: 18px; display: flex; align-items: center; justify-content: center;">⏳</div>
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #1DA1F2; font-size: 18px; display: flex; align-items: center; justify-content: center;">🐦</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== SCREENSHOT 3 =================== -->
+  <div class="screenshot-guide">
+    <div class="screenshot-header">
+      <div class="screenshot-number">٣</div>
+      <div class="screenshot-meta">
+        <h3>شاشة التفاصيل</h3>
+        <p>AIDA: Interest — الجمال والدقة</p>
+      </div>
+    </div>
+    <div class="screenshot-body">
+      <div class="screenshot-instructions">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">من الشاشة الرئيسية، اضغط على عداد <strong>رمضان المبارك 🌙</strong></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">تأكد إن الشاشة تعرض: <strong>العداد الكبير</strong> + <strong>التاريخ الهجري</strong> + <strong>التاريخ الميلادي</strong></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">تأكد إن <strong>ثيم ملكي (Royal)</strong> ظاهر — خلفية زرقاء غامقة مع ذهبي</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content"><strong>صوّر!</strong> 📸</div>
+        </div>
+
+        <div class="tip-box" style="margin-top: 12px; margin-bottom: 12px;">
+          <strong>نصيحة:</strong> إذا رمضان مو على ثيم ملكي، عدّله — هو أحلى ثيم لهذي اللقطة.
+        </div>
+
+        <h4>النص اللي تضيفه في AppMockUp:</h4>
+        <div class="overlay-preview">
+          <div class="op-headline">كل ثانية تحتسب</div>
+          <div class="op-subtitle" style="color: #f4d03f;">تابع وقتك بدقة لحظة بلحظة</div>
+        </div>
+        <div class="copyable-label">Headline — انسخه</div>
+        <div class="copyable">كل ثانية تحتسب</div>
+        <div class="copyable-label">Subtitle — انسخه</div>
+        <div class="copyable">تابع وقتك بدقة لحظة بلحظة</div>
+        <div class="copyable-label">Subtitle Color</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #f4d03f;"></div>
+          <span class="color-code">#f4d03f</span>
+          <span style="color:#64748b; font-size:12px; margin-right:8px;">(ذهبي ملكي)</span>
+        </div>
+        <div class="copyable-label">Background Gradient</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #1a1a2e;"></div>
+          <span class="color-code">#1a1a2e</span>
+          <span style="color: #64748b;">→</span>
+          <div class="swatch" style="background: #0f3460;"></div>
+          <span class="color-code">#0f3460</span>
+        </div>
+      </div>
+      <div class="screenshot-preview">
+        <div class="mini-phone tg-royal">
+          <div class="mini-notch"></div>
+          <div class="mini-content" style="gap: 4px;">
+            <div style="font-size: 36px;">🌙</div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">رمضان المبارك</div>
+            <div style="background: rgba(245,243,240,0.1); border-radius: 10px; padding: 10px 20px; margin: 8px 0;">
+              <div style="font-size: 42px; font-weight: 800; color: #fff; line-height: 1;">٤٧</div>
+              <div style="font-size: 12px; color: #f4d03f; font-weight: 700;">يوم</div>
+            </div>
+            <div style="font-size: 10px; color: #fff; font-weight: 700;">١ رمضان ١٤٤٧هـ</div>
+            <div style="font-size: 8px; color: rgba(255,255,255,0.6);">١٧ فبراير ٢٠٢٦</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== SCREENSHOT 4 =================== -->
+  <div class="screenshot-guide">
+    <div class="screenshot-header">
+      <div class="screenshot-number">٤</div>
+      <div class="screenshot-meta">
+        <h3>الأحداث العامة (اكتشف)</h3>
+        <p>AIDA: Desire — "هذا التطبيق مصمم لي"</p>
+      </div>
+    </div>
+    <div class="screenshot-body">
+      <div class="screenshot-instructions">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">اضغط على تاب <strong>"اكتشف" 🔍</strong> في الأسفل</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">تأكد إن الفلتر على <strong>"الكل"</strong> (أول خيار، اللون الذهبي)</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">لازم تكون ظاهرة ٣ بطاقات كبيرة: <strong>رمضان 🌙</strong> + <strong>عيد الفطر 🎉</strong> + <strong>اليوم الوطني 🇸🇦</strong></div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">الشرائح (chips) في الأعلى لازم تكون ظاهرة</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content"><strong>صوّر!</strong> 📸</div>
+        </div>
+
+        <h4 style="margin-top: 16px;">النص اللي تضيفه في AppMockUp:</h4>
+        <div class="overlay-preview">
+          <div class="op-headline">مناسبات السعودية</div>
+          <div class="op-subtitle" style="color: #64ffda;">رمضان • العيد • اليوم الوطني</div>
+        </div>
+        <div class="copyable-label">Headline — انسخه</div>
+        <div class="copyable">مناسبات السعودية</div>
+        <div class="copyable-label">Subtitle — انسخه</div>
+        <div class="copyable">رمضان • العيد • اليوم الوطني</div>
+        <div class="copyable-label">Subtitle Color</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #64ffda;"></div>
+          <span class="color-code">#64ffda</span>
+          <span style="color:#64748b; font-size:12px; margin-right:8px;">(سيان زمردي)</span>
+        </div>
+        <div class="copyable-label">Background Gradient</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #004d40;"></div>
+          <span class="color-code">#004d40</span>
+          <span style="color: #64748b;">→</span>
+          <div class="swatch" style="background: #00695c;"></div>
+          <span class="color-code">#00695c</span>
+        </div>
+      </div>
+      <div class="screenshot-preview">
+        <div class="mini-phone" style="background: #0F1419;">
+          <div class="mini-notch"></div>
+          <div class="mini-content" style="padding: 30px 6px 12px; justify-content: flex-start; gap: 4px;">
+            <div style="display: flex; gap: 3px; width: 100%; padding: 0 4px; margin-bottom: 4px; flex-wrap: nowrap;">
+              <div style="padding: 3px 8px; border-radius: 10px; background: #F59E0B; font-size: 7px; font-weight: 700; color: #0F1419; white-space: nowrap;">الكل</div>
+              <div style="padding: 3px 8px; border-radius: 10px; background: #181E25; font-size: 7px; color: rgba(245,243,240,0.6); white-space: nowrap;">🌙 ديني</div>
+              <div style="padding: 3px 8px; border-radius: 10px; background: #181E25; font-size: 7px; color: rgba(245,243,240,0.6); white-space: nowrap;">🇸🇦 وطني</div>
+            </div>
+            <div class="tg-emerald" style="border-radius: 10px; padding: 8px; width: 100%; text-align: right;">
+              <div style="font-size: 7px; font-weight: 700; color: #fff;">🌙 رمضان ١٤٤٧</div>
+              <div style="font-size: 14px; font-weight: 800; color: #fff; margin-top: 2px;">٤٧ يوم</div>
+            </div>
+            <div class="tg-royal" style="border-radius: 10px; padding: 8px; width: 100%; text-align: right;">
+              <div style="font-size: 7px; font-weight: 700; color: #fff;">🎉 عيد الفطر ١٤٤٧</div>
+              <div style="font-size: 14px; font-weight: 800; color: #fff; margin-top: 2px;">٧٧ يوم</div>
+            </div>
+            <div class="tg-ocean" style="border-radius: 10px; padding: 8px; width: 100%; text-align: right;">
+              <div style="font-size: 7px; font-weight: 700; color: #fff;">🇸🇦 اليوم الوطني ٩٦</div>
+              <div style="font-size: 14px; font-weight: 800; color: #fff; margin-top: 2px;">١٧٨ يوم</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== SCREENSHOT 5 =================== -->
+  <div class="screenshot-guide">
+    <div class="screenshot-header">
+      <div class="screenshot-number">٥</div>
+      <div class="screenshot-meta">
+        <h3>شاشة الإنشاء</h3>
+        <p>AIDA: Action — "سهل وسريع"</p>
+      </div>
+    </div>
+    <div class="screenshot-body">
+      <div class="screenshot-instructions">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">اضغط زر <strong>"+" الذهبي</strong> في الشاشة الرئيسية</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">اكتب في حقل الاسم: <strong>رحلة الصيف ✈️</strong></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">اختر <strong>تاريخ صيفي</strong> (١ يوليو مثلاً)</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">اختر إيموجي <strong>✈️</strong> من القائمة</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content">اختر ثيم <strong>الشفق (Aurora)</strong> — البرتقالي</div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-content">لا تضغط "إنشاء" — <strong>خلّ الفورم مليانة</strong> وصوّر!</div>
+        </div>
+        <div class="step">
+          <div class="step-num">7</div>
+          <div class="step-content"><strong>صوّر!</strong> 📸</div>
+        </div>
+
+        <div class="warning-box" style="margin-top: 12px;">
+          <strong>مهم:</strong> لا تضغط "إنشاء" — نبي نصوّر الفورم وهي مليانة عشان المستخدم يشوف كيف سهلة.
+        </div>
+
+        <h4>النص اللي تضيفه في AppMockUp:</h4>
+        <div class="overlay-preview">
+          <div class="op-headline">أنشئ عدادك في ثوانٍ</div>
+          <div class="op-subtitle" style="color: rgba(255,255,255,0.85);">سهل، سريع، وجميل</div>
+        </div>
+        <div class="copyable-label">Headline — انسخه</div>
+        <div class="copyable">أنشئ عدادك في ثوانٍ</div>
+        <div class="copyable-label">Subtitle — انسخه</div>
+        <div class="copyable">سهل، سريع، وجميل</div>
+        <div class="copyable-label">Subtitle Color</div>
+        <div class="color-row">
+          <div class="swatch" style="background: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.3);"></div>
+          <span class="color-code">#FFFFFF (85% opacity)</span>
+        </div>
+        <div class="copyable-label">Background Gradient</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #ff6b6b;"></div>
+          <span class="color-code">#ff6b6b</span>
+          <span style="color: #64748b;">→</span>
+          <div class="swatch" style="background: #feca57;"></div>
+          <span class="color-code">#feca57</span>
+        </div>
+      </div>
+      <div class="screenshot-preview">
+        <div class="mini-phone" style="background: #0F1419;">
+          <div class="mini-notch"></div>
+          <div class="mini-content" style="padding: 34px 10px 12px; justify-content: flex-start; gap: 6px; align-items: stretch; text-align: right;">
+            <div style="font-size: 8px; color: #F5F3F0; font-weight: 700;">اسم العد التنازلي</div>
+            <div style="background: #181E25; border: 1px solid rgba(245,243,240,0.12); border-radius: 8px; padding: 6px 8px; font-size: 9px; color: #F5F3F0;">رحلة الصيف ✈️</div>
+            <div style="font-size: 8px; color: #F5F3F0; font-weight: 700; margin-top: 4px;">التاريخ</div>
+            <div style="background: #181E25; border: 1px solid rgba(245,243,240,0.12); border-radius: 8px; padding: 6px 8px; font-size: 8px; color: rgba(245,243,240,0.7); text-align: center;">📅 ١ يوليو ٢٠٢٦</div>
+            <div style="font-size: 8px; color: #F5F3F0; font-weight: 700; margin-top: 4px;">الأيقونة</div>
+            <div style="display: grid; grid-template-columns: repeat(6,1fr); gap: 3px;">
+              <div style="background: #181E25; border-radius: 5px; padding: 3px; text-align: center; font-size: 12px;">🎉</div>
+              <div style="background: #181E25; border-radius: 5px; padding: 3px; text-align: center; font-size: 12px;">❤️</div>
+              <div style="background: #181E25; border-radius: 5px; padding: 3px; text-align: center; font-size: 12px;">🏆</div>
+              <div style="background: rgba(245,158,11,0.15); border: 1px solid #F59E0B; border-radius: 5px; padding: 3px; text-align: center; font-size: 12px;">✈️</div>
+              <div style="background: #181E25; border-radius: 5px; padding: 3px; text-align: center; font-size: 12px;">🌙</div>
+              <div style="background: #181E25; border-radius: 5px; padding: 3px; text-align: center; font-size: 12px;">💼</div>
+            </div>
+            <div style="font-size: 8px; color: #F5F3F0; font-weight: 700; margin-top: 4px;">الثيم</div>
+            <div style="display: flex; gap: 6px; justify-content: center;">
+              <div style="width: 22px; height: 22px; border-radius: 11px; background: linear-gradient(135deg, #0f0c29, #24243e);"></div>
+              <div style="width: 22px; height: 22px; border-radius: 11px; background: linear-gradient(135deg, #ff6b6b, #feca57); border: 2px solid #F59E0B;"></div>
+              <div style="width: 22px; height: 22px; border-radius: 11px; background: linear-gradient(135deg, #03045e, #00b4d8);"></div>
+              <div style="width: 22px; height: 22px; border-radius: 11px; background: linear-gradient(135deg, #1a1a2e, #0f3460);"></div>
+              <div style="width: 22px; height: 22px; border-radius: 11px; background: linear-gradient(135deg, #004d40, #00897b);"></div>
+            </div>
+            <div style="background: linear-gradient(135deg, #D97706, #F59E0B); border-radius: 8px; padding: 6px; text-align: center; font-size: 9px; font-weight: 700; color: #fff; margin-top: 8px;">+ أنشئ العد التنازلي</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== SCREENSHOT 6 =================== -->
+  <div class="screenshot-guide">
+    <div class="screenshot-header">
+      <div class="screenshot-number">٦</div>
+      <div class="screenshot-meta">
+        <h3>الثيمات</h3>
+        <p>AIDA: Desire — "أقدر أخصصه على ذوقي"</p>
+      </div>
+    </div>
+    <div class="screenshot-body">
+      <div class="screenshot-instructions">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">هذي <strong>نفس لقطة الشاشة الرئيسية</strong> (لقطة ١) — نفس الصورة!</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content"><strong>ما تحتاج تصوّر مرة ثانية</strong> — استخدم نفس الصورة بس بنص مختلف في AppMockUp</div>
+        </div>
+
+        <div class="success-box" style="margin-top: 12px;">
+          <strong>توفير وقت!</strong> هذي اللقطة تستخدم نفس صورة الرئيسية (لقطة ١) — بس تغيّر النص والخلفية في AppMockUp.
+        </div>
+
+        <h4>النص اللي تضيفه في AppMockUp:</h4>
+        <div class="overlay-preview">
+          <div class="op-headline">ثيمات تناسب ذوقك</div>
+          <div class="op-subtitle" style="color: #F59E0B;">خصّص مظهر عدادك كيف تشاء</div>
+        </div>
+        <div class="copyable-label">Headline — انسخه</div>
+        <div class="copyable">ثيمات تناسب ذوقك</div>
+        <div class="copyable-label">Subtitle — انسخه</div>
+        <div class="copyable">خصّص مظهر عدادك كيف تشاء</div>
+        <div class="copyable-label">Subtitle Color</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #F59E0B;"></div>
+          <span class="color-code">#F59E0B</span>
+        </div>
+        <div class="copyable-label">Background</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #0F1419;"></div>
+          <span class="color-code">#0F1419</span>
+          <span style="color:#64748b; font-size:12px; margin-right:8px;">(لون واحد، بدون تدرج)</span>
+        </div>
+      </div>
+      <div class="screenshot-preview">
+        <div class="mini-phone" style="background: #0F1419;">
+          <div class="mini-notch"></div>
+          <div class="mini-content" style="padding: 30px 6px 12px; justify-content: flex-start;">
+            <div class="mini-grid" style="margin-top: 8px;">
+              <div class="mini-card tg-midnight"><div class="mc-emoji">🌙</div><div class="mc-title">منتصف الليل</div></div>
+              <div class="mini-card tg-aurora"><div class="mc-emoji">🎊</div><div class="mc-title">الشفق</div></div>
+              <div class="mini-card tg-ocean"><div class="mc-emoji">🇸🇦</div><div class="mc-title">المحيط</div></div>
+              <div class="mini-card tg-royal"><div class="mc-emoji">✈️</div><div class="mc-title">ملكي</div></div>
+              <div class="mini-card tg-emerald"><div class="mc-emoji">💰</div><div class="mc-title">زمردي</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== SCREENSHOT 7 =================== -->
+  <div class="screenshot-guide">
+    <div class="screenshot-header">
+      <div class="screenshot-number">٧</div>
+      <div class="screenshot-meta">
+        <h3>الاحتفال 🎉</h3>
+        <p>AIDA: Hook — المكافأة العاطفية</p>
+      </div>
+    </div>
+    <div class="screenshot-body">
+      <div class="screenshot-instructions">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">أنشئ عداد <strong>مؤقت</strong> بتاريخ <strong>بعد دقيقة وحدة</strong> من الآن</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">ادخل على العداد وانتظر لما <strong>يوصل صفر</strong></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">اضغط <strong>"اكتمل! 🎊"</strong></div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">بيظهر <strong>شاشة الاحتفال</strong> مع الألعاب النارية — <strong>صوّر بسرعة!</strong> 📸</div>
+        </div>
+
+        <div class="tip-box" style="margin-top: 12px;">
+          <strong>نصيحة:</strong> بعد الألعاب النارية بتظهر بطاقة المشاركة "شارك اللحظة!" — هذي اللي نبي نصوّرها. إذا فاتتك، كرر العملية.
+        </div>
+
+        <h4>النص اللي تضيفه في AppMockUp:</h4>
+        <div class="overlay-preview">
+          <div class="op-headline">🎉 حان الوقت!</div>
+          <div class="op-subtitle" style="color: rgba(255,255,255,0.9);">احتفل بلحظاتك المميزة وشاركها</div>
+        </div>
+        <div class="copyable-label">Headline — انسخه</div>
+        <div class="copyable">🎉 حان الوقت!</div>
+        <div class="copyable-label">Subtitle — انسخه</div>
+        <div class="copyable">احتفل بلحظاتك المميزة وشاركها</div>
+        <div class="copyable-label">Subtitle Color</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #fff; border-color: rgba(255,255,255,0.3);"></div>
+          <span class="color-code">#FFFFFF (90% opacity)</span>
+        </div>
+        <div class="copyable-label">Background Gradient</div>
+        <div class="color-row">
+          <div class="swatch" style="background: #ff6b6b;"></div>
+          <span class="color-code">#ff6b6b</span>
+          <span style="color: #64748b;">→</span>
+          <div class="swatch" style="background: #feca57;"></div>
+          <span class="color-code">#feca57</span>
+        </div>
+      </div>
+      <div class="screenshot-preview">
+        <div class="mini-phone tg-royal">
+          <div class="mini-notch"></div>
+          <div class="mini-content" style="gap: 4px; position: relative;">
+            <!-- Confetti dots -->
+            <div style="position:absolute;width:5px;height:5px;border-radius:50%;background:#f472b6;top:40px;left:20px;opacity:0.7;"></div>
+            <div style="position:absolute;width:4px;height:4px;border-radius:50%;background:#a78bfa;top:60px;right:30px;opacity:0.6;"></div>
+            <div style="position:absolute;width:6px;height:6px;border-radius:50%;background:#fcd34d;top:100px;left:50px;opacity:0.8;"></div>
+            <div style="position:absolute;width:4px;height:4px;border-radius:50%;background:#6ee7b7;bottom:80px;right:40px;opacity:0.6;"></div>
+            <div style="position:absolute;width:5px;height:5px;border-radius:50%;background:#818cf8;bottom:120px;left:30px;opacity:0.7;"></div>
+            <div style="position:absolute;width:4px;height:4px;border-radius:50%;background:#f87171;top:140px;right:60px;opacity:0.6;"></div>
+
+            <div style="font-size: 40px;">🌙</div>
+            <div style="font-size: 22px;">🎉</div>
+            <div style="font-size: 16px; font-weight: 800; color: #f4d03f;">حان الوقت!</div>
+            <div style="font-size: 11px; font-weight: 700; color: #fff;">رمضان المبارك</div>
+            <div style="background: linear-gradient(135deg, #D97706, #F59E0B); border-radius: 8px; padding: 6px 16px; font-size: 9px; font-weight: 700; color: #fff; margin-top: 10px;">شارك اللحظة! 🎊</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ============================================================ -->
+<!-- PHASE 3: APPMOCKUP STUDIO -->
+<!-- ============================================================ -->
+<section>
+  <span class="phase-badge" style="background: rgba(129,140,248,0.15); color: #818cf8;">المرحلة ٣</span>
+  <h2>🖼️ أضف الإطار والنص — AppMockUp Studio</h2>
+
+  <div class="box">
+    <h3>ادخل الموقع</h3>
+    <div class="copyable-label">الرابط — انسخه وافتحه</div>
+    <div class="copyable" style="direction: ltr; text-align: center; font-weight: 700;">
+      https://studio.app-mockup.com
+    </div>
+    <p style="color: #94a3b8; font-size: 13px; margin-top: 8px;">مجاني بالكامل — ما تحتاج تسجّل حساب</p>
+  </div>
+
+  <h3>كرّر هذي الخطوات لكل لقطة (٧ مرات):</h3>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content"><strong>اضغط "Create New"</strong> في الموقع</div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content"><strong>اختر الجهاز:</strong> iPhone 16 Pro Max (6.9") — حتى لو صوّرت من آيفون ١٤، الموقع يعدّل الحجم تلقائياً</div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content"><strong>لون الإطار:</strong> Black (أسود — يناسب التطبيق الداكن)</div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content"><strong>ارفع الصورة:</strong> اسحب لقطة الشاشة من جهازك أو اضغط Upload</div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-content"><strong>الخلفية:</strong> اختر Gradient → ادخل الألوان الموجودة فوق عند كل لقطة</div>
+  </div>
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-content"><strong>أضف نص:</strong> اضغط "Add Text" → أول نص = Headline (كبير، أبيض، بولد) → ثاني نص = Subtitle (أصغر، باللون المحدد)</div>
+  </div>
+  <div class="step">
+    <div class="step-num">7</div>
+    <div class="step-content"><strong>الخط:</strong> اختر أي خط عربي متوفر — أو ارفع خط Tajawal (الأفضل)</div>
+  </div>
+  <div class="step">
+    <div class="step-num">8</div>
+    <div class="step-content"><strong>Export:</strong> اضغط Export → PNG → أعلى جودة</div>
+  </div>
+
+  <div class="tip-box" style="margin-top: 20px;">
+    <strong>نصيحة سرعة:</strong> سوّي أول لقطة بالكامل، بعدين لكل وحدة بعدها بس غيّر الصورة + النص + الخلفية. التنسيق يبقى نفسه.
+  </div>
+
+  <div class="box" style="margin-top: 20px;">
+    <h3>الإعدادات الثابتة لكل لقطة:</h3>
+    <table>
+      <tr><td>الجهاز</td><td>iPhone 16 Pro Max (6.9")</td></tr>
+      <tr><td>لون الإطار</td><td>Black</td></tr>
+      <tr><td>مكان النص</td><td>فوق الجهاز (Top)</td></tr>
+      <tr><td>حجم العنوان</td><td>كبير — Bold / 800</td></tr>
+      <tr><td>حجم العنوان الفرعي</td><td>متوسط — Bold / 700</td></tr>
+      <tr><td>لون العنوان</td><td>#FFFFFF (أبيض) — ثابت لكل اللقطات</td></tr>
+      <tr><td>لون العنوان الفرعي</td><td>يتغيّر — محدد فوق عند كل لقطة</td></tr>
+      <tr><td>صيغة التصدير</td><td>PNG — أعلى جودة</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PHASE 4: UPLOAD -->
+<!-- ============================================================ -->
+<section>
+  <span class="phase-badge" style="background: rgba(52,211,153,0.15); color: #34D399;">المرحلة ٤</span>
+  <h2>🚀 ارفع على المتاجر</h2>
+
+  <div class="box">
+    <h3>Apple App Store Connect</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">ادخل <a href="https://appstoreconnect.apple.com" target="_blank">appstoreconnect.apple.com</a></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">My Apps → <strong>كم باقي</strong> → App Store tab</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">انزل لقسم <strong>"Screenshots"</strong></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">اختر <strong>"iPhone 6.9" Display"</strong></div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">اسحب <strong>٧ صور PNG</strong> بالترتيب (١ → ٧)</div>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-content">اضغط <strong>"Save"</strong></div>
+    </div>
+  </div>
+
+  <div class="box" style="margin-top: 20px;">
+    <h3>Google Play Console</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">ادخل <a href="https://play.google.com/console" target="_blank">play.google.com/console</a></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content"><strong>كم باقي</strong> → Grow → Store Presence → <strong>Main store listing</strong></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">انزل لقسم <strong>"Phone screenshots"</strong></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">اسحب <strong>نفس ٧ صور PNG</strong> بالترتيب</div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">اضغط <strong>"Save"</strong></div>
+    </div>
+  </div>
+
+  <div class="success-box" style="margin-top: 20px;">
+    <strong>نفس الصور!</strong> Apple و Google يقبلون نفس اللقطات — ما تحتاج تسوي شغل مزدوج.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- FINAL CHECKLIST -->
+<!-- ============================================================ -->
+<section>
+  <h2>✅ القائمة النهائية</h2>
+  <div class="box">
+    <ul class="checklist">
+      <li>لغة التطبيق عربي + الوضع الليلي مفعّل</li>
+      <li>٦ عدادات مُنشأة بالثيمات المحددة</li>
+      <li>لقطة ١ — الشاشة الرئيسية (٦ بطاقات ملونة)</li>
+      <li>لقطة ٢ — الودجت على شاشة الآيفون الرئيسية</li>
+      <li>لقطة ٣ — تفاصيل رمضان (ثيم ملكي)</li>
+      <li>لقطة ٤ — شاشة اكتشف (٣ أحداث سعودية)</li>
+      <li>لقطة ٥ — شاشة الإنشاء (الفورم مليانة)</li>
+      <li>لقطة ٦ — نفس صورة ١ بنص مختلف (الثيمات)</li>
+      <li>لقطة ٧ — شاشة الاحتفال (حان الوقت!)</li>
+      <li>٧ صور مُؤطّرة من AppMockUp (PNG)</li>
+      <li>مرفوعة على App Store Connect</li>
+      <li>مرفوعة على Google Play Console</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- FOOTER -->
+<!-- ============================================================ -->
+<section style="text-align: center; padding-bottom: 40px;">
+  <hr>
+  <p style="color: #64748b; font-size: 14px; margin-top: 20px;">
+    صُنع بواسطة THEBOLDS — فريق كم باقي 💛
+  </p>
+  <p style="color: #334155; font-size: 12px;">
+    آخر تحديث: ٣١ مارس ٢٠٢٦
+  </p>
+</section>
+
+</div>
+
+</body>
+</html>

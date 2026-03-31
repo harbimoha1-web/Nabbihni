@@ -14,7 +14,7 @@ import { Task } from '@/types/countdown';
 import { useTheme } from '@/contexts/ThemeContext';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const DELETE_THRESHOLD = -80;
+const DELETE_THRESHOLD = -50;
 
 interface TaskItemProps {
   task: Task;
@@ -119,6 +119,17 @@ export default function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
         >
           {task.title}
         </Text>
+
+        <Pressable
+          onPress={async () => {
+            await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            onDelete();
+          }}
+          hitSlop={8}
+          style={styles.deleteButton}
+        >
+          <Ionicons name="trash-outline" size={18} color={colors.textSecondary} />
+        </Pressable>
       </Animated.View>
     </View>
   );
@@ -160,5 +171,9 @@ const styles = StyleSheet.create({
   completedTitle: {
     textDecorationLine: 'line-through',
     opacity: 0.7,
+  },
+  deleteButton: {
+    padding: 4,
+    opacity: 0.5,
   },
 });

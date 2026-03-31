@@ -25,7 +25,8 @@
         "ascAppId": "6759000350"
       },
       "android": {
-        "serviceAccountKeyPath": "./play-store-key.json"
+        "serviceAccountKeyPath": "./play-store-key.json",
+        "releaseStatus": "draft"
       }
     }
   }

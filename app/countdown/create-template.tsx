@@ -45,7 +45,7 @@ export default function CreateTemplateCountdownScreen() {
     if (!isBirthday) return;
     if (personName.trim()) {
       const composed = language === 'ar'
-        ? `عيد ميلاد ${personName.trim()}`
+        ? `يوم ميلاد ${personName.trim()}`
         : `${personName.trim()}'s Birthday`;
       setTitle(composed);
     } else {

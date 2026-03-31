@@ -16,9 +16,11 @@ import { useLanguage } from '@/contexts/LanguageContext';
  */
 const sortCountdowns = (countdowns: Countdown[]): Countdown[] => {
   return [...countdowns].sort((a, b) => {
-    // Starred countdowns come first
-    if (a.isStarred !== b.isStarred) {
-      return a.isStarred ? -1 : 1;
+    // Starred countdowns come first (normalize undefined to false)
+    const aStarred = !!a.isStarred;
+    const bStarred = !!b.isStarred;
+    if (aStarred !== bStarred) {
+      return aStarred ? -1 : 1;
     }
     // Then sort by targetDate (soonest first)
     return new Date(a.targetDate).getTime() - new Date(b.targetDate).getTime();
