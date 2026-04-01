@@ -137,8 +137,8 @@ struct CountdownTimelineProvider: TimelineProvider {
         let countdowns = CountdownDataProvider.loadCountdowns()
         let entry = CountdownTimelineEntry(date: Date(), countdowns: countdowns)
 
-        // Refresh every 15 minutes for accurate countdown
-        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
+        // Refresh every 5 minutes for accurate countdown
+        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 5, to: Date())!
         let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
         completion(timeline)
     }

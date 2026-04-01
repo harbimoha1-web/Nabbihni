@@ -144,6 +144,10 @@ async function syncIOSWidget(jsonString: string): Promise<void> {
   try {
     const SharedGroupPreferences = require('react-native-shared-group-preferences').default;
     await SharedGroupPreferences.setItem('widgetData', jsonString, APP_GROUP_ID);
+
+    // Force WidgetKit to reload all timelines immediately
+    const { ExtensionStorage } = require('@bacons/apple-targets');
+    ExtensionStorage.reloadWidget();
   } catch {
     // Module not available (Expo Go or web)
   }
