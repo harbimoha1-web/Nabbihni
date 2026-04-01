@@ -229,7 +229,6 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
 
         if (monthly) {
           setMonthlyPackage(monthly);
-          setMonthlyPrice(`${monthly.product.price} SAR`);
           foundMonthly = true;
         }
 
@@ -240,7 +239,6 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
 
         if (lifetime) {
           setLifetimePackage(lifetime);
-          setLifetimePrice(`${lifetime.product.price} SAR`);
           foundLifetime = true;
         }
       }
@@ -253,11 +251,9 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
           for (const product of products) {
             if (!foundMonthly && PRODUCT_ID_MONTHLY_VARIANTS.includes(product.identifier)) {
               setMonthlyProduct(product);
-              setMonthlyPrice(`${product.price} SAR`);
             }
             if (!foundLifetime && PRODUCT_ID_LIFETIME_VARIANTS.includes(product.identifier)) {
               setLifetimeProduct(product);
-              setLifetimePrice(`${product.price} SAR`);
             }
           }
         } catch (e) {

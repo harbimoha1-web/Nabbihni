@@ -96,10 +96,9 @@ export default function HomeScreen() {
     return countdowns.filter((countdown) => countdown.icon === selectedCategory);
   }, [countdowns, selectedCategory]);
 
-  // Process countdowns into pairs with ads interspersed
+  // Process countdowns into pairs
   const listData = useMemo((): ListItem[] => {
     const items: ListItem[] = [];
-    let pairCount = 0;
 
     for (let i = 0; i < filteredCountdowns.length; i += 2) {
       const pair: [Countdown, Countdown | null] = [
@@ -107,12 +106,6 @@ export default function HomeScreen() {
         filteredCountdowns[i + 1] || null,
       ];
       items.push({ type: 'countdown-pair', data: pair });
-      pairCount++;
-
-      // Insert ad after every AD_INTERVAL pairs (for free users)
-      if (shouldShowAds && pairCount % AD_INTERVAL === 0 && i + 2 < filteredCountdowns.length) {
-        items.push({ type: 'ad', id: `ad-${pairCount}` });
-      }
     }
 
     return items;
