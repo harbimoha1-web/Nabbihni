@@ -54,3 +54,6 @@ supabase/.temp/
 # temp/accidental files
 nul
 UsersTECHTR*/
+
+# Raw screenshots (large binary files from phone)
+docs/screenshots/raw/*.png

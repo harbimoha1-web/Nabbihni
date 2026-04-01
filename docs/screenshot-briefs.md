@@ -27,7 +27,8 @@
 **What to capture:**
 - Home screen with at least 5–6 countdowns in the 2-column grid
 - Use all different themes across the cards (Midnight, Ocean, Royal, Emerald, Aurora)
-- Arabic titles: `رمضان المبارك 🌙`, `عيد الفطر 🎊`, `اليوم الوطني 🇸🇦`, `رحلة الصيف ✈️`, `موعد الراتب 💰`
+- Arabic titles: `موعد الراتب 💰`, `عيد ميلاد سارة 🎂`, `الاختبارات النهائية 📝`, `رحلة تركيا ✈️`, `التخرج 🎓`, `إجازة الصيف 🏖️`
+- NO public events from Explore tab (no Ramadan, Eid, National Day) — personal countdowns only
 - FAB (+) button visible at bottom
 
 **Background:** Gradient `#0f0c29` → `#302b63` (top to bottom)
@@ -70,8 +71,8 @@ SUBTITLE (color #34d399 green):
 
 **What to capture:**
 - Open a countdown using the **Royal** theme (gold gradient)
-- Best countdown: `رمضان المبارك 🌙` — set to next Ramadan date
-- Timer shows large numbers: e.g. `٤٧ يوماً ١٢ ساعة`
+- Best countdown: `التخرج 🎓` — personal milestone, not a public event
+- Timer shows large numbers: e.g. `١٢٠ يوماً ٥ ساعات`
 - Hijri date line visible below the timer
 - Both emoji icon (top) and full timer block in frame
 
@@ -115,7 +116,7 @@ SUBTITLE (color #64ffda cyan):
 
 **What to capture:**
 - Create countdown screen
-- Title field filled with: `رحلة الصيف ✈️`
+- Title field filled with: `رحلة تركيا ✈️`
 - Date set (summer date in both Hijri + Gregorian)
 - Emoji picker section visible and open
 - Theme picker showing at least 3 colorful options
