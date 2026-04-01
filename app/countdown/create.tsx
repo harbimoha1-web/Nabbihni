@@ -289,8 +289,6 @@ export default function CreateCountdownScreen() {
         <Stack.Screen
           options={{
             title: t.edit.title,
-            headerStyle: { backgroundColor: colors.background },
-            headerTintColor: colors.text,
           }}
         />
         <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['bottom']}>
@@ -307,13 +305,6 @@ export default function CreateCountdownScreen() {
       <Stack.Screen
         options={{
           title: isEditMode ? t.edit.title : t.create.title,
-          headerStyle: { backgroundColor: colors.background },
-          headerTintColor: colors.text,
-          headerLeft: () => (
-            <Pressable onPress={() => router.back()} style={styles.headerButton}>
-              <Ionicons name="close" size={24} color={colors.text} />
-            </Pressable>
-          ),
         }}
       />
       <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['bottom']}>
