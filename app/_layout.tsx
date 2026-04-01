@@ -6,7 +6,8 @@ import { Stack, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Linking from 'expo-linking';
 import { useEffect, useRef } from 'react';
-import { I18nManager, StatusBar, Platform } from 'react-native';
+import { I18nManager, StatusBar, Platform, Pressable } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 // Register Android widget task handler (must be at top level)
 if (Platform.OS === 'android') {
@@ -185,6 +186,11 @@ function RootLayoutNav() {
             presentation: 'modal',
             headerShown: true,
             title: t.create.title,
+            headerLeft: () => (
+              <Pressable onPress={() => router.back()} style={{ padding: 8 }}>
+                <Ionicons name="close" size={24} color={colors.text} />
+              </Pressable>
+            ),
           }}
         />
         <Stack.Screen name="countdown/[id]" options={{ headerShown: false }} />
