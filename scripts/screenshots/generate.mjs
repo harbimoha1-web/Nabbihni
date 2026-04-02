@@ -1,4 +1,4 @@
-// Kam Baqi — App Store Screenshot Generator
+// Kam Baqi — App Store Screenshot Generator (THEBOLDS Starized Edition)
 // Usage: node scripts/screenshots/generate.mjs [--index=N]
 //
 // Reads raw screenshots from docs/screenshots/raw/
@@ -28,7 +28,15 @@ function loadFontBase64(filename) {
   return readFileSync(fontPath).toString('base64');
 }
 
-// Build the HTML template string
+// Convert hex color to RGB string for use in rgba()
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `${r},${g},${b}`;
+}
+
+// Build the HTML template string — Starized Edition
 function buildTemplate(data) {
   const boldFont = loadFontBase64('Tajawal-Bold.ttf');
   const extraBoldFont = loadFontBase64('Tajawal-ExtraBold.ttf');
@@ -52,14 +60,19 @@ function buildTemplate(data) {
     ? `background: linear-gradient(180deg, ${data.background.from}, ${data.background.to});`
     : `background: ${data.background.color};`;
 
-  // Status bar overlay: covers time, battery, signal at top of screenshot
-  // iPhone status bar is ~54pt = ~162px at 3x. We use a gradient fade for a natural look.
-  const statusBarOverlay = `<div style="position:absolute;top:0;left:0;right:0;height:170px;
-    background:linear-gradient(180deg, #0F1419 40%, rgba(15,20,25,0.8) 70%, transparent 100%);
-    z-index:20;border-radius:56px 56px 0 0;pointer-events:none;"></div>`;
+  // Vignette colors match the frame gradient for seamless blending
+  const topColor = data.background.type === 'gradient' ? data.background.from : data.background.color;
+  const bottomColor = data.background.type === 'gradient' ? data.background.to : data.background.color;
+  const topRgb = hexToRgb(topColor);
+  const bottomRgb = hexToRgb(bottomColor);
+  const glowRgb = data.glowColor ? hexToRgb(data.glowColor) : topRgb;
 
+  // NUCLEAR status bar removal: 70px physical crop + 250px strong vignette
+  // Status bar is ~38px at render scale. 70px crop = 1.8x overkill. Vignette = triple insurance.
   const screenshotImg = data.imgBase64
-    ? `<img src="${data.imgBase64}" style="width:100%;height:100%;object-fit:cover;display:block;" />${statusBarOverlay}`
+    ? `<img src="${data.imgBase64}" style="position:absolute;top:-70px;left:0;width:100%;height:calc(100% + 70px);object-fit:cover;display:block;" />
+         <div style="position:absolute;top:0;left:0;right:0;height:250px;background:linear-gradient(180deg, rgba(${topRgb},1) 0%, rgba(${topRgb},1) 15%, rgba(${topRgb},0.85) 30%, rgba(${topRgb},0.4) 50%, rgba(${topRgb},0.1) 70%, transparent 100%);z-index:20;border-radius:56px 56px 0 0;pointer-events:none;"></div>
+         <div style="position:absolute;bottom:0;left:0;right:0;height:160px;background:linear-gradient(0deg, rgba(${bottomRgb},0.85) 0%, rgba(${bottomRgb},0.35) 45%, rgba(${bottomRgb},0.08) 75%, transparent 100%);z-index:20;border-radius:0 0 56px 56px;pointer-events:none;"></div>`
     : `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#0F1419;">
          <div style="font-size:80px;opacity:0.3;">📱</div>
          <div style="font-size:28px;font-weight:700;color:rgba(255,255,255,0.15);font-family:'Tajawal',sans-serif;">لقطة الشاشة</div>
@@ -85,33 +98,33 @@ function buildTemplate(data) {
 
     .text-area {
       width: 100%;
-      padding-top: 200px;
-      padding-bottom: 40px;
+      padding-top: 140px;
+      padding-bottom: 50px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
       direction: rtl;
     }
 
     .headline {
-      font-size: 76px;
+      font-size: 84px;
       font-weight: 800;
       color: #ffffff;
       text-align: center;
       line-height: 1.2;
-      text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
       padding: 0 60px;
       direction: rtl;
     }
 
     .subtitle {
-      font-size: 44px;
+      font-size: 38px;
       font-weight: 700;
       color: ${data.subtitleColor};
       text-align: center;
       line-height: 1.3;
-      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
+      text-shadow: 0 2px 24px rgba(0, 0, 0, 0.3);
       padding: 0 80px;
       direction: rtl;
     }
@@ -119,7 +132,25 @@ function buildTemplate(data) {
     .phone-wrapper {
       display: flex;
       justify-content: center;
-      margin-top: 20px;
+      margin-top: 10px;
+      position: relative;
+    }
+
+    /* Ambient colored glow behind the phone — starized floating effect */
+    .phone-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 1100px;
+      height: 2200px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center,
+        rgba(${glowRgb}, 0.12) 0%,
+        rgba(${glowRgb}, 0.06) 30%,
+        rgba(${glowRgb}, 0.02) 55%,
+        transparent 75%);
+      pointer-events: none;
     }
 
     .phone-frame {
@@ -129,19 +160,20 @@ function buildTemplate(data) {
       background: #1c1c1e;
       position: relative;
       box-shadow:
-        0 50px 120px rgba(0, 0, 0, 0.55),
-        0 20px 60px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.08),
-        inset 0 0 0 2px rgba(255, 255, 255, 0.04);
+        0 60px 140px rgba(0, 0, 0, 0.6),
+        0 25px 70px rgba(0, 0, 0, 0.35),
+        0 0 80px rgba(${glowRgb}, 0.07),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 0 0 1.5px rgba(255, 255, 255, 0.05);
     }
 
-    /* Subtle outer edge highlight */
+    /* Subtle outer edge highlight for premium depth */
     .phone-frame::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       border-radius: 68px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       pointer-events: none;
       z-index: 5;
     }
@@ -165,11 +197,6 @@ function buildTemplate(data) {
       overflow: hidden;
       background: #0F1419;
     }
-
-    /* Side buttons */
-    .btn { position: absolute; width: 3px; background: #2a2a2e; }
-    .btn-r { right: -3px; border-radius: 0 2px 2px 0; }
-    .btn-l { left: -3px; border-radius: 2px 0 0 2px; }
   </style>
 </head>
 <body>
@@ -180,14 +207,9 @@ function buildTemplate(data) {
   </div>
 
   <div class="phone-wrapper">
+    <div class="phone-glow"></div>
     <div class="phone-frame">
       <div class="dynamic-island"></div>
-
-      <!-- Side buttons -->
-      <div class="btn btn-r" style="top:380px;height:100px;"></div>
-      <div class="btn btn-l" style="top:280px;height:36px;"></div>
-      <div class="btn btn-l" style="top:340px;height:60px;"></div>
-      <div class="btn btn-l" style="top:420px;height:60px;"></div>
 
       <div class="screen">
         ${screenshotImg}
